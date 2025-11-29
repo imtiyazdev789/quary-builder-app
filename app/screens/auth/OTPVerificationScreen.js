@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
@@ -67,7 +68,8 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     };
 
     return (
-        <View className="flex-1 bg-white justify-center px-6">
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+            <View className="flex-1 justify-center px-6">
             <View className="mb-8">
                 <Text className="text-4xl font-bold text-gray-900 mb-2">
                     Verify Email
@@ -155,7 +157,8 @@ const OTPVerificationScreen = ({ route, navigation }) => {
                     Back to Login
                 </Text>
             </TouchableOpacity>
-        </View>
+            </View>
+        </SafeAreaView>
     );
 };
 

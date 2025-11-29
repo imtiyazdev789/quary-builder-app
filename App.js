@@ -3,8 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './app/context/AuthContext';
 import RootNavigator from './app/navigation/RootNavigator';
+import { useCustomFonts } from './app/config/fonts';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -14,9 +16,18 @@ function AppContent() {
   const [appIsReady, setAppIsReady] = useState(false);
   const splashHidden = useRef(false);
 
+  // Load custom fonts (when added)
+  const [fontsLoaded, fontError] = useCustomFonts();
+
   useEffect(() => {
     async function prepare() {
       try {
+        // Wait for fonts to load (if custom fonts are added)
+        // If no custom fonts, fontsLoaded will be true immediately
+        if (fontError) {
+          console.warn('Font loading error:', fontError);
+        }
+
         // Minimal delay for smooth startup
         // App will show auth screens quickly
         await new Promise(resolve => setTimeout(resolve, 300));
@@ -27,8 +38,12 @@ function AppContent() {
       }
     }
 
-    prepare();
-  }, []);
+    // Wait for fonts to load (if custom fonts are configured)
+    // If no custom fonts, fontsLoaded will be true immediately
+    if (fontsLoaded) {
+      prepare();
+    }
+  }, [fontsLoaded, fontError]);
 
   useEffect(() => {
     // Hide splash screen when app is ready
@@ -62,12 +77,14 @@ function AppContent() {
   }
 
   return (
-    <GestureHandlerRootView className="flex-1 bg-white">
-      <StatusBar style="auto" />
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView className="flex-1 bg-white">
+        <StatusBar style="auto" />
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

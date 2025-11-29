@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
@@ -18,10 +19,12 @@ const RootNavigator = () => {
     // This prevents blocking if auth check takes time
     if (loading) {
         return (
-            <View className="flex-1 bg-white justify-center items-center">
-                <ActivityIndicator size="large" color="#3B82F6" />
-                <Text className="mt-4 text-gray-600">Loading...</Text>
-            </View>
+            <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+                <View className="flex-1 justify-center items-center">
+                    <ActivityIndicator size="large" color="#3B82F6" />
+                    <Text className="mt-4 text-gray-600">Loading...</Text>
+                </View>
+            </SafeAreaView>
         );
     }
 

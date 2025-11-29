@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
@@ -27,8 +28,9 @@ const LoginScreen = ({ navigation }) => {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white">
-            <View className="flex-1 justify-center px-6 py-12">
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+                <View className="flex-1 justify-center px-6 py-12">
                 <View className="mb-8">
                     <Text className="text-4xl font-bold text-gray-900 mb-2">
                         Welcome Back
@@ -127,8 +129,9 @@ const LoginScreen = ({ navigation }) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
