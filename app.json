@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "query-app",
-    "slug": "query-app",
+    "name": "Query Builder App",
+    "slug": "App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,6 +24,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "51a04a43-f17d-4fcf-b3df-600423a5f47e"
+      },
+      "apiBaseUrl": "http://localhost:3000",
+      "apiBaseUrlProd": "https://your-production-api.com",
+      "nodeEnv": "development"
+    },
+    "owner": "imtiyazdev789"
   }
 }
