@@ -117,7 +117,6 @@ const SignupScreen = ({ navigation }) => {
                                 : 'bg-white border-gray-300'
                                 }`}
                             onPress={() => setRole('professional')}
-                            disabled={true}
                         >
                             <Text
                                 className={`text-center font-medium ${role === 'professional' ? 'text-white' : 'text-gray-700'
@@ -127,9 +126,6 @@ const SignupScreen = ({ navigation }) => {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-xs text-gray-500 mt-2">
-                        Professional registration requires additional details
-                    </Text>
                 </View>
 
                 <View className="mb-4">

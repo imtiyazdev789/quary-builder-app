@@ -8,16 +8,6 @@ const Dashboard = () => {
 
     const getDashboardContent = () => {
         switch (role) {
-            case 'admin':
-                return {
-                    title: 'Admin Dashboard',
-                    stats: [
-                        { label: 'Total Users', value: '150', color: 'text-blue-600' },
-                        { label: 'Active Projects', value: '45', color: 'text-green-600' },
-                        { label: 'Revenue', value: '$12.5K', color: 'text-purple-600' },
-                        { label: 'Campaigns', value: '28', color: 'text-orange-600' },
-                    ],
-                };
             case 'provider':
                 return {
                     title: 'Provider Dashboard',

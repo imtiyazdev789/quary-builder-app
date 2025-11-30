@@ -7,8 +7,11 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import OTPVerificationScreen from '../screens/auth/OTPVerificationScreen';
 import ClientDrawer from './ClientDrawer';
-import AdminDrawer from './AdminDrawer';
 import ProviderDrawer from './ProviderDrawer';
+
+// Demo mode imports - for previewing without auth
+import ClientDashboard from '../screens/client/ClientDashboard';
+import ProviderDashboard from '../screens/provider/ProviderDashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,8 +45,6 @@ const RootNavigator = () => {
         switch (userRole) {
             case 'user':
                 return <Stack.Screen name="ClientDrawer" component={ClientDrawer} />;
-            case 'admin':
-                return <Stack.Screen name="AdminDrawer" component={AdminDrawer} />;
             case 'professional':
                 return <Stack.Screen name="ProviderDrawer" component={ProviderDrawer} />;
             // Fallback for old role names
@@ -81,6 +82,39 @@ const RootNavigator = () => {
                             headerShown: true,
                             title: 'Verify Email',
                             headerBackTitleVisible: false,
+                        }}
+                    />
+                    {/* Demo Screens - for previewing without auth */}
+                    <Stack.Screen
+                        name="DemoClientDashboard"
+                        component={ClientDashboard}
+                        options={{
+                            headerShown: true,
+                            title: 'Client Dashboard (Demo)',
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="DemoProviderDashboard"
+                        component={ProviderDashboard}
+                        options={{
+                            headerShown: true,
+                            title: 'Provider Dashboard (Demo)',
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="DemoClientDrawer"
+                        component={ClientDrawer}
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="DemoProviderDrawer"
+                        component={ProviderDrawer}
+                        options={{
+                            headerShown: false,
                         }}
                     />
                 </>
