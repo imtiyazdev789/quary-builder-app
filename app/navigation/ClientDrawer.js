@@ -15,7 +15,7 @@ const ClientDrawer = () => {
         return (
             <View className="flex-1 bg-white pt-12">
                 <View className="px-4 mb-6">
-                    <Text className="text-2xl font-bold text-gray-900 mb-2">
+                    <Text className="text-2xl font-bold text-secondary-900 mb-2">
                         Client Menu
                     </Text>
                 </View>
@@ -29,9 +29,9 @@ const ClientDrawer = () => {
                             <TouchableOpacity
                                 key={route.key}
                                 onPress={() => props.navigation.navigate(route.name)}
-                                className={`px-4 py-3 ${isFocused ? 'bg-blue-50' : ''}`}
+                                className={`px-4 py-3 ${isFocused ? 'bg-primary-50' : ''}`}
                             >
-                                <Text className={`text-base ${isFocused ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>
+                                <Text className={`text-base ${isFocused ? 'text-primary-600 font-semibold' : 'text-secondary-700'}`}>
                                     {label}
                                 </Text>
                             </TouchableOpacity>
@@ -40,9 +40,9 @@ const ClientDrawer = () => {
                 </View>
                 <TouchableOpacity
                     onPress={logout}
-                    className="px-4 py-3 border-t border-gray-200"
+                    className="px-4 py-3 border-t border-secondary-200"
                 >
-                    <Text className="text-base text-red-600 font-medium">
+                    <Text className="text-base text-error-600 font-medium">
                         Logout
                     </Text>
                 </TouchableOpacity>
@@ -57,7 +57,7 @@ const ClientDrawer = () => {
                 drawerPosition: 'right',
                 headerShown: true,
                 headerStyle: {
-                    backgroundColor: '#3B82F6',
+                    backgroundColor: '#0d9488', // Brand teal
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {

@@ -15,7 +15,8 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [initialLoading, setInitialLoading] = useState(true); // Only for app startup
+    const [loading, setLoading] = useState(false); // For operations (login, signup, etc.)
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
@@ -59,31 +60,60 @@ export const AuthProvider = ({ children }) => {
             // Silently handle timeout/errors - just show auth screen
             console.log('Auth check completed (showing auth screens)');
         } finally {
-            // Always set loading to false quickly
-            setLoading(false);
+            // Always set initialLoading to false quickly
+            setInitialLoading(false);
         }
     };
 
     // Login function matching backend API
-    const login = async (email, password, role) => {
+    const login = async (identifier, password, role) => {
         try {
             setLoading(true);
 
-            const response = await api.post(Router.AUTH.USER_LOGIN, {
-                email,
+            const selectedRole = role || 'user';
+            let endpoint = Router.AUTH.USER_LOGIN;
+            let payload = {
+                email: identifier,
                 password,
-                role: role || 'user', // Default to 'user' if not provided
-            });
+                role: selectedRole,
+            };
+
+            if (selectedRole === 'admin') {
+                endpoint = Router.ADMIN.LOGIN;
+                payload = {
+                    username: identifier,
+                    password,
+                };
+            }
+
+            const response = await api.post(endpoint, payload);
 
             if (response.data.success && response.data.data) {
-                const { token, id, role: userRole, email: userEmail, name } = response.data.data;
+                const loginData = response.data.data;
+                const token = loginData.token;
 
-                const userData = {
-                    id,
-                    email: userEmail,
-                    name,
-                    role: userRole,
-                };
+                if (!token) {
+                    throw new Error('Authentication token missing in response');
+                }
+                let userData;
+
+                if (selectedRole === 'admin') {
+                    userData = {
+                        id: loginData.id || null,
+                        email: loginData.email || null,
+                        name: loginData.username || 'Admin',
+                        username: loginData.username,
+                        role: 'admin',
+                    };
+                } else {
+                    const { id, role: userRole, email: userEmail, name } = loginData;
+                    userData = {
+                        id,
+                        email: userEmail,
+                        name,
+                        role: userRole,
+                    };
+                }
 
                 await AsyncStorage.setItem('authToken', token);
                 await AsyncStorage.setItem('userData', JSON.stringify(userData));
@@ -257,6 +287,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         user,
         loading,
+        initialLoading,
         isAuthenticated,
         login,
         signup,

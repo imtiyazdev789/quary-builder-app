@@ -8,6 +8,7 @@ import SignupScreen from '../screens/auth/SignupScreen';
 import OTPVerificationScreen from '../screens/auth/OTPVerificationScreen';
 import ClientDrawer from './ClientDrawer';
 import ProviderDrawer from './ProviderDrawer';
+import AdminDrawer from './AdminDrawer';
 
 // Demo mode imports - for previewing without auth
 import ClientDashboard from '../screens/client/ClientDashboard';
@@ -16,16 +17,16 @@ import ProviderDashboard from '../screens/provider/ProviderDashboard';
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-    const { isAuthenticated, user, loading } = useAuth();
+    const { isAuthenticated, user, initialLoading } = useAuth();
 
-    // Show loading only briefly - auth screens will show quickly
-    // This prevents blocking if auth check takes time
-    if (loading) {
+    // Only show loading screen for INITIAL auth check (app startup)
+    // Don't show for login/signup operations - that would unmount the navigator
+    if (initialLoading) {
         return (
             <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
                 <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size="large" color="#3B82F6" />
-                    <Text className="mt-4 text-gray-600">Loading...</Text>
+                    <ActivityIndicator size="large" color="#0d9488" />
+                    <Text className="mt-4 text-secondary-500">Loading...</Text>
                 </View>
             </SafeAreaView>
         );
@@ -47,6 +48,8 @@ const RootNavigator = () => {
                 return <Stack.Screen name="ClientDrawer" component={ClientDrawer} />;
             case 'professional':
                 return <Stack.Screen name="ProviderDrawer" component={ProviderDrawer} />;
+            case 'admin':
+                return <Stack.Screen name="AdminDrawer" component={AdminDrawer} />;
             // Fallback for old role names
             case 'client':
                 return <Stack.Screen name="ClientDrawer" component={ClientDrawer} />;

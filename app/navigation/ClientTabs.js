@@ -50,14 +50,14 @@ const ClientTabs = () => {
             screenOptions={{
                 headerShown: true,
                 headerStyle: {
-                    backgroundColor: '#3B82F6',
+                    backgroundColor: '#0d9488', // Brand teal
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {
                     fontWeight: 'bold',
                 },
-                tabBarActiveTintColor: '#3B82F6',
-                tabBarInactiveTintColor: '#6B7280',
+                tabBarActiveTintColor: '#0d9488', // Brand teal
+                tabBarInactiveTintColor: '#64748b',
                 tabBarStyle: {
                     paddingBottom: 5,
                     paddingTop: 5,
