@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import OTPVerificationScreen from '../screens/auth/OTPVerificationScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import ResetPasswordOTPScreen from '../screens/auth/ResetPasswordOTPScreen';
 import ClientDrawer from './ClientDrawer';
 import ProviderDrawer from './ProviderDrawer';
 import AdminDrawer from './AdminDrawer';
@@ -84,6 +86,24 @@ const RootNavigator = () => {
                         options={{
                             headerShown: true,
                             title: 'Verify Email',
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="ForgotPassword"
+                        component={ForgotPasswordScreen}
+                        options={{
+                            headerShown: true,
+                            title: 'Forgot Password',
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="ResetPasswordOTP"
+                        component={ResetPasswordOTPScreen}
+                        options={{
+                            headerShown: true,
+                            title: 'Verify Code',
                             headerBackTitleVisible: false,
                         }}
                     />

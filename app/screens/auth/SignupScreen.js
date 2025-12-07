@@ -94,6 +94,17 @@ const SignupScreen = ({ navigation }) => {
     };
 
     const handleSignup = async () => {
+        // Professional registration requires document uploads - not available on mobile
+        if (role === 'professional') {
+            showCustomAlert({
+                title: 'Professional Registration',
+                message: 'Professional registration requires document uploads (Company Registration, COA, GST, etc.) which is only available on our website.\n\nPlease visit our website to complete your professional registration.',
+                icon: '🏢',
+                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
+            });
+            return;
+        }
+
         if (!validateForm()) {
             return;
         }

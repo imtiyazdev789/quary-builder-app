@@ -126,7 +126,7 @@ const LoginScreen = ({ navigation }) => {
                                 return (
                                     <TouchableOpacity
                                         key={option.key}
-                                        className={`flex-1 py-3 px-4 rounded-xl border-2 ${isActive
+                                        className={`flex-1 py-3 px-2 rounded-xl border-2 ${isActive
                                             ? 'bg-primary-600 border-primary-600'
                                             : 'bg-white border-secondary-200'
                                             }`}
@@ -197,6 +197,15 @@ const LoginScreen = ({ navigation }) => {
                         </View>
                         <ErrorText error={errors.password} />
                     </View>
+
+                    <TouchableOpacity
+                        className="mb-4 self-end"
+                        onPress={() => navigation?.navigate('ForgotPassword')}
+                    >
+                        <Text className="text-primary-600 font-medium text-sm">
+                            Forgot Password?
+                        </Text>
+                    </TouchableOpacity>
 
                     <CustomButton
                         title="Sign In"

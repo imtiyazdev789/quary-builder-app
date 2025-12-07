@@ -195,11 +195,15 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
 
+            console.log('Verifying OTP with:', { emailVerificationId, otp, role });
+
             const response = await api.post(Router.AUTH.VERIFY_OTP, {
                 emailVerificationId,
                 otp,
                 role,
             });
+
+            console.log('OTP verification response:', response.data);
 
             if (response.data.success) {
                 return {
@@ -264,6 +268,130 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Request password reset - send OTP to email
+    const requestPasswordReset = async (email, role = 'user') => {
+        try {
+            setLoading(true);
+
+            // Trim email and ensure lowercase for consistency
+            const cleanEmail = email.trim().toLowerCase();
+
+            console.log('Requesting password reset for:', { email: cleanEmail, role });
+
+            const response = await api.post(Router.AUTH.FORGET_PASSWORD_OTP, {
+                email: cleanEmail,
+                role,
+            });
+
+            console.log('Password reset response:', response.data);
+
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message,
+                    data: response.data.data, // This is emailVerificationId
+                };
+            } else {
+                return {
+                    success: false,
+                    error: response.data.message || 'Failed to send reset code',
+                };
+            }
+        } catch (error) {
+            console.error('Request password reset error:', error);
+            console.error('Error response:', error.response?.data);
+            const errorMessage =
+                error.response?.data?.message ||
+                error.message ||
+                'Failed to send reset code. Please try again.';
+            return {
+                success: false,
+                error: errorMessage,
+            };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Verify password reset OTP
+    const verifyPasswordResetOTP = async (email, otp, emailVerificationId, role = 'user') => {
+        try {
+            setLoading(true);
+
+            console.log('Verifying OTP:', { email, otp, emailVerificationId, role });
+
+            const response = await api.post(Router.AUTH.FORGET_PASSWORD_VERIFY_OTP, {
+                emailVerificationId,
+                otp,
+                role,
+            });
+
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message,
+                    data: response.data.data,
+                };
+            } else {
+                return {
+                    success: false,
+                    error: response.data.message || 'Invalid verification code',
+                };
+            }
+        } catch (error) {
+            console.error('Verify password reset OTP error:', error);
+            const errorMessage =
+                error.response?.data?.message ||
+                error.message ||
+                'Verification failed. Please try again.';
+            return {
+                success: false,
+                error: errorMessage,
+            };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Resend password reset OTP
+    const resendPasswordResetOTP = async (email, emailVerificationId, role = 'user') => {
+        try {
+            setLoading(true);
+
+            console.log('Resending OTP:', { email, emailVerificationId, role });
+
+            const response = await api.post(Router.AUTH.FORGET_PASSWORD_RESEND_OTP, {
+                emailVerificationId,
+                role,
+            });
+
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message,
+                    data: response.data.data,
+                };
+            } else {
+                return {
+                    success: false,
+                    error: response.data.message || 'Failed to resend code',
+                };
+            }
+        } catch (error) {
+            console.error('Resend password reset OTP error:', error);
+            const errorMessage =
+                error.response?.data?.message ||
+                error.message ||
+                'Failed to resend code. Please try again.';
+            return {
+                success: false,
+                error: errorMessage,
+            };
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const logout = async () => {
         try {
             await AsyncStorage.removeItem('authToken');
@@ -293,6 +421,9 @@ export const AuthProvider = ({ children }) => {
         signup,
         verifyOtp,
         resendOtp,
+        requestPasswordReset,
+        verifyPasswordResetOTP,
+        resendPasswordResetOTP,
         logout,
         updateUser,
         checkAuthStatus,
