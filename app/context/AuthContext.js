@@ -153,14 +153,28 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
 
-            const response = await api.post(Router.AUTH.USER_REGISTER, {
+            const payload = {
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 email: userData.email,
                 password: userData.password,
                 mobileNumber: userData.mobileNumber,
                 role: userData.role || 'user',
-            });
+            };
+
+            // Add location data if provided
+            if (userData.coordinates) {
+                payload.coordinates = userData.coordinates;
+            }
+            if (userData.address) {
+                payload.address = userData.address;
+            }
+            if (userData.city) payload.city = userData.city;
+            if (userData.state) payload.state = userData.state;
+            if (userData.pincode) payload.pincode = userData.pincode;
+            if (userData.formattedAddress) payload.formattedAddress = userData.formattedAddress;
+
+            const response = await api.post(Router.AUTH.USER_REGISTER, payload);
 
             if (response.data.success && response.data.data) {
                 return {

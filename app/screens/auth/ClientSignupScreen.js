@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
+import { LocationPickerField, InputField } from '../../components';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
 
@@ -14,6 +15,15 @@ const ClientSignupScreen = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    // Location fields
+    const [coordinates, setCoordinates] = useState(null);
+    const [addressLine1, setAddressLine1] = useState('');
+    const [addressLine2, setAddressLine2] = useState('');
+    const [city, setCity] = useState('');
+    const [state, setState] = useState('');
+    const [pincode, setPincode] = useState('');
+
     const { signup, loading } = useAuth();
 
     // Field errors state
@@ -104,6 +114,16 @@ const ClientSignupScreen = ({ navigation }) => {
             mobileNumber,
             password,
             role: 'user', // Always 'user' for client signup
+            // Location data
+            coordinates,
+            address: {
+                line1: addressLine1,
+                line2: addressLine2,
+            },
+            city,
+            state,
+            pincode,
+            formattedAddress: `${addressLine1}, ${addressLine2}, ${city}, ${state} - ${pincode}`.replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, ''),
         });
 
         if (result.success && result.data) {
@@ -234,6 +254,74 @@ const ClientSignupScreen = ({ navigation }) => {
                             maxLength={10}
                         />
                         <ErrorText error={errors.mobileNumber} />
+                    </View>
+
+                    {/* Location Section */}
+                    <View className="mb-4">
+                        <Text className="text-lg font-bold text-secondary-900 mb-3">
+                            Location Details
+                        </Text>
+
+                        <LocationPickerField
+                            onLocationSelect={(locationData) => {
+                                setCoordinates(locationData.coordinates);
+                                if (locationData.addressLine1) setAddressLine1(locationData.addressLine1);
+                                if (locationData.addressLine2) setAddressLine2(locationData.addressLine2);
+                                if (locationData.city) setCity(locationData.city);
+                                if (locationData.state) setState(locationData.state);
+                                if (locationData.pincode) setPincode(locationData.pincode);
+                            }}
+                        />
+
+                        <InputField
+                            label="Address Line 1"
+                            value={addressLine1}
+                            onChangeText={setAddressLine1}
+                            placeholder="Building, Street"
+                        />
+
+                        <InputField
+                            label="Address Line 2"
+                            value={addressLine2}
+                            onChangeText={setAddressLine2}
+                            placeholder="Area, Landmark"
+                        />
+
+                        <View className="flex-row gap-3 mb-4">
+                            <View className="flex-1">
+                                <InputField
+                                    label="City"
+                                    value={city}
+                                    onChangeText={setCity}
+                                    placeholder="Enter city"
+                                />
+                            </View>
+                            <View className="flex-1">
+                                <InputField
+                                    label="State"
+                                    value={state}
+                                    onChangeText={setState}
+                                    placeholder="Enter state"
+                                />
+                            </View>
+                        </View>
+
+                        <InputField
+                            label="Pincode"
+                            value={pincode}
+                            onChangeText={(text) => setPincode(text.replace(/[^0-9]/g, '').slice(0, 6))}
+                            placeholder="Enter 6-digit pincode"
+                            keyboardType="number-pad"
+                            maxLength={6}
+                        />
+
+                        {coordinates && (
+                            <View className="bg-success-50 rounded-xl p-3 mt-2">
+                                <Text className="text-success-700 text-xs">
+                                    📍 Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
+                                </Text>
+                            </View>
+                        )}
                     </View>
 
                     <View className="mb-4">

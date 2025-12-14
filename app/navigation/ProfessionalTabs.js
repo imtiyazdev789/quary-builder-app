@@ -3,7 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import Dashboard from '../screens/common/Dashboard';
-import ProfessionalSetting from '../screens/professional/ProfessionalSetting';
+import LeadsScreen from '../screens/professional/LeadsScreen';
+import ProjectsScreen from '../screens/professional/ProjectsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,14 +53,7 @@ const ProfessionalTabs = () => {
     return (
         <Tab.Navigator
             screenOptions={{
-                headerShown: true,
-                headerStyle: {
-                    backgroundColor: '#0d9488', // Brand teal
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
+                headerShown: false, // hide by default; enable only on Dashboard
                 tabBarActiveTintColor: '#0d9488', // Brand teal
                 tabBarInactiveTintColor: '#64748b',
                 tabBarStyle: {
@@ -67,25 +61,32 @@ const ProfessionalTabs = () => {
                     paddingTop: 5,
                     height: 60,
                 },
-                // Menu button on the right to open drawer
-                headerRight: () => (
-                    <TouchableOpacity
-                        onPress={openDrawer}
-                        style={{ marginRight: 16, padding: 4 }}
-                    >
-                        <View style={{ gap: 4 }}>
-                            <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
-                            <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
-                            <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
-                        </View>
-                    </TouchableOpacity>
-                ),
             }}
         >
             <Tab.Screen
                 name="Dashboard"
                 component={Dashboard}
                 options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0d9488',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={openDrawer}
+                            style={{ marginRight: 16, padding: 4 }}
+                        >
+                            <View style={{ gap: 4 }}>
+                                <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
+                                <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
+                                <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
+                            </View>
+                        </TouchableOpacity>
+                    ),
                     title: 'Dashboard',
                     tabBarLabel: 'Dashboard',
                     tabBarIcon: ({ color, size }) => (
@@ -94,13 +95,24 @@ const ProfessionalTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
-                component={ProfessionalSetting}
+                name="Leads"
+                component={LeadsScreen}
                 options={{
-                    title: 'Profile',
-                    tabBarLabel: 'Profile',
+                    title: 'Leads',
+                    tabBarLabel: 'Leads',
                     tabBarIcon: ({ color, size }) => (
-                        <Text style={{ color, fontSize: size }}>👤</Text>
+                        <Text style={{ color, fontSize: size }}>📥</Text>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Projects"
+                component={ProjectsScreen}
+                options={{
+                    title: 'Projects',
+                    tabBarLabel: 'Projects',
+                    tabBarIcon: ({ color, size }) => (
+                        <Text style={{ color, fontSize: size }}>📂</Text>
                     ),
                 }}
             />

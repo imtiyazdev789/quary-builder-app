@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import Dashboard from '../screens/common/Dashboard';
-import ClientProfile from '../screens/client/ClientProfile';
+import MyRequestScreen from '../screens/client/MyRequestScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -95,13 +95,13 @@ const ClientTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
-                component={ClientProfile}
+                name="MyRequest"
+                component={MyRequestScreen}
                 options={{
-                    title: 'Profile',
-                    tabBarLabel: 'Profile',
+                    title: 'My Requests',
+                    tabBarLabel: 'Requests',
                     tabBarIcon: ({ color, size }) => (
-                        <Text style={{ color, fontSize: size }}>👤</Text>
+                        <Text style={{ color, fontSize: size }}>📄</Text>
                     ),
                 }}
             />

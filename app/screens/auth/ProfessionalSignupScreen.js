@@ -1,62 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-    CustomAlert,
-    CustomButton,
-    InputField,
-    DropdownSelector,
-    DocumentPickerField,
-    DatePickerField,
-    LocationPickerField,
-    ErrorText,
-} from '../../components';
+import { CustomAlert, CustomButton } from '../../components';
 import api from '../../config/axios';
 import useProfessionalSignupStore from '../../store/useProfessionalSignupStore';
-
-const TOTAL_STEPS = 7;
-
-// Dropdown options
-const BUSINESS_TYPES = [
-    { key: 'Individual', label: 'Individual' },
-    { key: 'Partnership/LLP', label: 'Partnership / LLP' },
-    { key: 'PrivateLimited/Company', label: 'Private Limited / Company' },
-];
-
-const CATEGORIES = [
-    { key: 'ArchitectureConsultant', label: 'Architecture Consultant' },
-    { key: 'InteriorDesigner', label: 'Interior Designer' },
-    { key: 'StructuralConsultant', label: 'Structural Consultant' },
-    { key: 'MEPConsultant', label: 'MEP Consultant' },
-    { key: 'Contractor', label: 'Contractor' },
-];
-
-const DESIGNATIONS = [
-    { key: 'Founder', label: 'Founder' },
-    { key: 'Partner', label: 'Partner' },
-    { key: 'Director', label: 'Director' },
-    { key: 'Manager', label: 'Manager' },
-];
-
-const KYC_TYPES = [
-    { key: 'Aadhaar', label: 'Aadhaar Card' },
-    { key: 'PAN', label: 'PAN Card' },
-    { key: 'VoterID', label: 'Voter ID' },
-    { key: 'Passport', label: 'Passport' },
-];
-
-const SERVICES_LIST = [
-    'Architectural Design',
-    'Interior Design',
-    'Structural Design',
-    'MEP Design',
-    'Project Management',
-    'Construction',
-    'Renovation',
-    '3D Visualization',
-    'Vastu Consultation',
-    'Landscape Design',
-];
+import Step1BusinessInfo from './professional-signup/Step1BusinessInfo';
+import Step2Location from './professional-signup/Step2Location';
+import Step3Contact from './professional-signup/Step3Contact';
+import Step4Representative from './professional-signup/Step4Representative';
+import Step5KycDocuments from './professional-signup/Step5KycDocuments';
+import Step6AboutBusiness from './professional-signup/Step6AboutBusiness';
+import Step7PasswordDeclaration from './professional-signup/Step7PasswordDeclaration';
+import { TOTAL_STEPS } from './professional-signup/constants';
 
 const ProfessionalSignupScreen = ({ navigation }) => {
     // Zustand store for persisting form data
@@ -587,472 +542,134 @@ const ProfessionalSignupScreen = ({ navigation }) => {
         switch (currentStep) {
             case 1:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">Business Information</Text>
-
-                        <InputField
-                            label="Business Name *"
-                            value={businessName}
-                            onChangeText={(text) => { setBusinessName(text); clearError('businessName'); }}
-                            error={errors.businessName}
-                            placeholder="Enter business name"
-                            maxLength={140}
-                        />
-
-                        <DropdownSelector
-                            label="Business Type *"
-                            options={BUSINESS_TYPES}
-                            selected={businessType}
-                            onSelect={(val) => { setBusinessType(val); clearError('businessType'); }}
-                            error={errors.businessType}
-                        />
-
-                        <DropdownSelector
-                            label="Category *"
-                            options={CATEGORIES}
-                            selected={category}
-                            onSelect={(val) => { setCategory(val); clearError('category'); }}
-                            error={errors.category}
-                        />
-
-                        <DatePickerField
-                            label="Date of Establishment *"
-                            value={dateOfEstablishment}
-                            onChange={(date) => { setDateOfEstablishment(date); clearError('dateOfEstablishment'); }}
-                            error={errors.dateOfEstablishment}
-                            placeholder="Select establishment date"
-                            maximumDate={new Date()}
-                            required
-                        />
-                    </View>
+                    <Step1BusinessInfo
+                        businessName={businessName}
+                        setBusinessName={setBusinessName}
+                        businessType={businessType}
+                        setBusinessType={setBusinessType}
+                        category={category}
+                        setCategory={setCategory}
+                        dateOfEstablishment={dateOfEstablishment}
+                        setDateOfEstablishment={setDateOfEstablishment}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             case 2:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">Location Details</Text>
-
-                        {/* Location Picker */}
-                        <LocationPickerField
-                            onLocationSelect={(locationData) => {
-                                setCoordinates(locationData.coordinates);
-                                if (locationData.addressLine1) setAddressLine1(locationData.addressLine1);
-                                if (locationData.addressLine2) setAddressLine2(locationData.addressLine2);
-                                if (locationData.city) setCity(locationData.city);
-                                if (locationData.district) setDistrict(locationData.district);
-                                if (locationData.state) setState(locationData.state);
-                                if (locationData.pincode) setPincode(locationData.pincode);
-                            }}
-                        />
-
-                        <InputField
-                            label="Address Line 1"
-                            value={addressLine1}
-                            onChangeText={setAddressLine1}
-                            placeholder="Building, Street"
-                        />
-
-                        <InputField
-                            label="Address Line 2"
-                            value={addressLine2}
-                            onChangeText={setAddressLine2}
-                            placeholder="Area, Landmark"
-                        />
-
-                        <InputField
-                            label="City *"
-                            value={city}
-                            onChangeText={(text) => { setCity(text); clearError('city'); }}
-                            error={errors.city}
-                            placeholder="Enter city"
-                        />
-
-                        <InputField
-                            label="District *"
-                            value={district}
-                            onChangeText={(text) => { setDistrict(text); clearError('district'); }}
-                            error={errors.district}
-                            placeholder="Enter district"
-                        />
-
-                        <InputField
-                            label="State *"
-                            value={state}
-                            onChangeText={(text) => { setState(text); clearError('state'); }}
-                            error={errors.state}
-                            placeholder="Enter state"
-                        />
-
-                        <InputField
-                            label="Pincode *"
-                            value={pincode}
-                            onChangeText={(text) => { setPincode(text.replace(/[^0-9]/g, '').slice(0, 6)); clearError('pincode'); }}
-                            error={errors.pincode}
-                            placeholder="Enter 6-digit pincode"
-                            keyboardType="number-pad"
-                            maxLength={6}
-                        />
-
-                        {coordinates && (
-                            <View className="bg-success-50 rounded-xl p-3 mt-2">
-                                <Text className="text-success-700 text-xs">
-                                    📍 Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
-                                </Text>
-                            </View>
-                        )}
-                    </View>
+                    <Step2Location
+                        coordinates={coordinates}
+                        setCoordinates={setCoordinates}
+                        addressLine1={addressLine1}
+                        setAddressLine1={setAddressLine1}
+                        addressLine2={addressLine2}
+                        setAddressLine2={setAddressLine2}
+                        city={city}
+                        setCity={setCity}
+                        district={district}
+                        setDistrict={setDistrict}
+                        state={state}
+                        setState={setState}
+                        pincode={pincode}
+                        setPincode={setPincode}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             case 3:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">Company Contact</Text>
-
-                        <InputField
-                            label="Company Email *"
-                            value={companyEmail}
-                            onChangeText={(text) => { setCompanyEmail(text); clearError('companyEmail'); }}
-                            error={errors.companyEmail}
-                            placeholder="company@example.com"
-                            keyboardType="email-address"
-                        />
-
-                        <InputField
-                            label="Company Phone *"
-                            value={companyPhone}
-                            onChangeText={(text) => { setCompanyPhone(text.replace(/[^0-9]/g, '').slice(0, 10)); clearError('companyPhone'); }}
-                            error={errors.companyPhone}
-                            placeholder="10-digit phone number"
-                            keyboardType="phone-pad"
-                            maxLength={10}
-                        />
-
-                        <InputField
-                            label="WhatsApp Number"
-                            value={whatsappNumber}
-                            onChangeText={(text) => setWhatsappNumber(text.replace(/[^0-9]/g, '').slice(0, 10))}
-                            placeholder="10-digit WhatsApp number"
-                            keyboardType="phone-pad"
-                            maxLength={10}
-                        />
-
-                        <InputField
-                            label="Website URL"
-                            value={websiteUrl}
-                            onChangeText={setWebsiteUrl}
-                            placeholder="https://www.example.com"
-                            keyboardType="url"
-                        />
-                    </View>
+                    <Step3Contact
+                        companyEmail={companyEmail}
+                        setCompanyEmail={setCompanyEmail}
+                        companyPhone={companyPhone}
+                        setCompanyPhone={setCompanyPhone}
+                        whatsappNumber={whatsappNumber}
+                        setWhatsappNumber={setWhatsappNumber}
+                        websiteUrl={websiteUrl}
+                        setWebsiteUrl={setWebsiteUrl}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             case 4:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">Representative Details</Text>
-
-                        <InputField
-                            label="Representative Name *"
-                            value={representativeName}
-                            onChangeText={(text) => { setRepresentativeName(text); clearError('representativeName'); }}
-                            error={errors.representativeName}
-                            placeholder="Full name"
-                            maxLength={120}
-                        />
-
-                        <DropdownSelector
-                            label="Designation *"
-                            options={DESIGNATIONS}
-                            selected={designation}
-                            onSelect={(val) => { setDesignation(val); clearError('designation'); }}
-                            error={errors.designation}
-                        />
-
-                        <InputField
-                            label="Representative Mobile *"
-                            value={representativeMobile}
-                            onChangeText={(text) => { setRepresentativeMobile(text.replace(/[^0-9]/g, '').slice(0, 10)); clearError('representativeMobile'); }}
-                            error={errors.representativeMobile}
-                            placeholder="10-digit mobile number"
-                            keyboardType="phone-pad"
-                            maxLength={10}
-                        />
-
-                        <InputField
-                            label="Representative Email *"
-                            value={representativeEmail}
-                            onChangeText={(text) => { setRepresentativeEmail(text); clearError('representativeEmail'); }}
-                            error={errors.representativeEmail}
-                            placeholder="email@example.com"
-                            keyboardType="email-address"
-                        />
-                    </View>
+                    <Step4Representative
+                        representativeName={representativeName}
+                        setRepresentativeName={setRepresentativeName}
+                        designation={designation}
+                        setDesignation={setDesignation}
+                        representativeMobile={representativeMobile}
+                        setRepresentativeMobile={setRepresentativeMobile}
+                        representativeEmail={representativeEmail}
+                        setRepresentativeEmail={setRepresentativeEmail}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             case 5:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">KYC & Documents</Text>
-
-                        <DropdownSelector
-                            label="KYC Document Type *"
-                            options={KYC_TYPES}
-                            selected={kycIdType}
-                            onSelect={(val) => { setKycIdType(val); clearError('kycIdType'); }}
-                            error={errors.kycIdType}
-                        />
-
-                        <DocumentPickerField
-                            label="KYC Document"
-                            document={kycIdDocument}
-                            onSelect={(doc) => { setKycIdDocument(doc); clearError('kycIdDocument'); }}
-                            error={errors.kycIdDocument}
-                            required
-                        />
-
-                        <DocumentPickerField
-                            label="Company Logo"
-                            document={logo}
-                            onSelect={(doc) => { setLogo(doc); clearError('logo'); }}
-                            error={errors.logo}
-                            required
-                            accept="image"
-                            showPreview
-                            placeholder="Tap to upload logo"
-                        />
-
-                        {/* Conditional documents */}
-                        {(businessType === 'Partnership/LLP' || businessType === 'PrivateLimited/Company') && (
-                            <DocumentPickerField
-                                label="Company Registration Document"
-                                document={companyRegistrationDoc}
-                                onSelect={(doc) => { setCompanyRegistrationDoc(doc); clearError('companyRegistrationDoc'); }}
-                                error={errors.companyRegistrationDoc}
-                                required
-                            />
-                        )}
-
-                        {category === 'ArchitectureConsultant' && (
-                            <DocumentPickerField
-                                label="COA Registration Document"
-                                document={coaRegistrationDoc}
-                                onSelect={(doc) => { setCoaRegistrationDoc(doc); clearError('coaRegistrationDoc'); }}
-                                error={errors.coaRegistrationDoc}
-                                required
-                            />
-                        )}
-
-                        {category === 'StructuralConsultant' && (
-                            <DocumentPickerField
-                                label="Structural Registration Document"
-                                document={structuralRegistrationDoc}
-                                onSelect={(doc) => { setStructuralRegistrationDoc(doc); clearError('structuralRegistrationDoc'); }}
-                                error={errors.structuralRegistrationDoc}
-                                required
-                            />
-                        )}
-
-                        {category === 'Contractor' && (
-                            <DocumentPickerField
-                                label="Construction License"
-                                document={constructionLicenseDoc}
-                                onSelect={(doc) => { setConstructionLicenseDoc(doc); clearError('constructionLicenseDoc'); }}
-                                error={errors.constructionLicenseDoc}
-                                required
-                            />
-                        )}
-
-                        <InputField
-                            label="GST Number"
-                            value={gstNumber}
-                            onChangeText={setGstNumber}
-                            placeholder="Enter GST number (optional)"
-                            maxLength={20}
-                        />
-
-                        <DocumentPickerField
-                            label="GST Document"
-                            document={gstDocument}
-                            onSelect={setGstDocument}
-                        />
-                    </View>
+                    <Step5KycDocuments
+                        businessType={businessType}
+                        category={category}
+                        kycIdType={kycIdType}
+                        setKycIdType={setKycIdType}
+                        kycIdDocument={kycIdDocument}
+                        setKycIdDocument={setKycIdDocument}
+                        logo={logo}
+                        setLogo={setLogo}
+                        companyRegistrationDoc={companyRegistrationDoc}
+                        setCompanyRegistrationDoc={setCompanyRegistrationDoc}
+                        coaRegistrationDoc={coaRegistrationDoc}
+                        setCoaRegistrationDoc={setCoaRegistrationDoc}
+                        structuralRegistrationDoc={structuralRegistrationDoc}
+                        setStructuralRegistrationDoc={setStructuralRegistrationDoc}
+                        constructionLicenseDoc={constructionLicenseDoc}
+                        setConstructionLicenseDoc={setConstructionLicenseDoc}
+                        gstDocument={gstDocument}
+                        setGstDocument={setGstDocument}
+                        gstNumber={gstNumber}
+                        setGstNumber={setGstNumber}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             case 6:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">About Your Business</Text>
-
-                        <InputField
-                            label="Tagline"
-                            value={tagline}
-                            onChangeText={setTagline}
-                            placeholder="Your company tagline"
-                            maxLength={160}
-                        />
-
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">
-                                Short Description * <Text className="text-secondary-400 text-xs">(25-150 words)</Text>
-                            </Text>
-                            <TextInput
-                                className={`border rounded-xl px-4 py-3 text-base bg-white h-32 ${errors.shortDescription ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="Brief overview of your business (25-150 words)"
-                                placeholderTextColor="#94a3b8"
-                                value={shortDescription}
-                                onChangeText={(text) => {
-                                    setShortDescription(text);
-                                    clearError('shortDescription');
-                                }}
-                                multiline
-                                numberOfLines={5}
-                                style={{ textAlignVertical: 'top' }}
-                            />
-                            <Text className="text-xs text-secondary-400 mt-1 ml-1">
-                                {shortDescription.trim().split(/\s+/).filter(Boolean).length} words
-                            </Text>
-                            <ErrorText error={errors.shortDescription} />
-                        </View>
-
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">
-                                Detailed Description *
-                            </Text>
-                            <TextInput
-                                className={`border rounded-xl px-4 py-3 text-base bg-white h-40 ${errors.detailedDescription ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="Detailed information about your services, experience, and expertise"
-                                placeholderTextColor="#94a3b8"
-                                value={detailedDescription}
-                                onChangeText={(text) => {
-                                    setDetailedDescription(text);
-                                    clearError('detailedDescription');
-                                }}
-                                multiline
-                                numberOfLines={8}
-                                style={{ textAlignVertical: 'top' }}
-                            />
-                            <ErrorText error={errors.detailedDescription} />
-                        </View>
-
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">
-                                Services Offered * <Text className="text-secondary-400 text-xs">(Select all that apply)</Text>
-                            </Text>
-                            <View className="flex-row flex-wrap gap-2">
-                                {SERVICES_LIST.map((service) => (
-                                    <TouchableOpacity
-                                        key={service}
-                                        className={`py-2 px-3 rounded-lg border ${selectedServices.includes(service)
-                                            ? 'bg-primary-600 border-primary-600'
-                                            : 'bg-white border-secondary-200'
-                                            }`}
-                                        onPress={() => {
-                                            toggleService(service);
-                                            clearError('services');
-                                        }}
-                                    >
-                                        <Text className={`text-xs ${selectedServices.includes(service) ? 'text-white' : 'text-secondary-700'
-                                            }`}>
-                                            {service}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                            <ErrorText error={errors.services} />
-                        </View>
-                    </View>
+                    <Step6AboutBusiness
+                        tagline={tagline}
+                        setTagline={setTagline}
+                        shortDescription={shortDescription}
+                        setShortDescription={setShortDescription}
+                        detailedDescription={detailedDescription}
+                        setDetailedDescription={setDetailedDescription}
+                        selectedServices={selectedServices}
+                        toggleService={toggleService}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             case 7:
                 return (
-                    <View>
-                        <Text className="text-xl font-bold text-secondary-900 mb-4">Create Password</Text>
-
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">Password *</Text>
-                            <View className="relative">
-                                <TextInput
-                                    className={`border rounded-xl px-4 py-3 pr-12 text-base bg-white ${errors.password ? 'border-error-500' : 'border-secondary-200'
-                                        }`}
-                                    placeholder="Enter password (min 6 characters)"
-                                    placeholderTextColor="#94a3b8"
-                                    value={password}
-                                    onChangeText={(text) => {
-                                        setPassword(text);
-                                        clearError('password');
-                                    }}
-                                    secureTextEntry={!showPassword}
-                                    autoCapitalize="none"
-                                />
-                                <TouchableOpacity
-                                    className="absolute right-3 top-3"
-                                    onPress={() => setShowPassword(!showPassword)}
-                                >
-                                    <Text className="text-xl text-secondary-500">
-                                        {showPassword ? '🙈' : '👁️'}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                            <ErrorText error={errors.password} />
-                        </View>
-
-                        <View className="mb-6">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">Confirm Password *</Text>
-                            <View className="relative">
-                                <TextInput
-                                    className={`border rounded-xl px-4 py-3 pr-12 text-base bg-white ${errors.confirmPassword ? 'border-error-500' : 'border-secondary-200'
-                                        }`}
-                                    placeholder="Confirm password"
-                                    placeholderTextColor="#94a3b8"
-                                    value={confirmPassword}
-                                    onChangeText={(text) => {
-                                        setConfirmPassword(text);
-                                        clearError('confirmPassword');
-                                    }}
-                                    secureTextEntry={!showConfirmPassword}
-                                    autoCapitalize="none"
-                                />
-                                <TouchableOpacity
-                                    className="absolute right-3 top-3"
-                                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                                >
-                                    <Text className="text-xl text-secondary-500">
-                                        {showConfirmPassword ? '🙈' : '👁️'}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                            <ErrorText error={errors.confirmPassword} />
-                        </View>
-
-                        <TouchableOpacity
-                            className="flex-row items-start mb-6"
-                            onPress={() => {
-                                setDeclarationAccepted(!declarationAccepted);
-                                clearError('declaration');
-                            }}
-                        >
-                            <View className={`w-6 h-6 rounded border-2 mr-3 items-center justify-center ${declarationAccepted ? 'bg-primary-600 border-primary-600' : 'border-secondary-300'
-                                }`}>
-                                {declarationAccepted && <Text className="text-white text-sm">✓</Text>}
-                            </View>
-                            <Text className="flex-1 text-sm text-secondary-600">
-                                I hereby declare that all information provided is true and accurate to the best of my knowledge.
-                                I agree to the Terms of Service and Privacy Policy.
-                            </Text>
-                        </TouchableOpacity>
-                        <ErrorText error={errors.declaration} />
-
-                        <View className="bg-primary-50 rounded-xl p-4 mb-4">
-                            <Text className="text-sm text-primary-800 font-medium mb-2">📋 What happens next?</Text>
-                            <Text className="text-xs text-primary-700">
-                                • You'll receive an OTP on your email for verification{'\n'}
-                                • Our team will review your documents{'\n'}
-                                • Once approved, you can start receiving project requests
-                            </Text>
-                        </View>
-                    </View>
+                    <Step7PasswordDeclaration
+                        password={password}
+                        setPassword={setPassword}
+                        confirmPassword={confirmPassword}
+                        setConfirmPassword={setConfirmPassword}
+                        showPassword={showPassword}
+                        setShowPassword={setShowPassword}
+                        showConfirmPassword={showConfirmPassword}
+                        setShowConfirmPassword={setShowConfirmPassword}
+                        declarationAccepted={declarationAccepted}
+                        setDeclarationAccepted={setDeclarationAccepted}
+                        errors={errors}
+                        clearError={clearError}
+                    />
                 );
 
             default:

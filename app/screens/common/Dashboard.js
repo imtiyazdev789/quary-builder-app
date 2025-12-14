@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const navigation = useNavigation();
     const role = user?.role?.toLowerCase() || 'user';
 
     const getDashboardContent = () => {
@@ -59,6 +61,25 @@ const Dashboard = () => {
                             </View>
                         ))}
                     </View>
+
+                    {(role === 'client' || role === 'user') && (
+                        <TouchableOpacity
+                            className="bg-primary-600 rounded-lg p-4 mb-4 shadow-sm"
+                            onPress={() => navigation.navigate('NearbyProfessionals')}
+                        >
+                            <View className="flex-row items-center justify-between">
+                                <View className="flex-1">
+                                    <Text className="text-lg font-semibold text-white mb-1">
+                                        Find Nearby Professionals
+                                    </Text>
+                                    <Text className="text-sm text-primary-100">
+                                        Discover architects, designers & contractors near you
+                                    </Text>
+                                </View>
+                                <Text className="text-3xl ml-3">📍</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
 
                     <View className="bg-white rounded-lg p-4 shadow-sm">
                         <Text className="text-lg font-semibold text-gray-900 mb-2">

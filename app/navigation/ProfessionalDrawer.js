@@ -90,22 +90,23 @@ const ProfessionalDrawer = () => {
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={{
                 drawerPosition: 'right',
-                headerShown: true,
-                headerStyle: {
-                    backgroundColor: '#0d9488', // Brand teal
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
+                headerShown: false, // hide drawer headers; tabs handle their own
             }}
         >
-            <Drawer.Screen
+            {/* <Drawer.Screen
                 name="MainTabs"
                 component={ProfessionalTabs}
                 options={{
                     title: 'Home',
                     headerShown: false,
+                }}
+            /> */}
+            <Drawer.Screen
+                name="Profile"
+                component={UpdateProfileScreen}
+                options={{
+                    title: 'Profile',
+                    headerShown: true,
                 }}
             />
             <Drawer.Screen
@@ -128,14 +129,7 @@ const ProfessionalDrawer = () => {
                 component={SubscriptionScreen}
                 options={{ title: 'Subscription' }}
             />
-            <Drawer.Screen
-                name="UpdateProfile"
-                component={UpdateProfileScreen}
-                options={{ 
-                    title: 'Update Profile',
-                    headerShown: true,
-                }}
-            />
+
         </Drawer.Navigator>
     );
 };

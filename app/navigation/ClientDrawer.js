@@ -3,8 +3,9 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ClientTabs from './ClientTabs';
-import MyRequestScreen from '../screens/client/MyRequestScreen';
 import ClientSetting from '../screens/client/ClientSetting';
+import NearbyProfessionalsScreen from '../screens/client/NearbyProfessionalsScreen';
+import ClientProfile from '../screens/client/ClientProfile';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
@@ -85,17 +86,21 @@ const ClientDrawer = () => {
     return (
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
-            screenOptions={{
+            screenOptions={({ navigation }) => ({
                 drawerPosition: 'right',
-                headerShown: true,
-                headerStyle: {
-                    backgroundColor: '#0d9488', // Brand teal
+                drawerType: 'front', // overlay the content instead of pushing it
+                overlayColor: 'rgba(0,0,0,0.2)',
+                drawerStyle: {
+                    width: '78%',
+                    backgroundColor: '#ffffff',
                 },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
+                sceneContainerStyle: {
+                    backgroundColor: '#ffffff',
                 },
-            }}
+                // remove header space entirely
+                headerShown: false,
+                swipeEdgeWidth: 60,
+            })}
         >
             <Drawer.Screen
                 name="MainTabs"
@@ -106,9 +111,14 @@ const ClientDrawer = () => {
                 }}
             />
             <Drawer.Screen
-                name="MyRequest"
-                component={MyRequestScreen}
-                options={{ title: 'My Requests' }}
+                name="NearbyProfessionals"
+                component={NearbyProfessionalsScreen}
+                options={{ title: 'Nearby Professionals' }}
+            />
+            <Drawer.Screen
+                name="Profile"
+                component={ClientProfile}
+                options={{ title: 'Profile' }}
             />
             <Drawer.Screen
                 name="Setting"

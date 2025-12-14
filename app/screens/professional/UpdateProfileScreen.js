@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -42,6 +42,7 @@ const UpdateProfileScreen = ({ navigation }) => {
     const [shortDescription, setShortDescription] = useState('');
     const [representativePhoto, setRepresentativePhoto] = useState(null);
     const [photoUri, setPhotoUri] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         fetchProfile();
@@ -71,10 +72,15 @@ const UpdateProfileScreen = ({ navigation }) => {
 
                 if (profile.representativePhoto) {
                     console.log('Photo URL from fetch:', profile.representativePhoto);
+                    const base = process.env.EXPO_PUBLIC_API_BASE_URL || '';
+                    const normalizedBase =
+                        base.includes('localhost') && Platform.OS === 'android'
+                            ? base.replace('localhost', '10.0.2.2')
+                            : base;
                     // Ensure URL is complete (add base URL if it's a relative path)
                     let photoUrl = profile.representativePhoto.startsWith('http')
                         ? profile.representativePhoto
-                        : `${process.env.EXPO_PUBLIC_API_BASE_URL}${profile.representativePhoto.replace(/^\//, '')}`;
+                        : `${normalizedBase}${profile.representativePhoto.replace(/^\//, '')}`;
                     // Add cache buster to ensure fresh image
                     photoUrl += (photoUrl.includes('?') ? '&' : '?') + `t=${Date.now()}`;
                     console.log('Setting photo URI to:', photoUrl);
@@ -95,6 +101,7 @@ const UpdateProfileScreen = ({ navigation }) => {
     };
 
     const pickImage = async () => {
+        if (!isEditing) return;
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             showAlert({
@@ -183,6 +190,7 @@ const UpdateProfileScreen = ({ navigation }) => {
     };
 
     const handleSubmit = async () => {
+        if (!isEditing) return;
         if (!validateForm()) {
             return;
         }
@@ -197,13 +205,6 @@ const UpdateProfileScreen = ({ navigation }) => {
             formData.append('businessType', businessType);
             formData.append('dateOfEstablishment', dateOfEstablishment);
             formData.append('websiteUrl', websiteUrl);
-            formData.append('city', city);
-            formData.append('state', state);
-            formData.append('pincode', pincode);
-            formData.append('registeredAddress', addressLine1);
-            formData.append('representativeName', representativeName);
-            formData.append('representativeEmail', representativeEmail.toLowerCase());
-            formData.append('representativeMobile', representativeMobile);
             formData.append('shortDescription', shortDescription);
 
             // Add photo if selected
@@ -255,6 +256,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                     }
                 }
 
+                setIsEditing(false);
                 showAlert({
                     title: 'Success',
                     message: 'Profile updated successfully!',
@@ -314,100 +316,109 @@ const UpdateProfileScreen = ({ navigation }) => {
         <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 <View className="px-6 py-6">
-                    {/* <Text className="text-2xl font-bold text-secondary-900 mb-6">
+                    <View className="flex-row justify-end mb-2">
+                        {!isEditing && (
+                            <TouchableOpacity onPress={() => setIsEditing(true)} className="flex-row items-center">
+                                <Text className="text-primary-600 text-lg mr-1">✏️</Text>
+                                <Text className="text-primary-600 font-semibold">Edit</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    <View pointerEvents={isEditing ? 'auto' : 'none'} style={!isEditing ? { opacity: 0.96 } : undefined}>
+                        {/* <Text className="text-2xl font-bold text-secondary-900 mb-6">
                         Update Profile
                     </Text> */}
 
-                    {/* Profile Photo */}
-                    <View className="mb-6 items-center">
-                        <TouchableOpacity onPress={pickImage} activeOpacity={0.7}>
-                            {photoUri ? (
-                                <Image
-                                    key={photoUri}
-                                    source={{ uri: photoUri }}
-                                    style={{
-                                        width: 128,
-                                        height: 128,
-                                        borderRadius: 64,
-                                        backgroundColor: '#f1f5f9',
-                                    }}
-                                    resizeMode="cover"
-                                    onError={(error) => {
-                                        console.error('Image load error:', error);
-                                        console.error('Failed to load image from:', photoUri);
-                                        // Don't clear photoUri, just log the error
-                                    }}
-                                    onLoad={() => {
-                                        console.log('Image loaded successfully from:', photoUri);
-                                    }}
-                                />
-                            ) : (
-                                <View
-                                    style={{
-                                        width: 128,
-                                        height: 128,
-                                        borderRadius: 64,
-                                        backgroundColor: '#e0f2fe',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Text className="text-5xl">👤</Text>
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={pickImage} className="mt-3">
-                            <Text className="text-primary-600 font-medium">
-                                {photoUri ? 'Change Photo' : 'Add Photo'}
+                        {/* Profile Photo */}
+                        <View className="mb-6 items-center">
+                            <TouchableOpacity onPress={pickImage} activeOpacity={0.7}>
+                                {photoUri ? (
+                                    <Image
+                                        key={photoUri}
+                                        source={{ uri: photoUri }}
+                                        style={{
+                                            width: 128,
+                                            height: 128,
+                                            borderRadius: 64,
+                                            backgroundColor: '#f1f5f9',
+                                        }}
+                                        resizeMode="cover"
+                                        onError={(error) => {
+                                            console.error('Image load error:', error);
+                                            console.error('Failed to load image from:', photoUri);
+                                            // Don't clear photoUri, just log the error
+                                        }}
+                                        onLoad={() => {
+                                            console.log('Image loaded successfully from:', photoUri);
+                                        }}
+                                    />
+                                ) : (
+                                    <View
+                                        style={{
+                                            width: 128,
+                                            height: 128,
+                                            borderRadius: 64,
+                                            backgroundColor: '#e0f2fe',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Text className="text-5xl">👤</Text>
+                                    </View>
+                                )}
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={pickImage} className="mt-3">
+                                <Text className="text-primary-600 font-medium">
+                                    {photoUri ? 'Change Photo' : 'Add Photo'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Business Information */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-bold text-secondary-900 mb-4">
+                                Business Information
                             </Text>
-                        </TouchableOpacity>
-                    </View>
 
-                    {/* Business Information */}
-                    <View className="mb-6">
-                        <Text className="text-lg font-bold text-secondary-900 mb-4">
-                            Business Information
-                        </Text>
+                            <InputField
+                                label="Business Name *"
+                                value={businessName}
+                                onChangeText={(text) => { setBusinessName(text); clearError('businessName'); }}
+                                error={errors.businessName}
+                                placeholder="Enter business name"
+                                maxLength={140}
+                            />
 
-                        <InputField
-                            label="Business Name *"
-                            value={businessName}
-                            onChangeText={(text) => { setBusinessName(text); clearError('businessName'); }}
-                            error={errors.businessName}
-                            placeholder="Enter business name"
-                            maxLength={140}
-                        />
+                            <DropdownSelector
+                                label="Business Type *"
+                                options={BUSINESS_TYPES}
+                                selected={businessType}
+                                onSelect={(val) => { setBusinessType(val); clearError('businessType'); }}
+                                error={errors.businessType}
+                            />
 
-                        <DropdownSelector
-                            label="Business Type *"
-                            options={BUSINESS_TYPES}
-                            selected={businessType}
-                            onSelect={(val) => { setBusinessType(val); clearError('businessType'); }}
-                            error={errors.businessType}
-                        />
+                            <DatePickerField
+                                label="Date of Establishment *"
+                                value={dateOfEstablishment}
+                                onChange={(date) => { setDateOfEstablishment(date); clearError('dateOfEstablishment'); }}
+                                error={errors.dateOfEstablishment}
+                                placeholder="Select establishment date"
+                                maximumDate={new Date()}
+                                required
+                            />
 
-                        <DatePickerField
-                            label="Date of Establishment *"
-                            value={dateOfEstablishment}
-                            onChange={(date) => { setDateOfEstablishment(date); clearError('dateOfEstablishment'); }}
-                            error={errors.dateOfEstablishment}
-                            placeholder="Select establishment date"
-                            maximumDate={new Date()}
-                            required
-                        />
+                            <InputField
+                                label="Website URL"
+                                value={websiteUrl}
+                                onChangeText={setWebsiteUrl}
+                                placeholder="https://www.example.com"
+                                keyboardType="url"
+                                autoCapitalize="none"
+                            />
+                        </View>
 
-                        <InputField
-                            label="Website URL"
-                            value={websiteUrl}
-                            onChangeText={setWebsiteUrl}
-                            placeholder="https://www.example.com"
-                            keyboardType="url"
-                            autoCapitalize="none"
-                        />
-                    </View>
-
-                    {/* Location */}
-                    <View className="mb-6">
+                        {/* Location */}
+                        {/* <View className="mb-6">
                         <Text className="text-lg font-bold text-secondary-900 mb-4">
                             Location
                         </Text>
@@ -425,6 +436,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                             onChangeText={(text) => { setCity(text); clearError('city'); }}
                             error={errors.city}
                             placeholder="Enter city"
+                            editable={false}
                         />
 
                         <InputField
@@ -433,6 +445,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                             onChangeText={(text) => { setState(text); clearError('state'); }}
                             error={errors.state}
                             placeholder="Enter state"
+                            editable={false}
                         />
 
                         <InputField
@@ -443,74 +456,94 @@ const UpdateProfileScreen = ({ navigation }) => {
                             placeholder="Enter 6-digit pincode"
                             keyboardType="number-pad"
                             maxLength={6}
+                            editable={false}
                         />
-                    </View>
+                    </View> */}
 
-                    {/* Representative Details */}
-                    <View className="mb-6">
-                        <Text className="text-lg font-bold text-secondary-900 mb-4">
-                            Representative Details
-                        </Text>
-
-                        <InputField
-                            label="Representative Name *"
-                            value={representativeName}
-                            onChangeText={(text) => { setRepresentativeName(text); clearError('representativeName'); }}
-                            error={errors.representativeName}
-                            placeholder="Full name"
-                            maxLength={120}
-                        />
-
-                        <InputField
-                            label="Representative Email *"
-                            value={representativeEmail}
-                            onChangeText={(text) => { setRepresentativeEmail(text); clearError('representativeEmail'); }}
-                            error={errors.representativeEmail}
-                            placeholder="email@example.com"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-
-                        <InputField
-                            label="Representative Mobile *"
-                            value={representativeMobile}
-                            onChangeText={(text) => { setRepresentativeMobile(text.replace(/[^0-9]/g, '').slice(0, 10)); clearError('representativeMobile'); }}
-                            error={errors.representativeMobile}
-                            placeholder="10-digit mobile number"
-                            keyboardType="phone-pad"
-                            maxLength={10}
-                        />
-                    </View>
-
-                    {/* About Business */}
-                    <View className="mb-6">
-                        <Text className="text-lg font-bold text-secondary-900 mb-4">
-                            About Business
-                        </Text>
-
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">
-                                Short Description * <Text className="text-secondary-400 text-xs">(25-150 words)</Text>
+                        {/* Representative Details */}
+                        {/* <View className="mb-6">
+                            <Text className="text-lg font-bold text-secondary-900 mb-4">
+                                Representative Details
                             </Text>
+
                             <InputField
-                                value={shortDescription}
-                                onChangeText={(text) => { setShortDescription(text); clearError('shortDescription'); }}
-                                error={errors.shortDescription}
-                                placeholder="Brief overview of your business (25-150 words)"
-                                multiline
-                                numberOfLines={4}
-                                maxLength={1000}
+                                label="Representative Name *"
+                                value={representativeName}
+                                onChangeText={(text) => { setRepresentativeName(text); clearError('representativeName'); }}
+                                error={errors.representativeName}
+                                placeholder="Full name"
+                                maxLength={120}
+                                editable={false}
                             />
+
+                            <InputField
+                                label="Representative Email *"
+                                value={representativeEmail}
+                                onChangeText={(text) => { setRepresentativeEmail(text); clearError('representativeEmail'); }}
+                                error={errors.representativeEmail}
+                                placeholder="email@example.com"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                editable={false}
+                            />
+
+                            <InputField
+                                label="Representative Mobile *"
+                                value={representativeMobile}
+                                onChangeText={(text) => { setRepresentativeMobile(text.replace(/[^0-9]/g, '').slice(0, 10)); clearError('representativeMobile'); }}
+                                error={errors.representativeMobile}
+                                placeholder="10-digit mobile number"
+                                keyboardType="phone-pad"
+                                maxLength={10}
+                                editable={false}
+                            />
+                        </View> */}
+
+                        {/* About Business */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-bold text-secondary-900 mb-4">
+                                About Business
+                            </Text>
+
+                            <View className="mb-4">
+                                <Text className="text-sm font-medium text-secondary-800 mb-2">
+                                    Short Description * <Text className="text-secondary-400 text-xs">(25-150 words)</Text>
+                                </Text>
+                                <InputField
+                                    value={shortDescription}
+                                    onChangeText={(text) => { setShortDescription(text); clearError('shortDescription'); }}
+                                    error={errors.shortDescription}
+                                    placeholder="Brief overview of your business (25-150 words)"
+                                    multiline
+                                    numberOfLines={4}
+                                    maxLength={1000}
+                                />
+                            </View>
                         </View>
+
                     </View>
 
-                    <CustomButton
-                        title="Update Profile"
-                        onPress={handleSubmit}
-                        loading={loading}
-                        variant="primary"
-                        size="md"
-                    />
+                    {isEditing && (
+                        <View className="flex-row gap-3">
+                            <View className="flex-1">
+                                <CustomButton
+                                    title="Cancel"
+                                    onPress={() => { setIsEditing(false); fetchProfile(); }}
+                                    variant="outline"
+                                    size="md"
+                                />
+                            </View>
+                            <View className="flex-1">
+                                <CustomButton
+                                    title="Update Profile"
+                                    onPress={handleSubmit}
+                                    loading={loading}
+                                    variant="primary"
+                                    size="md"
+                                />
+                            </View>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
 
