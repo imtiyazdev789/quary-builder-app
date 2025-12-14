@@ -44,12 +44,12 @@ const ProjectsScreen = () => {
                                 </View>
                                 <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
                                     <View
-                                        className="h-full bg-blue-600 rounded-full"
+                                        className="h-full bg-primary-600 rounded-full"
                                         style={{ width: `${project.progress}%` }}
                                     />
                                 </View>
                             </View>
-                            <TouchableOpacity className="bg-blue-600 rounded-lg py-2 px-4">
+                            <TouchableOpacity className="bg-primary-600 rounded-lg py-2 px-4">
                                 <Text className="text-white text-center font-medium">
                                     View Details
                                 </Text>

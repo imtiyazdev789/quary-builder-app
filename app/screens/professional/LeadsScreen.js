@@ -53,7 +53,7 @@ const LeadsScreen = () => {
                                 Date: {lead.date}
                             </Text>
                             <View className="flex-row space-x-2">
-                                <TouchableOpacity className="flex-1 bg-blue-600 rounded-lg py-2 px-4">
+                                <TouchableOpacity className="flex-1 bg-primary-600 rounded-lg py-2 px-4">
                                     <Text className="text-white text-center font-medium">
                                         Contact
                                     </Text>

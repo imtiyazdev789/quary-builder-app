@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProviderTabs from './ProviderTabs';
-import LeadsScreen from '../screens/provider/LeadsScreen';
-import ProjectsScreen from '../screens/provider/ProjectsScreen';
-import ReviewsScreen from '../screens/provider/ReviewsScreen';
-import SubscriptionScreen from '../screens/provider/SubscriptionScreen';
+import ProfessionalTabs from './ProfessionalTabs';
+import LeadsScreen from '../screens/professional/LeadsScreen';
+import ProjectsScreen from '../screens/professional/ProjectsScreen';
+import ReviewsScreen from '../screens/professional/ReviewsScreen';
+import SubscriptionScreen from '../screens/professional/SubscriptionScreen';
+import UpdateProfileScreen from '../screens/professional/UpdateProfileScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
 const Drawer = createDrawerNavigator();
 
-const ProviderDrawer = () => {
+const ProfessionalDrawer = () => {
     const { logout, user } = useAuth();
     const [logoutAlertVisible, setLogoutAlertVisible] = useState(false);
 
@@ -31,7 +32,7 @@ const ProviderDrawer = () => {
                 <View className="flex-1">
                     <View className="px-4 py-6 border-b border-secondary-100">
                         <Text className="text-2xl font-bold text-secondary-900">
-                            Provider Menu
+                            Professional Menu
                         </Text>
                         {user?.email && (
                             <Text className="text-sm text-secondary-500 mt-1">
@@ -101,7 +102,7 @@ const ProviderDrawer = () => {
         >
             <Drawer.Screen
                 name="MainTabs"
-                component={ProviderTabs}
+                component={ProfessionalTabs}
                 options={{
                     title: 'Home',
                     headerShown: false,
@@ -127,9 +128,17 @@ const ProviderDrawer = () => {
                 component={SubscriptionScreen}
                 options={{ title: 'Subscription' }}
             />
+            <Drawer.Screen
+                name="UpdateProfile"
+                component={UpdateProfileScreen}
+                options={{ 
+                    title: 'Update Profile',
+                    headerShown: true,
+                }}
+            />
         </Drawer.Navigator>
     );
 };
 
-export default ProviderDrawer;
+export default ProfessionalDrawer;
 

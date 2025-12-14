@@ -4,17 +4,19 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import LoginScreen from '../screens/auth/LoginScreen';
-import SignupScreen from '../screens/auth/SignupScreen';
+import SignupSelectionScreen from '../screens/auth/SignupSelectionScreen';
+import ClientSignupScreen from '../screens/auth/ClientSignupScreen';
+import ProfessionalSignupScreen from '../screens/auth/ProfessionalSignupScreen';
 import OTPVerificationScreen from '../screens/auth/OTPVerificationScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import ResetPasswordOTPScreen from '../screens/auth/ResetPasswordOTPScreen';
 import ClientDrawer from './ClientDrawer';
-import ProviderDrawer from './ProviderDrawer';
+import ProfessionalDrawer from './ProfessionalDrawer';
 import AdminDrawer from './AdminDrawer';
 
 // Demo mode imports - for previewing without auth
 import ClientDashboard from '../screens/client/ClientDashboard';
-import ProviderDashboard from '../screens/provider/ProviderDashboard';
+import ProfessionalDashboard from '../screens/professional/ProfessionalDashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,14 +51,14 @@ const RootNavigator = () => {
             case 'user':
                 return <Stack.Screen name="ClientDrawer" component={ClientDrawer} />;
             case 'professional':
-                return <Stack.Screen name="ProviderDrawer" component={ProviderDrawer} />;
+                return <Stack.Screen name="ProfessionalDrawer" component={ProfessionalDrawer} />;
             case 'admin':
                 return <Stack.Screen name="AdminDrawer" component={AdminDrawer} />;
             // Fallback for old role names
             case 'client':
                 return <Stack.Screen name="ClientDrawer" component={ClientDrawer} />;
             case 'provider':
-                return <Stack.Screen name="ProviderDrawer" component={ProviderDrawer} />;
+                return <Stack.Screen name="ProfessionalDrawer" component={ProfessionalDrawer} />;
             default:
                 return null;
         }
@@ -73,10 +75,26 @@ const RootNavigator = () => {
                     <Stack.Screen name="Login" component={LoginScreen} />
                     <Stack.Screen
                         name="Signup"
-                        component={SignupScreen}
+                        component={SignupSelectionScreen}
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="ClientSignup"
+                        component={ClientSignupScreen}
                         options={{
                             headerShown: true,
-                            title: 'Sign Up',
+                            title: 'Client Registration',
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="ProfessionalSignup"
+                        component={ProfessionalSignupScreen}
+                        options={{
+                            headerShown: true,
+                            title: 'Professional Registration',
                             headerBackTitleVisible: false,
                         }}
                     />
@@ -118,11 +136,11 @@ const RootNavigator = () => {
                         }}
                     />
                     <Stack.Screen
-                        name="DemoProviderDashboard"
-                        component={ProviderDashboard}
+                        name="DemoProfessionalDashboard"
+                        component={ProfessionalDashboard}
                         options={{
                             headerShown: true,
-                            title: 'Provider Dashboard (Demo)',
+                            title: 'Professional Dashboard (Demo)',
                             headerBackTitleVisible: false,
                         }}
                     />
@@ -134,8 +152,8 @@ const RootNavigator = () => {
                         }}
                     />
                     <Stack.Screen
-                        name="DemoProviderDrawer"
-                        component={ProviderDrawer}
+                        name="DemoProfessionalDrawer"
+                        component={ProfessionalDrawer}
                         options={{
                             headerShown: false,
                         }}

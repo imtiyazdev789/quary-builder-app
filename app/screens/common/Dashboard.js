@@ -8,9 +8,9 @@ const Dashboard = () => {
 
     const getDashboardContent = () => {
         switch (role) {
-            case 'provider':
+            case 'professional':
                 return {
-                    title: 'Provider Dashboard',
+                    title: 'Professional Dashboard',
                     stats: [
                         { label: 'Active Leads', value: '12', color: 'text-blue-600' },
                         { label: 'Projects', value: '8', color: 'text-green-600' },
@@ -19,6 +19,7 @@ const Dashboard = () => {
                     ],
                 };
             case 'client':
+            case 'user':
             default:
                 return {
                     title: 'Client Dashboard',

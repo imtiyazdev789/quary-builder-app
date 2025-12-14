@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
 const payouts = [
-    { id: 'TXN-88321', amount: '₹45,000', status: 'Captured', provider: 'Studio Axis' },
-    { id: 'TXN-88300', amount: '₹18,200', status: 'Pending', provider: 'Design Hive' },
+    { id: 'TXN-88321', amount: '₹45,000', status: 'Captured', professional: 'Studio Axis' },
+    { id: 'TXN-88300', amount: '₹18,200', status: 'Pending', professional: 'Design Hive' },
 ];
 
 const AdminPaymentsScreen = () => {
@@ -19,7 +19,7 @@ const AdminPaymentsScreen = () => {
                             <Text className="text-lg font-semibold text-gray-900">{payout.amount}</Text>
                             <Text className="text-sm text-gray-500">{payout.id}</Text>
                         </View>
-                        <Text className="text-sm text-gray-600 mb-1">Provider: {payout.provider}</Text>
+                        <Text className="text-sm text-gray-600 mb-1">Professional: {payout.professional}</Text>
                         <Text className={`text-sm font-semibold ${payout.status === 'Captured' ? 'text-green-600' : 'text-orange-600'}`}>
                             {payout.status}
                         </Text>

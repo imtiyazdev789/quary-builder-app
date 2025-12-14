@@ -8,7 +8,7 @@ import CustomButton from '../../components/CustomButton';
 const roleOptions = [
     { key: 'user', label: 'Client' },
     { key: 'professional', label: 'Professional' },
-    { key: 'admin', label: 'Admin' },
+    // { key: 'admin', label: 'Admin' }, // Hidden for now - enable when admin features are ready
 ];
 
 const LoginScreen = ({ navigation }) => {
@@ -242,8 +242,8 @@ const LoginScreen = ({ navigation }) => {
                             </View>
                             <View className="flex-1">
                                 <CustomButton
-                                    title="Provider App"
-                                    onPress={() => navigation?.navigate('DemoProviderDrawer')}
+                                    title="Professional App"
+                                    onPress={() => navigation?.navigate('DemoProfessionalDrawer')}
                                     variant="secondary"
                                     size="sm"
                                 />

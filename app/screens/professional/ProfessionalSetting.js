@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 
-const ProviderSetting = () => {
+const ProfessionalSetting = () => {
     const { logout, user } = useAuth();
     const [notifications, setNotifications] = React.useState(true);
     const [emailUpdates, setEmailUpdates] = React.useState(true);
@@ -16,14 +16,14 @@ const ProviderSetting = () => {
             <ScrollView className="flex-1">
                 <View className="px-4 py-6">
                     <View className="items-center mb-6">
-                        <View className="w-24 h-24 bg-blue-500 rounded-full items-center justify-center mb-4">
+                        <View className="w-24 h-24 bg-primary-500 rounded-full items-center justify-center mb-4">
                             <Text className="text-4xl text-white">👤</Text>
                         </View>
                         <Text className="text-2xl font-bold text-gray-900 mb-1">
-                            {user?.name || 'Provider Name'}
+                            {user?.name || 'Professional Name'}
                         </Text>
                         <Text className="text-base text-gray-600">
-                            {user?.email || 'provider@example.com'}
+                            {user?.email || 'professional@example.com'}
                         </Text>
                     </View>
 
@@ -33,7 +33,7 @@ const ProviderSetting = () => {
                             <Switch
                                 value={notifications}
                                 onValueChange={setNotifications}
-                                trackColor={{ false: '#D1D5DB', true: '#3B82F6' }}
+                                trackColor={{ false: '#D1D5DB', true: '#0d9488' }}
                             />
                         </View>
                         <View className="px-4 py-4 border-b border-gray-200 flex-row justify-between items-center">
@@ -41,10 +41,13 @@ const ProviderSetting = () => {
                             <Switch
                                 value={emailUpdates}
                                 onValueChange={setEmailUpdates}
-                                trackColor={{ false: '#D1D5DB', true: '#3B82F6' }}
+                                trackColor={{ false: '#D1D5DB', true: '#0d9488' }}
                             />
                         </View>
-                        <TouchableOpacity className="px-4 py-4 border-b border-gray-200">
+                        <TouchableOpacity 
+                            className="px-4 py-4 border-b border-gray-200"
+                            onPress={() => navigation.navigate('UpdateProfile')}
+                        >
                             <Text className="text-base text-gray-900">Edit Profile</Text>
                         </TouchableOpacity>
                         <TouchableOpacity className="px-4 py-4">
@@ -53,7 +56,7 @@ const ProviderSetting = () => {
                     </View>
 
                     <TouchableOpacity
-                        className="bg-red-600 rounded-lg py-4 px-4 items-center"
+                        className="bg-error-600 rounded-lg py-4 px-4 items-center"
                         onPress={handleLogout}
                     >
                         <Text className="text-white text-lg font-semibold">
@@ -66,5 +69,5 @@ const ProviderSetting = () => {
     );
 };
 
-export default ProviderSetting;
+export default ProfessionalSetting;
 

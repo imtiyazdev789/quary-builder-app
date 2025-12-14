@@ -3,11 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import Dashboard from '../screens/common/Dashboard';
-import ProviderSetting from '../screens/provider/ProviderSetting';
+import ProfessionalSetting from '../screens/professional/ProfessionalSetting';
 
 const Tab = createBottomTabNavigator();
 
-const ProviderTabs = () => {
+const ProfessionalTabs = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -95,7 +95,7 @@ const ProviderTabs = () => {
             />
             <Tab.Screen
                 name="Profile"
-                component={ProviderSetting}
+                component={ProfessionalSetting}
                 options={{
                     title: 'Profile',
                     tabBarLabel: 'Profile',
@@ -108,5 +108,5 @@ const ProviderTabs = () => {
     );
 };
 
-export default ProviderTabs;
+export default ProfessionalTabs;
 

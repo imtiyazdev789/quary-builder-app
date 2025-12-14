@@ -3,9 +3,9 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 const SubscriptionScreen = () => {
     const plans = [
-        { id: 1, name: 'Basic', price: '$29/month', features: ['5 Projects', 'Basic Support', 'Standard Features'] },
-        { id: 2, name: 'Professional', price: '$79/month', features: ['Unlimited Projects', 'Priority Support', 'Advanced Features'], current: true },
-        { id: 3, name: 'Enterprise', price: '$199/month', features: ['Unlimited Everything', '24/7 Support', 'All Features'] },
+        { id: 1, name: 'Basic', price: '₹2,999/month', features: ['5 Projects', 'Basic Support', 'Standard Features'] },
+        { id: 2, name: 'Professional', price: '₹7,999/month', features: ['Unlimited Projects', 'Priority Support', 'Advanced Features'], current: true },
+        { id: 3, name: 'Enterprise', price: '₹19,999/month', features: ['Unlimited Everything', '24/7 Support', 'All Features'] },
     ];
 
     return (
@@ -16,7 +16,7 @@ const SubscriptionScreen = () => {
                         Subscription
                     </Text>
 
-                    <View className="bg-white rounded-lg p-4 mb-4 shadow-sm border-2 border-blue-600">
+                    <View className="bg-white rounded-lg p-4 mb-4 shadow-sm border-2 border-primary-600">
                         <View className="flex-row justify-between items-center mb-2">
                             <Text className="text-lg font-semibold text-gray-900">
                                 Current Plan
@@ -31,7 +31,7 @@ const SubscriptionScreen = () => {
                             Professional
                         </Text>
                         <Text className="text-base text-gray-600">
-                            $79/month - Renews on Feb 15, 2024
+                            ₹7,999/month - Renews on Feb 15, 2024
                         </Text>
                     </View>
 
@@ -42,7 +42,7 @@ const SubscriptionScreen = () => {
                     {plans.map((plan) => (
                         <View
                             key={plan.id}
-                            className={`bg-white rounded-lg p-4 mb-4 shadow-sm ${plan.current ? 'border-2 border-blue-600' : ''
+                            className={`bg-white rounded-lg p-4 mb-4 shadow-sm ${plan.current ? 'border-2 border-primary-600' : ''
                                 }`}
                         >
                             <View className="flex-row justify-between items-start mb-3">
@@ -55,8 +55,8 @@ const SubscriptionScreen = () => {
                                     </Text>
                                 </View>
                                 {plan.current && (
-                                    <View className="bg-blue-100 px-3 py-1 rounded-full">
-                                        <Text className="text-xs font-medium text-blue-800">
+                                    <View className="bg-primary-100 px-3 py-1 rounded-full">
+                                        <Text className="text-xs font-medium text-primary-800">
                                             Current
                                         </Text>
                                     </View>
@@ -71,7 +71,7 @@ const SubscriptionScreen = () => {
                                 ))}
                             </View>
                             {!plan.current && (
-                                <TouchableOpacity className="bg-blue-600 rounded-lg py-3 px-4">
+                                <TouchableOpacity className="bg-primary-600 rounded-lg py-3 px-4">
                                     <Text className="text-white text-center font-semibold">
                                         Upgrade
                                     </Text>

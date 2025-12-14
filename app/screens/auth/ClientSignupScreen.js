@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
 
-const SignupScreen = ({ navigation }) => {
+const ClientSignupScreen = ({ navigation }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -14,13 +14,12 @@ const SignupScreen = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [role, setRole] = useState('user');
     const { signup, loading } = useAuth();
 
     // Field errors state
     const [errors, setErrors] = useState({});
 
-    // Custom Alert State (for API errors only)
+    // Custom Alert State
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         title: '',
@@ -94,17 +93,6 @@ const SignupScreen = ({ navigation }) => {
     };
 
     const handleSignup = async () => {
-        // Professional registration requires document uploads - not available on mobile
-        if (role === 'professional') {
-            showCustomAlert({
-                title: 'Professional Registration',
-                message: 'Professional registration requires document uploads (Company Registration, COA, GST, etc.) which is only available on our website.\n\nPlease visit our website to complete your professional registration.',
-                icon: '🏢',
-                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
-            });
-            return;
-        }
-
         if (!validateForm()) {
             return;
         }
@@ -115,10 +103,10 @@ const SignupScreen = ({ navigation }) => {
             email,
             mobileNumber,
             password,
-            role,
+            role: 'user', // Always 'user' for client signup
         });
+
         if (result.success && result.data) {
-            // Navigate to OTP screen
             navigation.navigate('OTPVerification', {
                 emailVerificationId: result.data.emailVerificationId,
                 email: result.data.email,
@@ -146,95 +134,69 @@ const SignupScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+        <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
             <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-                <View className="flex-1 justify-center px-6 py-8">
+                <View className="flex-1 px-6 py-6">
+                    {/* Header */}
                     <View className="mb-6">
-                        <Text className="text-4xl font-bold text-secondary-900 mb-2">
-                            Create Account
-                        </Text>
-                        <Text className="text-base text-secondary-500">
-                            Sign up to get started
-                        </Text>
+                        <View className="flex-row items-center mb-2">
+                            <View className="w-12 h-12 bg-primary-100 rounded-full items-center justify-center mr-3">
+                                <Text className="text-2xl">🏠</Text>
+                            </View>
+                            <View>
+                                <Text className="text-2xl font-bold text-secondary-900">
+                                    Client Registration
+                                </Text>
+                                <Text className="text-sm text-secondary-500">
+                                    Create your account to get started
+                                </Text>
+                            </View>
+                        </View>
                     </View>
 
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            I am a
-                        </Text>
-                        <View className="flex-row gap-2">
-                            <TouchableOpacity
-                                className={`flex-1 py-3 px-4 rounded-xl border-2 ${role === 'user'
-                                    ? 'bg-primary-600 border-primary-600'
-                                    : 'bg-white border-secondary-200'
+                    {/* Form Fields */}
+                    <View className="flex-row gap-3 mb-4">
+                        <View className="flex-1">
+                            <Text className="text-sm font-medium text-secondary-800 mb-2">
+                                First Name *
+                            </Text>
+                            <TextInput
+                                className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.firstName ? 'border-error-500' : 'border-secondary-200'
                                     }`}
-                                onPress={() => setRole('user')}
-                            >
-                                <Text
-                                    className={`text-center font-medium ${role === 'user' ? 'text-white' : 'text-secondary-700'
-                                        }`}
-                                >
-                                    Client
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                className={`flex-1 py-3 px-4 rounded-xl border-2 ${role === 'professional'
-                                    ? 'bg-primary-600 border-primary-600'
-                                    : 'bg-white border-secondary-200'
+                                placeholder="First name"
+                                placeholderTextColor="#94a3b8"
+                                value={firstName}
+                                onChangeText={(text) => {
+                                    setFirstName(text);
+                                    clearError('firstName');
+                                }}
+                                maxLength={20}
+                            />
+                            <ErrorText error={errors.firstName} />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-sm font-medium text-secondary-800 mb-2">
+                                Last Name *
+                            </Text>
+                            <TextInput
+                                className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.lastName ? 'border-error-500' : 'border-secondary-200'
                                     }`}
-                                onPress={() => setRole('professional')}
-                            >
-                                <Text
-                                    className={`text-center font-medium ${role === 'professional' ? 'text-white' : 'text-secondary-700'
-                                        }`}
-                                >
-                                    Professional
-                                </Text>
-                            </TouchableOpacity>
+                                placeholder="Last name"
+                                placeholderTextColor="#94a3b8"
+                                value={lastName}
+                                onChangeText={(text) => {
+                                    setLastName(text);
+                                    clearError('lastName');
+                                }}
+                                maxLength={20}
+                            />
+                            <ErrorText error={errors.lastName} />
                         </View>
                     </View>
 
                     <View className="mb-4">
                         <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            First Name
-                        </Text>
-                        <TextInput
-                            className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.firstName ? 'border-error-500' : 'border-secondary-200'
-                                }`}
-                            placeholder="Enter first name"
-                            placeholderTextColor="#94a3b8"
-                            value={firstName}
-                            onChangeText={(text) => {
-                                setFirstName(text);
-                                clearError('firstName');
-                            }}
-                            maxLength={20}
-                        />
-                        <ErrorText error={errors.firstName} />
-                    </View>
-
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Last Name
-                        </Text>
-                        <TextInput
-                            className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.lastName ? 'border-error-500' : 'border-secondary-200'
-                                }`}
-                            placeholder="Enter last name"
-                            placeholderTextColor="#94a3b8"
-                            value={lastName}
-                            onChangeText={(text) => {
-                                setLastName(text);
-                                clearError('lastName');
-                            }}
-                            maxLength={20}
-                        />
-                        <ErrorText error={errors.lastName} />
-                    </View>
-
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Email
+                            Email *
                         </Text>
                         <TextInput
                             className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.email ? 'border-error-500' : 'border-secondary-200'
@@ -255,7 +217,7 @@ const SignupScreen = ({ navigation }) => {
 
                     <View className="mb-4">
                         <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Mobile Number
+                            Mobile Number *
                         </Text>
                         <TextInput
                             className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.mobileNumber ? 'border-error-500' : 'border-secondary-200'
@@ -276,13 +238,13 @@ const SignupScreen = ({ navigation }) => {
 
                     <View className="mb-4">
                         <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Password
+                            Password *
                         </Text>
                         <View className="relative">
                             <TextInput
                                 className={`border rounded-xl px-4 py-3 pr-12 text-base bg-white ${errors.password ? 'border-error-500' : 'border-secondary-200'
                                     }`}
-                                placeholder="Enter password"
+                                placeholder="Enter password (min 6 characters)"
                                 placeholderTextColor="#94a3b8"
                                 value={password}
                                 onChangeText={(text) => {
@@ -306,7 +268,7 @@ const SignupScreen = ({ navigation }) => {
 
                     <View className="mb-6">
                         <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Confirm Password
+                            Confirm Password *
                         </Text>
                         <View className="relative">
                             <TextInput
@@ -352,10 +314,18 @@ const SignupScreen = ({ navigation }) => {
                             </Text>
                         </TouchableOpacity>
                     </View>
+
+                    <TouchableOpacity
+                        className="mt-4 py-3"
+                        onPress={() => navigation?.navigate('Signup')}
+                    >
+                        <Text className="text-center text-secondary-500 text-sm">
+                            ← Back to signup options
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
 
-            {/* Custom Alert - for success/API errors only */}
             <CustomAlert
                 visible={alertVisible}
                 title={alertConfig.title}
@@ -368,4 +338,6 @@ const SignupScreen = ({ navigation }) => {
     );
 };
 
-export default SignupScreen;
+export default ClientSignupScreen;
+
+

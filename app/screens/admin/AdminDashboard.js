@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
 const metrics = [
-    { label: 'Pending Providers', value: '24', accent: 'text-orange-600' },
+    { label: 'Pending Professionals', value: '24', accent: 'text-orange-600' },
     { label: 'Active Projects', value: '112', accent: 'text-blue-600' },
     { label: 'Open Tickets', value: '8', accent: 'text-red-500' },
     { label: 'Today\'s Payments', value: '₹2.8L', accent: 'text-green-600' },
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
 
                 <View className="bg-white rounded-xl p-4 shadow-sm mb-4">
                     <Text className="text-lg font-semibold text-gray-900 mb-2">Latest Activities</Text>
-                    {['Provider KYC approved', 'Payment of ₹56,000 captured', 'Request #BQ-234 escalated'].map((activity) => (
+                    {['Professional KYC approved', 'Payment of ₹56,000 captured', 'Request #BQ-234 escalated'].map((activity) => (
                         <Text key={activity} className="text-base text-gray-600 mb-1">
                             • {activity}
                         </Text>
