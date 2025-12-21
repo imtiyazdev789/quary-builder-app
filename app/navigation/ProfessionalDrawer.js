@@ -8,6 +8,7 @@ import ProjectsScreen from '../screens/professional/ProjectsScreen';
 import ReviewsScreen from '../screens/professional/ReviewsScreen';
 import SubscriptionScreen from '../screens/professional/SubscriptionScreen';
 import UpdateProfileScreen from '../screens/professional/UpdateProfileScreen';
+import ProfessionalRequestDetailsScreen from '../screens/professional/ProfessionalRequestDetailsScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
@@ -92,15 +93,16 @@ const ProfessionalDrawer = () => {
                 drawerPosition: 'right',
                 headerShown: false, // hide drawer headers; tabs handle their own
             }}
+            initialRouteName="MainTabs"
         >
-            {/* <Drawer.Screen
+            <Drawer.Screen
                 name="MainTabs"
                 component={ProfessionalTabs}
                 options={{
                     title: 'Home',
                     headerShown: false,
                 }}
-            /> */}
+            />
             <Drawer.Screen
                 name="Profile"
                 component={UpdateProfileScreen}
@@ -129,7 +131,11 @@ const ProfessionalDrawer = () => {
                 component={SubscriptionScreen}
                 options={{ title: 'Subscription' }}
             />
-
+            <Drawer.Screen
+                name="ProfessionalRequestDetails"
+                component={ProfessionalRequestDetailsScreen}
+                options={{ title: 'Request Details' }}
+            />
         </Drawer.Navigator>
     );
 };

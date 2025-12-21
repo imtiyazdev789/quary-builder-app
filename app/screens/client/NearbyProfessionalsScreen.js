@@ -282,8 +282,10 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                                         key={professional._id}
                                         className="px-4 py-4 border-b border-secondary-100"
                                         onPress={() => {
-                                            // Navigate to professional profile
-                                            // navigation.navigate('ProfessionalProfile', { id: professional._id });
+                                            // Navigate to create request with selected professional
+                                            navigation.navigate('CreateRequest', {
+                                                professionalId: professional._id
+                                            });
                                         }}
                                     >
                                         <View className="flex-row">

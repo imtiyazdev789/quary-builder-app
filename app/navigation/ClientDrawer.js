@@ -6,6 +6,8 @@ import ClientTabs from './ClientTabs';
 import ClientSetting from '../screens/client/ClientSetting';
 import NearbyProfessionalsScreen from '../screens/client/NearbyProfessionalsScreen';
 import ClientProfile from '../screens/client/ClientProfile';
+import CreateRequestScreen from '../screens/client/CreateRequestScreen';
+import RequestDetailsScreen from '../screens/client/RequestDetailsScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
@@ -124,6 +126,16 @@ const ClientDrawer = () => {
                 name="Setting"
                 component={ClientSetting}
                 options={{ title: 'Settings' }}
+            />
+            <Drawer.Screen
+                name="CreateRequest"
+                component={CreateRequestScreen}
+                options={{ title: 'Create Request' }}
+            />
+            <Drawer.Screen
+                name="RequestDetails"
+                component={RequestDetailsScreen}
+                options={{ title: 'Request Details' }}
             />
         </Drawer.Navigator>
     );

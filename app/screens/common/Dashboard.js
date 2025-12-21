@@ -63,22 +63,40 @@ const Dashboard = () => {
                     </View>
 
                     {(role === 'client' || role === 'user') && (
-                        <TouchableOpacity
-                            className="bg-primary-600 rounded-lg p-4 mb-4 shadow-sm"
-                            onPress={() => navigation.navigate('NearbyProfessionals')}
-                        >
-                            <View className="flex-row items-center justify-between">
-                                <View className="flex-1">
-                                    <Text className="text-lg font-semibold text-white mb-1">
-                                        Find Nearby Professionals
-                                    </Text>
-                                    <Text className="text-sm text-primary-100">
-                                        Discover architects, designers & contractors near you
-                                    </Text>
+                        <>
+                            <TouchableOpacity
+                                className="bg-primary-600 rounded-lg p-4 mb-4 shadow-sm"
+                                onPress={() => navigation.navigate('CreateRequest')}
+                            >
+                                <View className="flex-row items-center justify-between">
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-semibold text-white mb-1">
+                                            Create New Request
+                                        </Text>
+                                        <Text className="text-sm text-primary-100">
+                                            Submit a project request to professionals
+                                        </Text>
+                                    </View>
+                                    <Text className="text-3xl ml-3">➕</Text>
                                 </View>
-                                <Text className="text-3xl ml-3">📍</Text>
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                className="bg-secondary-700 rounded-lg p-4 mb-4 shadow-sm"
+                                onPress={() => navigation.navigate('NearbyProfessionals')}
+                            >
+                                <View className="flex-row items-center justify-between">
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-semibold text-white mb-1">
+                                            Find Nearby Professionals
+                                        </Text>
+                                        <Text className="text-sm text-secondary-200">
+                                            Discover architects, designers & contractors near you
+                                        </Text>
+                                    </View>
+                                    <Text className="text-3xl ml-3">📍</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </>
                     )}
 
                     <View className="bg-white rounded-lg p-4 shadow-sm">
