@@ -6,9 +6,9 @@ const ClientDashboard = () => {
         <View className="flex-1 bg-gray-50">
             <ScrollView className="flex-1">
                 <View className="px-4 py-6">
-                    <Text className="text-3xl font-bold text-gray-900 mb-2">
+                    {/* <Text className="text-3xl font-bold text-gray-900 mb-2">
                         Client Dashboard
-                    </Text>
+                    </Text> */}
                     <Text className="text-base text-gray-600 mb-6">
                         Welcome to your dashboard
                     </Text>
