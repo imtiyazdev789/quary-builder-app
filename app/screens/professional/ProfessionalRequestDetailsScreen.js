@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, KeyboardAvoidingView, Platform, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import api from '../../config/axios';
@@ -111,9 +111,7 @@ const ProfessionalRequestDetailsScreen = () => {
         if (!estimatedQuotation.trim()) {
             newErrors.estimatedQuotation = 'Estimated quotation is required';
         }
-        if (!initialDesignIdea.trim() || initialDesignIdea.trim().length < 20) {
-            newErrors.initialDesignIdea = 'Initial design idea must be at least 20 characters';
-        }
+        // initialDesignIdea is now optional - no validation required
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -132,13 +130,18 @@ const ProfessionalRequestDetailsScreen = () => {
 
         setLoading(true);
         try {
+            const payload = {
+                status: 'accepted',
+                estimatedQuotation: estimatedQuotation.trim(),
+            };
+            // Only include initialDesignIdea if provided
+            if (initialDesignIdea.trim()) {
+                payload.initialDesignIdea = initialDesignIdea.trim();
+            }
+
             const response = await api.patch(
                 Router.REQUEST.UPDATE_REQUEST_STATUS(request.id),
-                {
-                    status: 'accepted',
-                    estimatedQuotation: estimatedQuotation.trim(),
-                    initialDesignIdea: initialDesignIdea.trim(),
-                }
+                payload
             );
 
             if (response.data.success) {
@@ -304,6 +307,48 @@ const ProfessionalRequestDetailsScreen = () => {
                             </View>
                         </View>
 
+                        {/* Contact Information - Prominent Section (Moved to top) */}
+                        <View className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-4 shadow-sm">
+                            <DetailSection title="Client Contact Information">
+                                <Text className="text-xs text-gray-600 mb-3">
+                                    Contact the client directly using the information below
+                                </Text>
+                                <View className="mb-3">
+                                    <Text className="text-xs text-gray-500 mb-1">Client Name</Text>
+                                    <Text className="text-base text-gray-900 font-semibold">{request.clientName || 'N/A'}</Text>
+                                </View>
+                                {request.clientPhoneNumber && (
+                                    <TouchableOpacity
+                                        className="mb-3"
+                                        onPress={() => {
+                                            Linking.openURL(`tel:${request.clientPhoneNumber}`);
+                                        }}
+                                    >
+                                        <Text className="text-xs text-gray-500 mb-1">Phone Number</Text>
+                                        <View className="flex-row items-center">
+                                            <Text className="text-base text-blue-600 font-semibold underline">
+                                                {request.clientPhoneNumber}
+                                            </Text>
+                                            <Text className="text-blue-600 ml-2 text-lg">📞</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Linking.openURL(`mailto:${request.email}`);
+                                    }}
+                                >
+                                    <Text className="text-xs text-gray-500 mb-1">Email</Text>
+                                    <View className="flex-row items-center">
+                                        <Text className="text-base text-blue-600 font-semibold underline">
+                                            {request.email}
+                                        </Text>
+                                        <Text className="text-blue-600 ml-2 text-lg">✉️</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </DetailSection>
+                        </View>
+
                         {/* Project Information */}
                         <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
                             <DetailSection title="Project Information">
@@ -384,26 +429,6 @@ const ProfessionalRequestDetailsScreen = () => {
                             </View>
                         )}
 
-                        {/* Contact Information */}
-                        <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
-                            <DetailSection title="Client Contact Information">
-                                <DetailRow
-                                    label="Client Name"
-                                    value={request.clientName}
-                                />
-                                <DetailRow
-                                    label="Email"
-                                    value={request.email}
-                                />
-                                {request.clientPhoneNumber && (
-                                    <DetailRow
-                                        label="Phone Number"
-                                        value={request.clientPhoneNumber}
-                                    />
-                                )}
-                            </DetailSection>
-                        </View>
-
                         {/* Timestamps */}
                         <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
                             <DetailSection title="Timeline">
@@ -480,12 +505,12 @@ const ProfessionalRequestDetailsScreen = () => {
 
                                 <View className="mb-4">
                                     <Text className="text-sm font-medium text-gray-800 mb-2">
-                                        Initial Design Idea * {initialDesignIdea.length > 0 && `(${initialDesignIdea.length} characters)`}
+                                        Initial Design Idea (Optional) {initialDesignIdea.length > 0 && `(${initialDesignIdea.length} characters)`}
                                     </Text>
                                     <TextInput
                                         className={`border rounded-xl px-4 py-3 text-base bg-white h-32 ${errors.initialDesignIdea ? 'border-error-500' : 'border-gray-200'
                                             }`}
-                                        placeholder="Describe your initial design ideas and approach..."
+                                        placeholder="Describe your initial design ideas and approach (optional)..."
                                         placeholderTextColor="#94a3b8"
                                         value={initialDesignIdea}
                                         onChangeText={(text) => {
@@ -503,7 +528,7 @@ const ProfessionalRequestDetailsScreen = () => {
                                         </Text>
                                     )}
                                     <Text className="text-xs text-gray-500 mt-1 ml-1">
-                                        Minimum 20 characters. {1000 - initialDesignIdea.length} characters remaining.
+                                        {1000 - initialDesignIdea.length} characters remaining.
                                     </Text>
                                 </View>
 

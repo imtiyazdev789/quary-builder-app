@@ -58,9 +58,10 @@ const Step5KycDocuments = ({
                 placeholder="Tap to upload logo"
             />
 
+            {/* Company Registration Document - Required for Partnership/LLP or Company */}
             {(businessType === 'Partnership/LLP' || businessType === 'PrivateLimited/Company') && (
                 <DocumentPickerField
-                    label="Company Registration Document"
+                    label="Company Registration Document *"
                     document={companyRegistrationDoc}
                     onSelect={(doc) => { setCompanyRegistrationDoc(doc); clearError('companyRegistrationDoc'); }}
                     error={errors.companyRegistrationDoc}
@@ -68,9 +69,10 @@ const Step5KycDocuments = ({
                 />
             )}
 
+            {/* Category-specific documents - Only show the document required for selected category */}
             {category === 'ArchitectureConsultant' && (
                 <DocumentPickerField
-                    label="COA Registration Document"
+                    label="COA Registration Document *"
                     document={coaRegistrationDoc}
                     onSelect={(doc) => { setCoaRegistrationDoc(doc); clearError('coaRegistrationDoc'); }}
                     error={errors.coaRegistrationDoc}
@@ -80,7 +82,7 @@ const Step5KycDocuments = ({
 
             {category === 'StructuralConsultant' && (
                 <DocumentPickerField
-                    label="Structural Registration Document"
+                    label="Structural Registration Document *"
                     document={structuralRegistrationDoc}
                     onSelect={(doc) => { setStructuralRegistrationDoc(doc); clearError('structuralRegistrationDoc'); }}
                     error={errors.structuralRegistrationDoc}
@@ -90,7 +92,7 @@ const Step5KycDocuments = ({
 
             {category === 'Contractor' && (
                 <DocumentPickerField
-                    label="Construction License"
+                    label="Construction License *"
                     document={constructionLicenseDoc}
                     onSelect={(doc) => { setConstructionLicenseDoc(doc); clearError('constructionLicenseDoc'); }}
                     error={errors.constructionLicenseDoc}

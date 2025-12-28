@@ -208,6 +208,30 @@ const ProfessionalSignupScreen = ({ navigation }) => {
         }
     };
 
+    // Clear category-specific documents when category changes
+    useEffect(() => {
+        // Clear all category-specific documents when category changes
+        setCoaRegistrationDoc(null);
+        setStructuralRegistrationDoc(null);
+        setConstructionLicenseDoc(null);
+        // Clear related errors (use functional update to avoid stale closure)
+        setErrors(prev => ({
+            ...prev,
+            coaRegistrationDoc: '',
+            structuralRegistrationDoc: '',
+            constructionLicenseDoc: '',
+        }));
+    }, [category]);
+
+    // Clear company registration doc when business type changes (if no longer required)
+    useEffect(() => {
+        if (businessType !== 'Partnership/LLP' && businessType !== 'PrivateLimited/Company') {
+            setCompanyRegistrationDoc(null);
+            // Clear related error (use functional update to avoid stale closure)
+            setErrors(prev => ({ ...prev, companyRegistrationDoc: '' }));
+        }
+    }, [businessType]);
+
     // Toggle service selection
     const toggleService = (service) => {
         const newServices = selectedServices.includes(service)
