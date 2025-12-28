@@ -282,8 +282,8 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                                         key={professional._id}
                                         className="px-4 py-4 border-b border-secondary-100"
                                         onPress={() => {
-                                            // Navigate to create request with selected professional
-                                            navigation.navigate('CreateRequest', {
+                                            // Navigate to professional detail screen
+                                            navigation.navigate('ProfessionalDetail', {
                                                 professionalId: professional._id
                                             });
                                         }}

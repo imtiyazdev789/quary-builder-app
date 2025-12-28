@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import api from '../../config/axios';
+import Router from '../../config/Router';
 
 const RequestDetailsScreen = () => {
     const route = useRoute();
     const navigation = useNavigation();
     const request = route.params?.request;
+    const [professionalId, setProfessionalId] = useState(null);
+
+    useEffect(() => {
+        // Get professionalId from request
+        if (request?.professionalId) {
+            setProfessionalId(request.professionalId);
+        }
+    }, [request]);
 
     if (!request) {
         return (
@@ -288,6 +298,25 @@ const RequestDetailsScreen = () => {
                                             </Text>
                                         </View>
                                     </DetailSection>
+                                </View>
+                            )}
+
+                            {/* Write Review Button - Only show if professionalId is available */}
+                            {professionalId && (
+                                <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+                                    <TouchableOpacity
+                                        className="bg-primary-600 rounded-lg py-3 px-4"
+                                        onPress={() => {
+                                            navigation.navigate('CreateReview', {
+                                                request,
+                                                professionalId: professionalId,
+                                            });
+                                        }}
+                                    >
+                                        <Text className="text-white text-center font-semibold text-base">
+                                            ⭐ Write a Review
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
                             )}
                         </>

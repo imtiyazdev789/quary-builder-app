@@ -8,6 +8,8 @@ import NearbyProfessionalsScreen from '../screens/client/NearbyProfessionalsScre
 import ClientProfile from '../screens/client/ClientProfile';
 import CreateRequestScreen from '../screens/client/CreateRequestScreen';
 import RequestDetailsScreen from '../screens/client/RequestDetailsScreen';
+import CreateReviewScreen from '../screens/client/CreateReviewScreen';
+import ProfessionalDetailScreen from '../screens/client/ProfessionalDetailScreen';
 import NotificationsScreen from '../screens/common/NotificationsScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
@@ -142,6 +144,16 @@ const ClientDrawer = () => {
                 name="Notifications"
                 component={NotificationsScreen}
                 options={{ title: 'Notifications' }}
+            />
+            <Drawer.Screen
+                name="CreateReview"
+                component={CreateReviewScreen}
+                options={{ title: 'Write Review' }}
+            />
+            <Drawer.Screen
+                name="ProfessionalDetail"
+                component={ProfessionalDetailScreen}
+                options={{ title: 'Professional Profile' }}
             />
         </Drawer.Navigator>
     );
