@@ -9,6 +9,7 @@ import ReviewsScreen from '../screens/professional/ReviewsScreen';
 import SubscriptionScreen from '../screens/professional/SubscriptionScreen';
 import UpdateProfileScreen from '../screens/professional/UpdateProfileScreen';
 import ProfessionalRequestDetailsScreen from '../screens/professional/ProfessionalRequestDetailsScreen';
+import NotificationsScreen from '../screens/common/NotificationsScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
@@ -135,6 +136,11 @@ const ProfessionalDrawer = () => {
                 name="ProfessionalRequestDetails"
                 component={ProfessionalRequestDetailsScreen}
                 options={{ title: 'Request Details' }}
+            />
+            <Drawer.Screen
+                name="Notifications"
+                component={NotificationsScreen}
+                options={{ title: 'Notifications' }}
             />
         </Drawer.Navigator>
     );

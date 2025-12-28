@@ -44,11 +44,11 @@ const RequestDetailsScreen = () => {
     const getStatusDisplay = (status) => {
         switch (status) {
             case 'new':
-                return 'New';
+                return '⏳ New';
             case 'accepted':
-                return 'Accepted';
+                return '✓ Accepted';
             case 'rejected':
-                return 'Rejected';
+                return '✗ Rejected';
             default:
                 return status || 'Unknown';
         }
@@ -75,6 +75,17 @@ const RequestDetailsScreen = () => {
             'Contractor': 'Contractor',
         };
         return labels[category] || category;
+    };
+
+    // Currency formatter helper
+    const formatCurrency = (amount) => {
+        if (!amount) return 'N/A';
+        const numAmount = parseFloat(amount);
+        if (isNaN(numAmount)) {
+            // If it's not a number, return as-is (might be text description)
+            return amount;
+        }
+        return `₹ ${numAmount.toLocaleString('en-IN')}`;
     };
 
     const DetailSection = ({ title, children, className = '' }) => (
@@ -247,24 +258,35 @@ const RequestDetailsScreen = () => {
                         </View>
                     )}
 
-                    {/* Acceptance Details */}
+                    {/* Acceptance Details - Enhanced Quotation Display */}
                     {request.status === 'accepted' && (
                         <>
                             {request.estimatedQuotation && (
-                                <View className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                                    <DetailSection title="Quotation Details">
-                                        <Text className="text-base text-green-900 font-medium leading-6">
+                                <View className="bg-green-50 border-2 border-green-300 rounded-lg p-5 mb-4 shadow-md">
+                                    <View className="flex-row items-center mb-3">
+                                        <Text className="text-2xl mr-2">💰</Text>
+                                        <Text className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                                            Estimated Quotation
+                                        </Text>
+                                    </View>
+                                    <Text className="text-3xl font-bold text-green-900 mb-2">
+                                        {formatCurrency(request.estimatedQuotation)}
+                                    </Text>
+                                    {typeof request.estimatedQuotation === 'string' && isNaN(parseFloat(request.estimatedQuotation)) && (
+                                        <Text className="text-sm text-green-700 mt-1 italic">
                                             {request.estimatedQuotation}
                                         </Text>
-                                    </DetailSection>
+                                    )}
                                 </View>
                             )}
                             {request.initialDesignIdea && (
-                                <View className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                <View className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-4">
                                     <DetailSection title="Initial Design Idea">
-                                        <Text className="text-base text-blue-900 leading-6">
-                                            {request.initialDesignIdea}
-                                        </Text>
+                                        <View className="bg-white rounded-lg p-3 border border-blue-100">
+                                            <Text className="text-base text-gray-900 leading-6">
+                                                {request.initialDesignIdea}
+                                            </Text>
+                                        </View>
                                     </DetailSection>
                                 </View>
                             )}
