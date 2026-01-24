@@ -161,14 +161,15 @@ const ProfessionalDrawer = () => {
                 component={NotificationsScreen}
                 options={{ title: 'Notifications' }}
             /> */}
-            <Drawer.Screen
+            {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
+            {/* <Drawer.Screen
                 name="ChatRoom"
                 component={ChatRoomScreen}
                 options={{
                     swipeEnabled: false,
                     drawerLabel: () => null
                 }}
-            />
+            /> */}
         </Drawer.Navigator>
     );
 };

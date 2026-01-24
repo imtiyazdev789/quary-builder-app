@@ -340,8 +340,9 @@ const RequestDetailsScreen = () => {
                         </>
                     )}
 
+                    {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
                     {/* Chat Button for Accepted Requests */}
-                    {request.status === 'accepted' && (
+                    {/* {request.status === 'accepted' && (
                         <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
                             <DetailSection title="Communication">
                                 <TouchableOpacity
@@ -389,7 +390,7 @@ const RequestDetailsScreen = () => {
                                 </TouchableOpacity>
                             </DetailSection>
                         </View>
-                    )}
+                    )} */}
 
                     {/* Rejection Details */}
                     {request.status === 'rejected' && request.rejectionReason && (

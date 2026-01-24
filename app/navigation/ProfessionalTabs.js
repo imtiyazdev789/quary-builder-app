@@ -117,7 +117,8 @@ const ProfessionalTabs = () => {
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
+            {/* <Tab.Screen
                 name="Chat"
                 component={ChatListScreen}
                 options={{
@@ -135,7 +136,7 @@ const ProfessionalTabs = () => {
                         <Text style={{ color, fontSize: size }}>💬</Text>
                     ),
                 }}
-            />
+            /> */}
         </Tab.Navigator>
     );
 };

@@ -168,14 +168,15 @@ const ClientDrawer = () => {
                     drawerItemStyle: { display: 'none' } // Hide from drawer menu
                 }}
             />
-            <Drawer.Screen
+            {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
+            {/* <Drawer.Screen
                 name="ChatRoom"
                 component={ChatRoomScreen}
                 options={{
                     title: 'Chat',
                     drawerItemStyle: { display: 'none' } // Hide from drawer menu
                 }}
-            />
+            /> */}
         </Drawer.Navigator>
     );
 };

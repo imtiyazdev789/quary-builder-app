@@ -674,8 +674,9 @@ const ProfessionalRequestDetailsScreen = () => {
                                     )}
                                 </View>
 
+                                {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
                                 {/* Chat Button for Accepted Requests */}
-                                {request.status === 'accepted' && (
+                                {/* {request.status === 'accepted' && (
                                     <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
                                         <DetailSection title="Communication">
                                             <TouchableOpacity
@@ -723,7 +724,7 @@ const ProfessionalRequestDetailsScreen = () => {
                                             </TouchableOpacity>
                                         </DetailSection>
                                     </View>
-                                )}
+                                )} */}
                             </View>
                         )}
                     </View>
