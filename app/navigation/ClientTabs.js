@@ -4,6 +4,7 @@ import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import Dashboard from '../screens/common/Dashboard';
 import MyRequestScreen from '../screens/client/MyRequestScreen';
+import ChatListScreen from '../screens/common/ChatListScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -102,6 +103,17 @@ const ClientTabs = () => {
                     tabBarLabel: 'Requests',
                     tabBarIcon: ({ color, size }) => (
                         <Text style={{ color, fontSize: size }}>📄</Text>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Chat"
+                component={ChatListScreen}
+                options={{
+                    title: 'Messages',
+                    tabBarLabel: 'Chat',
+                    tabBarIcon: ({ color, size }) => (
+                        <Text style={{ color, fontSize: size }}>💬</Text>
                     ),
                 }}
             />

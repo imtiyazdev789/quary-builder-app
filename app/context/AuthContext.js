@@ -15,6 +15,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
     const [initialLoading, setInitialLoading] = useState(true); // Only for app startup
     const [loading, setLoading] = useState(false); // For operations (login, signup, etc.)
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,19 +30,21 @@ export const AuthProvider = ({ children }) => {
             // This allows app to show auth screens immediately
             const checkPromise = (async () => {
                 try {
-                    const token = await AsyncStorage.getItem('authToken');
+                    const storedToken = await AsyncStorage.getItem('authToken');
                     const userData = await AsyncStorage.getItem('userData');
 
-                    if (token && userData) {
+                    if (storedToken && userData) {
                         try {
                             const parsedUser = JSON.parse(userData);
                             setUser(parsedUser);
+                            setToken(storedToken);
                             setIsAuthenticated(true);
                         } catch (parseError) {
                             console.error('Error parsing user data:', parseError);
                             // Clear invalid data
                             await AsyncStorage.removeItem('authToken');
                             await AsyncStorage.removeItem('userData');
+                            setToken(null);
                         }
                     }
                 } catch (storageError) {
@@ -90,9 +93,9 @@ export const AuthProvider = ({ children }) => {
 
             if (response.data.success && response.data.data) {
                 const loginData = response.data.data;
-                const token = loginData.token;
+                const newToken = loginData.token;
 
-                if (!token) {
+                if (!newToken) {
                     throw new Error('Authentication token missing in response');
                 }
                 let userData;
@@ -115,10 +118,11 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
 
-                await AsyncStorage.setItem('authToken', token);
+                await AsyncStorage.setItem('authToken', newToken);
                 await AsyncStorage.setItem('userData', JSON.stringify(userData));
 
                 setUser(userData);
+                setToken(newToken);
                 setIsAuthenticated(true);
 
                 return {
@@ -411,6 +415,7 @@ export const AuthProvider = ({ children }) => {
             await AsyncStorage.removeItem('authToken');
             await AsyncStorage.removeItem('userData');
             setUser(null);
+            setToken(null);
             setIsAuthenticated(false);
         } catch (error) {
             console.error('Logout error:', error);
@@ -428,6 +433,7 @@ export const AuthProvider = ({ children }) => {
 
     const value = {
         user,
+        token,
         loading,
         initialLoading,
         isAuthenticated,

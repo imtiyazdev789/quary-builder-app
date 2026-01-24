@@ -633,42 +633,95 @@ const ProfessionalRequestDetailsScreen = () => {
 
                         {/* Already Accepted/Rejected Status */}
                         {request.status !== 'new' && (
-                            <View className={`rounded-lg p-4 mb-4 ${request.status === 'accepted'
-                                ? 'bg-green-50 border-2 border-green-200'
-                                : 'bg-red-50 border-2 border-red-200'
-                                }`}>
-                                <Text className={`text-lg font-bold mb-2 ${request.status === 'accepted' ? 'text-green-900' : 'text-red-900'
+                            <View>
+                                <View className={`rounded-lg p-4 mb-4 ${request.status === 'accepted'
+                                    ? 'bg-green-50 border-2 border-green-200'
+                                    : 'bg-red-50 border-2 border-red-200'
                                     }`}>
-                                    Request {request.status === 'accepted' ? 'Accepted' : 'Rejected'}
-                                </Text>
-                                {request.status === 'accepted' && request.estimatedQuotation && (
-                                    <View className="mb-3">
-                                        <Text className="text-sm font-semibold text-green-800 mb-1">
-                                            Estimated Quotation:
-                                        </Text>
-                                        <Text className="text-base text-green-900">
-                                            {request.estimatedQuotation}
-                                        </Text>
-                                    </View>
-                                )}
-                                {request.status === 'accepted' && request.initialDesignIdea && (
-                                    <View className="mb-3">
-                                        <Text className="text-sm font-semibold text-green-800 mb-1">
-                                            Initial Design Idea:
-                                        </Text>
-                                        <Text className="text-base text-green-900">
-                                            {request.initialDesignIdea}
-                                        </Text>
-                                    </View>
-                                )}
-                                {request.status === 'rejected' && request.rejectionReason && (
-                                    <View>
-                                        <Text className="text-sm font-semibold text-red-800 mb-1">
-                                            Rejection Reason:
-                                        </Text>
-                                        <Text className="text-base text-red-900">
-                                            {request.rejectionReason}
-                                        </Text>
+                                    <Text className={`text-lg font-bold mb-2 ${request.status === 'accepted' ? 'text-green-900' : 'text-red-900'
+                                        }`}>
+                                        Request {request.status === 'accepted' ? 'Accepted' : 'Rejected'}
+                                    </Text>
+                                    {request.status === 'accepted' && request.estimatedQuotation && (
+                                        <View className="mb-3">
+                                            <Text className="text-sm font-semibold text-green-800 mb-1">
+                                                Estimated Quotation:
+                                            </Text>
+                                            <Text className="text-base text-green-900">
+                                                {request.estimatedQuotation}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    {request.status === 'accepted' && request.initialDesignIdea && (
+                                        <View className="mb-3">
+                                            <Text className="text-sm font-semibold text-green-800 mb-1">
+                                                Initial Design Idea:
+                                            </Text>
+                                            <Text className="text-base text-green-900">
+                                                {request.initialDesignIdea}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    {request.status === 'rejected' && request.rejectionReason && (
+                                        <View>
+                                            <Text className="text-sm font-semibold text-red-800 mb-1">
+                                                Rejection Reason:
+                                            </Text>
+                                            <Text className="text-base text-red-900">
+                                                {request.rejectionReason}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
+
+                                {/* Chat Button for Accepted Requests */}
+                                {request.status === 'accepted' && (
+                                    <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+                                        <DetailSection title="Communication">
+                                            <TouchableOpacity
+                                                className="bg-primary-600 rounded-lg py-3 px-4 flex-row justify-center items-center"
+                                                onPress={async () => {
+                                                    setLoading(true);
+                                                    try {
+                                                        // Fetch conversation by request ID
+                                                        const response = await api.get(Router.CHAT.GET_CONVERSATION_BY_REQUEST(request._id || request.id));
+                                                        if (response.data.success && response.data.data) {
+                                                            // Navigate to ChatRoom with conversation data
+                                                            navigation.navigate('ChatRoom', { conversation: response.data.data });
+                                                        } else {
+                                                            showAlert({
+                                                                title: 'Chat Not Available',
+                                                                message: 'Could not find an active conversation for this request.',
+                                                                icon: '💬',
+                                                                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }]
+                                                            });
+                                                        }
+                                                    } catch (error) {
+                                                        console.error('Error fetching conversation:', error);
+                                                        showAlert({
+                                                            title: 'Error',
+                                                            message: 'Failed to open chat. Please try again.',
+                                                            icon: '❌',
+                                                            buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }]
+                                                        });
+                                                    } finally {
+                                                        setLoading(false);
+                                                    }
+                                                }}
+                                                disabled={loading}
+                                            >
+                                                {loading ? (
+                                                    <ActivityIndicator color="#fff" size="small" />
+                                                ) : (
+                                                    <>
+                                                        <Text className="text-lg mr-2">💬</Text>
+                                                        <Text className="text-white font-semibold text-base">
+                                                            Chat with Client
+                                                        </Text>
+                                                    </>
+                                                )}
+                                            </TouchableOpacity>
+                                        </DetailSection>
                                     </View>
                                 )}
                             </View>

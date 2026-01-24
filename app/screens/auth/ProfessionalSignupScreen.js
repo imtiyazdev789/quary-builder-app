@@ -427,13 +427,22 @@ const ProfessionalSignupScreen = ({ navigation }) => {
             formData.append('district', district);
             formData.append('city', city);
             formData.append('pincode', pincode);
-            formData.append('registeredAddress[line1]', addressLine1);
-            formData.append('registeredAddress[line2]', addressLine2);
+            
+            // Fix: Stringify nested objects for multer
+            const registeredAddressObj = {
+                line1: addressLine1,
+                line2: addressLine2
+            };
+            formData.append('registeredAddress', JSON.stringify(registeredAddressObj));
+            
             formData.append('formattedAddress', `${addressLine1}, ${addressLine2}, ${city}, ${district}, ${state} - ${pincode}`);
+            
             if (coordinates) {
-                formData.append('location[type]', 'Point');
-                formData.append('location[coordinates][0]', coordinates.longitude.toString());
-                formData.append('location[coordinates][1]', coordinates.latitude.toString());
+                const locationObj = {
+                    type: 'Point',
+                    coordinates: [coordinates.longitude, coordinates.latitude]
+                };
+                formData.append('location', JSON.stringify(locationObj));
             }
 
             // Step 3 data

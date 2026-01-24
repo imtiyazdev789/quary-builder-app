@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './app/context/AuthContext';
+import { SocketProvider } from './app/context/SocketContext';
 import RootNavigator from './app/navigation/RootNavigator';
 import { useCustomFonts } from './app/config/fonts';
 
@@ -91,7 +92,9 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <SocketProvider>
+        <AppContent />
+      </SocketProvider>
     </AuthProvider>
   );
 }

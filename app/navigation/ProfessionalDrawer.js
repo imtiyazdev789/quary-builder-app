@@ -5,11 +5,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfessionalTabs from './ProfessionalTabs';
 import LeadsScreen from '../screens/professional/LeadsScreen';
 import ProjectsScreen from '../screens/professional/ProjectsScreen';
+import PortfolioScreen from '../screens/professional/PortfolioScreen';
 import ReviewsScreen from '../screens/professional/ReviewsScreen';
 import SubscriptionScreen from '../screens/professional/SubscriptionScreen';
 import UpdateProfileScreen from '../screens/professional/UpdateProfileScreen';
 import ProfessionalRequestDetailsScreen from '../screens/professional/ProfessionalRequestDetailsScreen';
 import NotificationsScreen from '../screens/common/NotificationsScreen';
+import ChatRoomScreen from '../screens/common/ChatRoomScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
@@ -47,6 +49,15 @@ const ProfessionalDrawer = () => {
                             const { options } = props.descriptors[route.key];
                             const label = options.title || route.name;
                             const isFocused = props.state.index === index;
+
+                            // Skip hidden items
+                            if (options.drawerItemStyle && (options.drawerItemStyle.display === 'none' || options.drawerItemStyle.height === 0)) {
+                                return null;
+                            }
+                            // Also check for explicit drawerLabel: () => null which we used
+                            if (typeof options.drawerLabel === 'function' && options.drawerLabel() === null) {
+                                return null;
+                            }
 
                             return (
                                 <TouchableOpacity
@@ -123,24 +134,40 @@ const ProfessionalDrawer = () => {
                 options={{ title: 'Projects' }}
             />
             <Drawer.Screen
+                name="Portfolio"
+                component={PortfolioScreen}
+                options={{ title: 'Portfolio' }}
+            />
+            <Drawer.Screen
                 name="Reviews"
                 component={ReviewsScreen}
                 options={{ title: 'Reviews' }}
             />
-            <Drawer.Screen
+            {/* <Drawer.Screen
                 name="Subscription"
                 component={SubscriptionScreen}
                 options={{ title: 'Subscription' }}
-            />
+            /> */}
             <Drawer.Screen
                 name="ProfessionalRequestDetails"
                 component={ProfessionalRequestDetailsScreen}
-                options={{ title: 'Request Details' }}
+                options={{
+                    swipeEnabled: false,
+                    drawerLabel: () => null
+                }}
             />
-            <Drawer.Screen
+            {/* <Drawer.Screen
                 name="Notifications"
                 component={NotificationsScreen}
                 options={{ title: 'Notifications' }}
+            /> */}
+            <Drawer.Screen
+                name="ChatRoom"
+                component={ChatRoomScreen}
+                options={{
+                    swipeEnabled: false,
+                    drawerLabel: () => null
+                }}
             />
         </Drawer.Navigator>
     );

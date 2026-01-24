@@ -117,9 +117,24 @@ const Dashboard = () => {
     const getDashboardContent = () => {
         const title = role === 'professional' ? 'Professional Dashboard' : 'Client Dashboard';
 
+        const stats = dashboardData?.stats || [];
+
+        // For professionals, derive quick counts for leads and projects
+        let leadsCount = '0';
+        let projectsCount = '0';
+
+        if (role === 'professional' && stats.length > 0) {
+            const leadsStat = stats.find((s) => s.label === 'Total Leads');
+            const projectsStat = stats.find((s) => s.label === 'Projects');
+            leadsCount = leadsStat?.value || '0';
+            projectsCount = projectsStat?.value || '0';
+        }
+
         return {
             title,
-            stats: dashboardData?.stats || [],
+            stats,
+            leadsCount,
+            projectsCount,
         };
     };
 
@@ -208,9 +223,48 @@ const Dashboard = () => {
                         <Text className="text-lg font-semibold text-gray-900 mb-2">
                             Recent Activity
                         </Text>
-                        <Text className="text-base text-gray-600">
-                            View and manage your activities from here
-                        </Text>
+
+                        {role === 'professional' ? (
+                            <>
+                                <Text className="text-sm text-gray-600 mb-3">
+                                    Quickly jump to your latest leads and projects.
+                                </Text>
+                                <View className="flex-row justify-between">
+                                    <TouchableOpacity
+                                        className="flex-1 mr-2 bg-blue-50 rounded-lg px-3 py-3"
+                                        onPress={() => navigation.navigate('Leads')}
+                                    >
+                                        <Text className="text-xs text-blue-700 font-semibold mb-1">
+                                            Leads
+                                        </Text>
+                                        <Text className="text-xl font-bold text-blue-900">
+                                            {content.leadsCount}
+                                        </Text>
+                                        <Text className="text-xs text-blue-700 mt-1">
+                                            View client requests
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        className="flex-1 ml-2 bg-purple-50 rounded-lg px-3 py-3"
+                                        onPress={() => navigation.navigate('Projects')}
+                                    >
+                                        <Text className="text-xs text-purple-700 font-semibold mb-1">
+                                            Projects
+                                        </Text>
+                                        <Text className="text-xl font-bold text-purple-900">
+                                            {content.projectsCount}
+                                        </Text>
+                                        <Text className="text-xs text-purple-700 mt-1">
+                                            View your work
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        ) : (
+                            <Text className="text-base text-gray-600">
+                                View and manage your activities from here
+                            </Text>
+                        )}
                     </View>
                 </View>
             </ScrollView>

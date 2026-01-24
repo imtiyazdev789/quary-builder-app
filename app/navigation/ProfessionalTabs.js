@@ -5,6 +5,7 @@ import { useNavigation, DrawerActions } from '@react-navigation/native';
 import Dashboard from '../screens/common/Dashboard';
 import LeadsScreen from '../screens/professional/LeadsScreen';
 import ProjectsScreen from '../screens/professional/ProjectsScreen';
+import ChatListScreen from '../screens/common/ChatListScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -113,6 +114,25 @@ const ProfessionalTabs = () => {
                     tabBarLabel: 'Projects',
                     tabBarIcon: ({ color, size }) => (
                         <Text style={{ color, fontSize: size }}>📂</Text>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Chat"
+                component={ChatListScreen}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0d9488',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    title: 'Messages',
+                    tabBarLabel: 'Chat',
+                    tabBarIcon: ({ color, size }) => (
+                        <Text style={{ color, fontSize: size }}>💬</Text>
                     ),
                 }}
             />

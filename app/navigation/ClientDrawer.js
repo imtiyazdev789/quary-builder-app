@@ -11,6 +11,7 @@ import RequestDetailsScreen from '../screens/client/RequestDetailsScreen';
 import CreateReviewScreen from '../screens/client/CreateReviewScreen';
 import ProfessionalDetailScreen from '../screens/client/ProfessionalDetailScreen';
 import NotificationsScreen from '../screens/common/NotificationsScreen';
+import ChatRoomScreen from '../screens/common/ChatRoomScreen';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../components/CustomAlert';
 
@@ -48,6 +49,15 @@ const ClientDrawer = () => {
                             const { options } = props.descriptors[route.key];
                             const label = options.title || route.name;
                             const isFocused = props.state.index === index;
+
+                            // Skip hidden items
+                            if (options.drawerItemStyle && (options.drawerItemStyle.display === 'none' || options.drawerItemStyle.height === 0)) {
+                                return null;
+                            }
+                            // Also check for explicit drawerLabel: () => null
+                            if (typeof options.drawerLabel === 'function' && options.drawerLabel() === null) {
+                                return null;
+                            }
 
                             return (
                                 <TouchableOpacity
@@ -125,11 +135,11 @@ const ClientDrawer = () => {
                 component={ClientProfile}
                 options={{ title: 'Profile' }}
             />
-            <Drawer.Screen
+            {/* <Drawer.Screen
                 name="Setting"
                 component={ClientSetting}
                 options={{ title: 'Settings' }}
-            />
+            /> */}
             <Drawer.Screen
                 name="CreateRequest"
                 component={CreateRequestScreen}
@@ -153,7 +163,18 @@ const ClientDrawer = () => {
             <Drawer.Screen
                 name="ProfessionalDetail"
                 component={ProfessionalDetailScreen}
-                options={{ title: 'Professional Profile' }}
+                options={{
+                    title: 'Professional Profile',
+                    drawerItemStyle: { display: 'none' } // Hide from drawer menu
+                }}
+            />
+            <Drawer.Screen
+                name="ChatRoom"
+                component={ChatRoomScreen}
+                options={{
+                    title: 'Chat',
+                    drawerItemStyle: { display: 'none' } // Hide from drawer menu
+                }}
             />
         </Drawer.Navigator>
     );

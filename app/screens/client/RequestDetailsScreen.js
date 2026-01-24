@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import api from '../../config/axios';
 import Router from '../../config/Router';
+import { CustomAlert } from '../../components';
 
 const RequestDetailsScreen = () => {
     const route = useRoute();
     const navigation = useNavigation();
     const request = route.params?.request;
     const [professionalId, setProfessionalId] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [alertConfig, setAlertConfig] = useState({
+        title: '',
+        message: '',
+        icon: '',
+        buttons: [],
+    });
 
     useEffect(() => {
         // Get professionalId from request
@@ -17,6 +26,15 @@ const RequestDetailsScreen = () => {
             setProfessionalId(request.professionalId);
         }
     }, [request]);
+
+    const showAlert = (config) => {
+        setAlertConfig(config);
+        setAlertVisible(true);
+    };
+
+    const hideAlert = () => {
+        setAlertVisible(false);
+    };
 
     if (!request) {
         return (
@@ -322,6 +340,57 @@ const RequestDetailsScreen = () => {
                         </>
                     )}
 
+                    {/* Chat Button for Accepted Requests */}
+                    {request.status === 'accepted' && (
+                        <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+                            <DetailSection title="Communication">
+                                <TouchableOpacity
+                                    className="bg-primary-600 rounded-lg py-3 px-4 flex-row justify-center items-center"
+                                    onPress={async () => {
+                                        setLoading(true);
+                                        try {
+                                            // Fetch conversation by request ID
+                                            const response = await api.get(Router.CHAT.GET_CONVERSATION_BY_REQUEST(request._id || request.id));
+                                            if (response.data.success && response.data.data) {
+                                                // Navigate to ChatRoom with conversation data
+                                                navigation.navigate('ChatRoom', { conversation: response.data.data });
+                                            } else {
+                                                showAlert({
+                                                    title: 'Chat Not Available',
+                                                    message: 'Could not find an active conversation for this request.',
+                                                    icon: '💬',
+                                                    buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }]
+                                                });
+                                            }
+                                        } catch (error) {
+                                            console.error('Error fetching conversation:', error);
+                                            showAlert({
+                                                title: 'Error',
+                                                message: 'Failed to open chat. Please try again.',
+                                                icon: '❌',
+                                                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }]
+                                            });
+                                        } finally {
+                                            setLoading(false);
+                                        }
+                                    }}
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <ActivityIndicator color="#fff" size="small" />
+                                    ) : (
+                                        <>
+                                            <Text className="text-lg mr-2">💬</Text>
+                                            <Text className="text-white font-semibold text-base">
+                                                Chat with Professional
+                                            </Text>
+                                        </>
+                                    )}
+                                </TouchableOpacity>
+                            </DetailSection>
+                        </View>
+                    )}
+
                     {/* Rejection Details */}
                     {request.status === 'rejected' && request.rejectionReason && (
                         <View className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
@@ -350,7 +419,16 @@ const RequestDetailsScreen = () => {
                     </View>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+
+            <CustomAlert
+                visible={alertVisible}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                icon={alertConfig.icon}
+                buttons={alertConfig.buttons}
+                onClose={hideAlert}
+            />
+        </SafeAreaView >
     );
 };
 

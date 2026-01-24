@@ -115,7 +115,15 @@ const Router = {
         UPLOADS: '/uploads',
         API_UPLOADS: '/api/uploads',
     },
+
+    // ============================================
+    // CHAT ROUTES
+    // ============================================
+    CHAT: {
+        GET_CONVERSATIONS: '/chat/conversations',
+        GET_CONVERSATION_BY_REQUEST: (requestId) => `/chat/request/${requestId}`,
+        GET_MESSAGES: (conversationId) => `/chat/messages/${conversationId}`,
+    },
 };
 
 export default Router;
-
