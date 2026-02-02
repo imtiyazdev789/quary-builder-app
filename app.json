@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Query Builder App",
-    "slug": "App",
+    "slug": "build-query",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.querybuilder.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.querybuilder.app",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -27,12 +31,12 @@
     },
     "extra": {
       "eas": {
-        "projectId": "51a04a43-f17d-4fcf-b3df-600423a5f47e"
+        "projectId": "0d455048-6086-42a1-8ed1-e5873e5d638c"
       },
       "apiBaseUrl": "http://localhost:3000",
       "apiBaseUrlProd": "https://your-production-api.com",
       "nodeEnv": "development"
     },
-    "owner": "imtiyazdev789"
+    "owner": "buildquery"
   }
 }

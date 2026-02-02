@@ -1,0 +1,45 @@
+{
+  "cli": {
+    "version": ">= 16.32.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://dev.querybuilder.com"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://dev.querybuilder.com"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://api.querybuilder.com"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "jarsigner": {
+          "keystore": "@buildquery__build-query.jks",
+          "keyAlias": "85b506d8af89777a6c4097004467a06c",
+          "keyPassword": "b9095054be9c89074cf3a9b51d9e3e96",
+          "storePassword": "3a60ce7eea4ff7a03c103b2f09b27277"
+        }
+      }
+    }
+  }
+}
