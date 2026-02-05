@@ -32,14 +32,7 @@
   },
   "submit": {
     "production": {
-      "android": {
-        "jarsigner": {
-          "keystore": "@buildquery__build-query.jks",
-          "keyAlias": "85b506d8af89777a6c4097004467a06c",
-          "keyPassword": "b9095054be9c89074cf3a9b51d9e3e96",
-          "storePassword": "3a60ce7eea4ff7a03c103b2f09b27277"
-        }
-      }
+      "android": {}
     }
   }
 }

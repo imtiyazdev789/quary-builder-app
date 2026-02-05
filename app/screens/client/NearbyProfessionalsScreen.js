@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, Circle } from 'react-native-maps';
+import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { CustomAlert } from '../../components';
 import api from '../../config/axios';
@@ -373,6 +373,7 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                     <View style={{ flex: 1 }}>
                         <MapView
                             style={{ flex: 1 }}
+                            provider={PROVIDER_GOOGLE}
                             region={region}
                             showsUserLocation={true}
                             showsMyLocationButton={true}
