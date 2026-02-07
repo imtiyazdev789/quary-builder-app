@@ -1,0 +1,178 @@
+import React, { useState } from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ProfessionalTabs from './ProfessionalTabs';
+import LeadsScreen from '../screens/professional/LeadsScreen';
+import ProjectsScreen from '../screens/professional/ProjectsScreen';
+import PortfolioScreen from '../screens/professional/PortfolioScreen';
+import ReviewsScreen from '../screens/professional/ReviewsScreen';
+import SubscriptionScreen from '../screens/professional/SubscriptionScreen';
+import UpdateProfileScreen from '../screens/professional/UpdateProfileScreen';
+import ProfessionalRequestDetailsScreen from '../screens/professional/ProfessionalRequestDetailsScreen';
+import NotificationsScreen from '../screens/common/NotificationsScreen';
+import ChatRoomScreen from '../screens/common/ChatRoomScreen';
+import { useAuth } from '../context/AuthContext';
+import CustomAlert from '../components/CustomAlert';
+
+const Drawer = createDrawerNavigator();
+
+const ProfessionalDrawer = () => {
+    const { logout, user } = useAuth();
+    const [logoutAlertVisible, setLogoutAlertVisible] = useState(false);
+
+    const handleLogout = () => {
+        setLogoutAlertVisible(true);
+    };
+
+    const confirmLogout = () => {
+        setLogoutAlertVisible(false);
+        logout();
+    };
+
+    const CustomDrawerContent = (props) => {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top']}>
+                <View className="flex-1">
+                    <View className="px-4 py-6 border-b border-secondary-100">
+                        <Text className="text-2xl font-bold text-secondary-900">
+                            Professional Menu
+                        </Text>
+                        {user?.email && (
+                            <Text className="text-sm text-secondary-500 mt-1">
+                                {user.email}
+                            </Text>
+                        )}
+                    </View>
+                    <View className="flex-1 pt-2">
+                        {props.state.routes.map((route, index) => {
+                            const { options } = props.descriptors[route.key];
+                            const label = options.title || route.name;
+                            const isFocused = props.state.index === index;
+
+                            // Skip hidden items
+                            if (options.drawerItemStyle && (options.drawerItemStyle.display === 'none' || options.drawerItemStyle.height === 0)) {
+                                return null;
+                            }
+                            // Also check for explicit drawerLabel: () => null which we used
+                            if (typeof options.drawerLabel === 'function' && options.drawerLabel() === null) {
+                                return null;
+                            }
+
+                            return (
+                                <TouchableOpacity
+                                    key={route.key}
+                                    onPress={() => props.navigation.navigate(route.name)}
+                                    className={`px-4 py-4 flex-row items-center ${isFocused ? 'bg-primary-50' : ''}`}
+                                >
+                                    <Text className={`text-base ${isFocused ? 'text-primary-600 font-semibold' : 'text-secondary-700'}`}>
+                                        {label}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                    <TouchableOpacity
+                        onPress={handleLogout}
+                        className="px-4 py-4 border-t border-secondary-200 flex-row items-center"
+                    >
+                        <Text className="text-lg mr-2">🚪</Text>
+                        <Text className="text-base text-error-600 font-semibold">
+                            Logout
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <CustomAlert
+                    visible={logoutAlertVisible}
+                    title="Logout"
+                    message="Are you sure you want to logout?"
+                    icon="👋"
+                    buttons={[
+                        { text: 'Cancel', onPress: () => setLogoutAlertVisible(false), style: 'secondary' },
+                        { text: 'Logout', onPress: confirmLogout, style: 'danger' },
+                    ]}
+                    onClose={() => setLogoutAlertVisible(false)}
+                />
+            </SafeAreaView>
+        );
+    };
+
+    return (
+        <Drawer.Navigator
+            drawerContent={(props) => <CustomDrawerContent {...props} />}
+            screenOptions={{
+                drawerPosition: 'right',
+                headerShown: false, // hide drawer headers; tabs handle their own
+            }}
+            initialRouteName="MainTabs"
+        >
+            <Drawer.Screen
+                name="MainTabs"
+                component={ProfessionalTabs}
+                options={{
+                    title: 'Home',
+                    headerShown: false,
+                }}
+            />
+            <Drawer.Screen
+                name="Profile"
+                component={UpdateProfileScreen}
+                options={{
+                    title: 'Profile',
+                    headerShown: true,
+                }}
+            />
+            <Drawer.Screen
+                name="Leads"
+                component={LeadsScreen}
+                options={{ title: 'Leads' }}
+            />
+            <Drawer.Screen
+                name="Projects"
+                component={ProjectsScreen}
+                options={{ title: 'Projects' }}
+            />
+            <Drawer.Screen
+                name="Portfolio"
+                component={PortfolioScreen}
+                options={{ title: 'Portfolio' }}
+            />
+            <Drawer.Screen
+                name="Reviews"
+                component={ReviewsScreen}
+                options={{ title: 'Reviews' }}
+            />
+            {/* <Drawer.Screen
+                name="Subscription"
+                component={SubscriptionScreen}
+                options={{ title: 'Subscription' }}
+            /> */}
+            <Drawer.Screen
+                name="ProfessionalRequestDetails"
+                component={ProfessionalRequestDetailsScreen}
+                options={{
+                    swipeEnabled: false,
+                    drawerLabel: () => null
+                }}
+            />
+            {/* <Drawer.Screen
+                name="Notifications"
+                component={NotificationsScreen}
+                options={{ title: 'Notifications' }}
+            /> */}
+            {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
+            {/* <Drawer.Screen
+                name="ChatRoom"
+                component={ChatRoomScreen}
+                options={{
+                    swipeEnabled: false,
+                    drawerLabel: () => null
+                }}
+            /> */}
+        </Drawer.Navigator>
+    );
+};
+
+export default ProfessionalDrawer;
+

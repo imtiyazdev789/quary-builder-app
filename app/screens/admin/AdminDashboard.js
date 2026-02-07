@@ -1,36 +1,36 @@
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
+const metrics = [
+    { label: 'Pending Professionals', value: '24', accent: 'text-orange-600' },
+    { label: 'Active Projects', value: '112', accent: 'text-blue-600' },
+    { label: 'Open Tickets', value: '8', accent: 'text-red-500' },
+    { label: 'Today\'s Payments', value: '₹2.8L', accent: 'text-green-600' },
+];
+
 const AdminDashboard = () => {
     return (
         <View className="flex-1 bg-gray-50">
-            <ScrollView className="flex-1">
-                <View className="px-4 py-6">
-                    <Text className="text-3xl font-bold text-gray-900 mb-2">
-                        Admin Dashboard
-                    </Text>
-                    <Text className="text-base text-gray-600 mb-6">
-                        Manage your platform
-                    </Text>
+            <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+                <Text className="text-3xl font-bold text-gray-900 mb-1">Admin Dashboard</Text>
+                <Text className="text-base text-gray-600 mb-6">High-level overview of the network health</Text>
 
-                    <View className="flex-row flex-wrap justify-between mb-4">
-                        <View className="bg-white rounded-lg p-4 w-[48%] mb-4 shadow-sm">
-                            <Text className="text-2xl font-bold text-blue-600 mb-1">150</Text>
-                            <Text className="text-sm text-gray-600">Total Users</Text>
+                <View className="flex-row flex-wrap justify-between">
+                    {metrics.map((metric) => (
+                        <View key={metric.label} className="w-[48%] bg-white p-4 rounded-xl mb-4 shadow-sm">
+                            <Text className={`text-2xl font-bold ${metric.accent}`}>{metric.value}</Text>
+                            <Text className="text-sm text-gray-600 mt-1">{metric.label}</Text>
                         </View>
-                        <View className="bg-white rounded-lg p-4 w-[48%] mb-4 shadow-sm">
-                            <Text className="text-2xl font-bold text-green-600 mb-1">45</Text>
-                            <Text className="text-sm text-gray-600">Active Projects</Text>
-                        </View>
-                        <View className="bg-white rounded-lg p-4 w-[48%] shadow-sm">
-                            <Text className="text-2xl font-bold text-purple-600 mb-1">$12.5K</Text>
-                            <Text className="text-sm text-gray-600">Revenue</Text>
-                        </View>
-                        <View className="bg-white rounded-lg p-4 w-[48%] shadow-sm">
-                            <Text className="text-2xl font-bold text-orange-600 mb-1">28</Text>
-                            <Text className="text-sm text-gray-600">Campaigns</Text>
-                        </View>
-                    </View>
+                    ))}
+                </View>
+
+                <View className="bg-white rounded-xl p-4 shadow-sm mb-4">
+                    <Text className="text-lg font-semibold text-gray-900 mb-2">Latest Activities</Text>
+                    {['Professional KYC approved', 'Payment of ₹56,000 captured', 'Request #BQ-234 escalated'].map((activity) => (
+                        <Text key={activity} className="text-base text-gray-600 mb-1">
+                            • {activity}
+                        </Text>
+                    ))}
                 </View>
             </ScrollView>
         </View>
@@ -38,4 +38,5 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
 

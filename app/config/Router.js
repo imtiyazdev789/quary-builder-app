@@ -34,6 +34,14 @@ const Router = {
     },
 
     // ============================================
+    // ADMIN ROUTES
+    // ============================================
+    ADMIN: {
+        LOGIN: '/admin/login',
+        DASHBOARD_DETAILS: '/admin/dashboarddetails',
+    },
+
+    // ============================================
     // USER ROUTES
     // ============================================
     USER: {
@@ -101,34 +109,21 @@ const Router = {
     },
 
     // ============================================
-    // ADMIN ROUTES
-    // ============================================
-    ADMIN: {
-        // Authentication
-        LOGIN: '/admin/login',
-
-        // Dashboard
-        GET_DASHBOARD_DETAILS: '/admin/dashboarddetails',
-
-        // Client Management
-        GET_CLIENT_DETAILS: '/admin/clientDetails',
-
-        // Professional Management
-        GET_PROFESSIONAL_DETAILS: (professionalId) => `/admin/prof/indetails/${professionalId}`,
-        GET_PROFESSIONALS_LIST: '/admin/prof/details',
-        UPDATE_PROFESSIONAL_STATUS: (id) => `/admin/prof/updatestatus/${id}`,
-        GET_PROFESSIONAL_PROJECTS: (professionalId) => `/admin/prof/project/details/${professionalId}`,
-        VERIFY_PROJECT: (projectId) => `/admin/prof/project/verification/${projectId}`,
-    },
-
-    // ============================================
     // UPLOAD ROUTES
     // ============================================
     UPLOAD: {
         UPLOADS: '/uploads',
         API_UPLOADS: '/api/uploads',
     },
+
+    // ============================================
+    // CHAT ROUTES
+    // ============================================
+    CHAT: {
+        GET_CONVERSATIONS: '/chat/conversations',
+        GET_CONVERSATION_BY_REQUEST: (requestId) => `/chat/request/${requestId}`,
+        GET_MESSAGES: (conversationId) => `/chat/messages/${conversationId}`,
+    },
 };
 
 export default Router;
-
