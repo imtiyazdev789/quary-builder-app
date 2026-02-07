@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './app/context/AuthContext';
 import { SocketProvider } from './app/context/SocketContext';
+import { NotificationProvider } from './app/context/NotificationContext';
 import RootNavigator from './app/navigation/RootNavigator';
 import { useCustomFonts } from './app/config/fonts';
 
@@ -81,9 +82,7 @@ function AppContent() {
     <SafeAreaView className="flex-1 bg-white">
       <GestureHandlerRootView className="flex-1 bg-white">
         <StatusBar style="auto" />
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
+        <RootNavigator />
       </GestureHandlerRootView>
     </SafeAreaView>
   );
@@ -91,10 +90,16 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <SocketProvider>
-        <AppContent />
-      </SocketProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <NavigationContainer>
+            <NotificationProvider>
+              <AppContent />
+            </NotificationProvider>
+          </NavigationContainer>
+        </SocketProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

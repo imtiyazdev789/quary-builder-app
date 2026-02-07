@@ -11,7 +11,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://dev.querybuilder.com"
+        "EXPO_PUBLIC_API_BASE_URL": "http://dev.buildquery.com/"
       }
     },
     "preview": {
@@ -20,13 +20,13 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://dev.querybuilder.com"
+        "EXPO_PUBLIC_API_BASE_URL": "http://dev.buildquery.com/"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://api.querybuilder.com"
+        "EXPO_PUBLIC_API_BASE_URL": "http://admin.buildquery.com/api"
       }
     }
   },
