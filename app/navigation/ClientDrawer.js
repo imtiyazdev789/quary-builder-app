@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Added this import
 import ClientTabs from './ClientTabs';
 import ClientSetting from '../screens/client/ClientSetting';
 import NearbyProfessionalsScreen from '../screens/client/NearbyProfessionalsScreen';
@@ -76,7 +77,7 @@ const ClientDrawer = () => {
                         onPress={handleLogout}
                         className="px-4 py-4 border-t border-secondary-200 flex-row items-center"
                     >
-                        <Text className="text-lg mr-2">🚪</Text>
+                        <Ionicons name="log-out-outline" size={20} color="#dc2626" style={{ marginRight: 8 }} />
                         <Text className="text-base text-error-600 font-semibold">
                             Logout
                         </Text>
@@ -87,7 +88,7 @@ const ClientDrawer = () => {
                     visible={logoutAlertVisible}
                     title="Logout"
                     message="Are you sure you want to logout?"
-                    icon="👋"
+                    icon="log-out"
                     buttons={[
                         { text: 'Cancel', onPress: () => setLogoutAlertVisible(false), style: 'secondary' },
                         { text: 'Logout', onPress: confirmLogout, style: 'danger' },

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Dashboard from '../screens/common/Dashboard';
 import LeadsScreen from '../screens/professional/LeadsScreen';
 import ProjectsScreen from '../screens/professional/ProjectsScreen';
@@ -51,93 +52,106 @@ const ProfessionalTabs = () => {
         navigation.dispatch(DrawerActions.openDrawer());
     };
 
+    // Floating hamburger menu component
+    const FloatingMenu = () => (
+        <View style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            zIndex: 1000,
+        }}>
+            <TouchableOpacity
+                onPress={openDrawer}
+                style={{
+                    padding: 12,
+                    backgroundColor: '#0d9488',
+                    borderRadius: 18,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                }}
+            >
+                <View style={{ gap: 4 }}>
+                    <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
+                    <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
+                    <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
+                </View>
+            </TouchableOpacity>
+        </View>
+    );
+
     return (
-        <Tab.Navigator
-            screenOptions={{
-                headerShown: false, // hide by default; enable only on Dashboard
-                tabBarActiveTintColor: '#0d9488', // Brand teal
-                tabBarInactiveTintColor: '#64748b',
-                tabBarStyle: {
-                    paddingBottom: 5,
-                    paddingTop: 5,
-                    height: 60,
-                },
-            }}
-        >
-            <Tab.Screen
-                name="Dashboard"
-                component={Dashboard}
-                options={{
-                    headerShown: true,
-                    headerStyle: {
-                        backgroundColor: '#0d9488',
+        <>
+            <FloatingMenu />
+            <Tab.Navigator
+                screenOptions={{
+                    headerShown: false, // Completely hide header
+                    tabBarActiveTintColor: '#0d9488', // Brand teal
+                    tabBarInactiveTintColor: '#64748b',
+                    tabBarStyle: {
+                        paddingBottom: 5,
+                        paddingTop: 5,
+                        height: 60,
                     },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                    headerRight: () => (
-                        <TouchableOpacity
-                            onPress={openDrawer}
-                            style={{ marginRight: 16, padding: 4 }}
-                        >
-                            <View style={{ gap: 4 }}>
-                                <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
-                                <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
-                                <View style={{ width: 22, height: 2.5, backgroundColor: '#fff', borderRadius: 2 }} />
-                            </View>
-                        </TouchableOpacity>
-                    ),
-                    title: 'Dashboard',
-                    tabBarLabel: 'Dashboard',
-                    tabBarIcon: ({ color, size }) => (
-                        <Text style={{ color, fontSize: size }}>🏠</Text>
-                    ),
                 }}
-            />
-            <Tab.Screen
-                name="Leads"
-                component={LeadsScreen}
-                options={{
-                    title: 'Leads',
-                    tabBarLabel: 'Leads',
-                    tabBarIcon: ({ color, size }) => (
-                        <Text style={{ color, fontSize: size }}>📥</Text>
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="Projects"
-                component={ProjectsScreen}
-                options={{
-                    title: 'Projects',
-                    tabBarLabel: 'Projects',
-                    tabBarIcon: ({ color, size }) => (
-                        <Text style={{ color, fontSize: size }}>📂</Text>
-                    ),
-                }}
-            />
-            {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
-            {/* <Tab.Screen
-                name="Chat"
-                component={ChatListScreen}
-                options={{
-                    headerShown: true,
-                    headerStyle: {
-                        backgroundColor: '#0d9488',
-                    },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                    title: 'Messages',
-                    tabBarLabel: 'Chat',
-                    tabBarIcon: ({ color, size }) => (
-                        <Text style={{ color, fontSize: size }}>💬</Text>
-                    ),
-                }}
-            /> */}
-        </Tab.Navigator>
+            >
+                <Tab.Screen
+                    name="Dashboard"
+                    component={Dashboard}
+                    options={{
+                        title: 'Dashboard',
+                        tabBarLabel: 'Dashboard',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="home" size={size} color={color} />
+                        ),
+                    }}
+                />
+                <Tab.Screen
+                    name="Leads"
+                    component={LeadsScreen}
+                    options={{
+                        title: 'Leads',
+                        tabBarLabel: 'Leads',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="mail" size={size} color={color} />
+                        ),
+                    }}
+                />
+                <Tab.Screen
+                    name="Projects"
+                    component={ProjectsScreen}
+                    options={{
+                        title: 'Projects',
+                        tabBarLabel: 'Projects',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="folder" size={size} color={color} />
+                        ),
+                    }}
+                />
+                {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
+                {/* <Tab.Screen
+                    name="Chat"
+                    component={ChatListScreen}
+                    options={{
+                        headerShown: true,
+                        headerStyle: {
+                            backgroundColor: '#0d9488',
+                        },
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        title: 'Messages',
+                        tabBarLabel: 'Chat',
+                        tabBarIcon: ({ color, size }) => (
+                            <Text style={{ color, fontSize: size }}>💬</Text>
+                        ),
+                    }}
+                /> */}
+            </Tab.Navigator>
+        </>
     );
 };
 

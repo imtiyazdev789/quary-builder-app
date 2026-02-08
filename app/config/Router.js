@@ -117,6 +117,14 @@ const Router = {
     },
 
     // ============================================
+    // NOTIFICATION ROUTES
+    // ============================================
+    NOTIFICATION: {
+        REGISTER_TOKEN: '/api/notifications/device-token',
+        UNREGISTER_TOKEN: '/api/notifications/device-token',
+    },
+
+    // ============================================
     // CHAT ROUTES
     // ============================================
     CHAT: {

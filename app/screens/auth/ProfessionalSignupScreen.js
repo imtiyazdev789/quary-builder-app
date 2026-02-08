@@ -91,7 +91,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
             showCustomAlert({
                 title: 'Resume Registration?',
                 message: 'You have saved progress. Would you like to continue where you left off?',
-                icon: '📋',
+                icon: 'document-text',
                 buttons: [
                     {
                         text: 'Start Fresh',
@@ -251,7 +251,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
                 showCustomAlert({
                     title: 'Save Progress?',
                     message: 'Your progress will be saved. You can continue later.',
-                    icon: '💾',
+                    icon: 'save',
                     buttons: [
                         {
                             text: 'Discard',
@@ -427,16 +427,16 @@ const ProfessionalSignupScreen = ({ navigation }) => {
             formData.append('district', district);
             formData.append('city', city);
             formData.append('pincode', pincode);
-            
+
             // Fix: Stringify nested objects for multer
             const registeredAddressObj = {
                 line1: addressLine1,
                 line2: addressLine2
             };
             formData.append('registeredAddress', JSON.stringify(registeredAddressObj));
-            
+
             formData.append('formattedAddress', `${addressLine1}, ${addressLine2}, ${city}, ${district}, ${state} - ${pincode}`);
-            
+
             if (coordinates) {
                 const locationObj = {
                     type: 'Point',
@@ -553,7 +553,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
                 showCustomAlert({
                     title: 'Registration Failed',
                     message: response.data.message || 'Something went wrong. Please try again.',
-                    icon: '❌',
+                    icon: 'close-circle',
                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                 });
             }
@@ -562,7 +562,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
             showCustomAlert({
                 title: 'Registration Failed',
                 message: error.response?.data?.message || error.message || 'Something went wrong. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } finally {

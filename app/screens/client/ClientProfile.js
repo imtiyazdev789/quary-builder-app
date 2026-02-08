@@ -308,7 +308,7 @@ const ClientProfile = () => {
                             keyboardType="phone-pad"
                             maxLength={10}
                             editable={isEditing}
-                            leftIcon="phone"
+                            leftIcon="call"
                         />
 
                         <InputField

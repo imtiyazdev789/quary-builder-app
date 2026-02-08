@@ -1,8 +1,8 @@
-import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
+import React, { useRef } from 'react';
+import { TouchableOpacity, Text, ActivityIndicator, View, Animated } from 'react-native';
 
 /**
- * CustomButton - A reusable button component
+ * CustomButton - A reusable button component with press animations
  * 
  * @param {string} title - Button text
  * @param {function} onPress - Press handler
@@ -25,6 +25,8 @@ const CustomButton = ({
     style,
     textStyle,
 }) => {
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+
     // Size configurations
     const sizeConfig = {
         sm: {
@@ -80,55 +82,82 @@ const CustomButton = ({
 
     const isDisabled = disabled || loading;
 
+    // Press animation handlers
+    const handlePressIn = () => {
+        if (!isDisabled) {
+            Animated.spring(scaleAnim, {
+                toValue: 0.95,
+                useNativeDriver: true,
+            }).start();
+        }
+    };
+
+    const handlePressOut = () => {
+        if (!isDisabled) {
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                friction: 3,
+                tension: 40,
+                useNativeDriver: true,
+            }).start();
+        }
+    };
+
     return (
         <TouchableOpacity
             onPress={onPress}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
             disabled={isDisabled}
-            activeOpacity={0.7}
-            style={[
-                {
-                    backgroundColor: currentVariant.backgroundColor,
-                    borderColor: currentVariant.borderColor,
-                    borderWidth: currentVariant.borderWidth,
-                    borderRadius: 12,
-                    height: currentSize.height,
-                    paddingHorizontal: currentSize.paddingHorizontal,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                },
-                style,
-            ]}
+            activeOpacity={1}
         >
-            {loading ? (
-                <ActivityIndicator
-                    color={currentVariant.textColor}
-                    size="small"
-                />
-            ) : (
-                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-                    {icon && (
-                        <Text style={{ marginRight: 8, fontSize: currentSize.fontSize }}>
-                            {icon}
+            <Animated.View
+                style={[
+                    {
+                        backgroundColor: currentVariant.backgroundColor,
+                        borderColor: currentVariant.borderColor,
+                        borderWidth: currentVariant.borderWidth,
+                        borderRadius: 12,
+                        height: currentSize.height,
+                        paddingHorizontal: currentSize.paddingHorizontal,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transform: [{ scale: scaleAnim }],
+                    },
+                    style,
+                ]}
+            >
+                {loading ? (
+                    <ActivityIndicator
+                        color={currentVariant.textColor}
+                        size="small"
+                    />
+                ) : (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+                        {icon && (
+                            <Text style={{ marginRight: 8, fontSize: currentSize.fontSize }}>
+                                {icon}
+                            </Text>
+                        )}
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={[
+                                {
+                                    color: currentVariant.textColor,
+                                    fontSize: currentSize.fontSize,
+                                    fontWeight: '600',
+                                    textAlign: 'center',
+                                },
+                                textStyle,
+                            ]}
+                        >
+                            {title}
                         </Text>
-                    )}
-                    <Text
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        style={[
-                            {
-                                color: currentVariant.textColor,
-                                fontSize: currentSize.fontSize,
-                                fontWeight: '600',
-                                textAlign: 'center',
-                            },
-                            textStyle,
-                        ]}
-                    >
-                        {title}
-                    </Text>
-                </View>
-            )}
+                    </View>
+                )}
+            </Animated.View>
         </TouchableOpacity>
     );
 };

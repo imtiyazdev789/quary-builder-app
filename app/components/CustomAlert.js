@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Modal, Dimensions } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, Modal, Dimensions, Animated } from 'react-native';
 import Icon, { IconNames } from './Icon';
 import theme from '../config/theme';
 
 const { width } = Dimensions.get('window');
 
 /**
- * CustomAlert Component
+ * CustomAlert Component with entrance/exit animations
  * 
  * @param {boolean} visible - Controls alert visibility
  * @param {string} title - Alert heading/title
@@ -37,6 +37,42 @@ const CustomAlert = ({
     buttons = [{ text: 'OK', onPress: () => { }, style: 'primary' }],
     onClose = () => { },
 }) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useRef(new Animated.Value(0.8)).current;
+
+    useEffect(() => {
+        if (visible) {
+            // Entrance animation
+            Animated.parallel([
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+                Animated.spring(scaleAnim, {
+                    toValue: 1,
+                    friction: 8,
+                    tension: 40,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        } else {
+            // Exit animation
+            Animated.parallel([
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 150,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 0.8,
+                    duration: 150,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        }
+    }, [visible, fadeAnim, scaleAnim]);
+
     const getButtonStyle = (style) => {
         switch (style) {
             case 'primary':
@@ -93,13 +129,22 @@ const CustomAlert = ({
         <Modal
             visible={visible}
             transparent
-            animationType="fade"
+            animationType="none"
             onRequestClose={onClose}
         >
-            <View className="flex-1 justify-center items-center bg-black/50 px-6">
-                <View
+            <Animated.View
+                className="flex-1 justify-center items-center px-6"
+                style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    opacity: fadeAnim,
+                }}
+            >
+                <Animated.View
                     className="bg-white rounded-2xl p-6 w-full max-w-sm"
-                    style={{ maxWidth: width - 48 }}
+                    style={{
+                        maxWidth: width - 48,
+                        transform: [{ scale: scaleAnim }],
+                    }}
                 >
                     {/* Icon */}
                     {icon ? (
@@ -156,8 +201,8 @@ const CustomAlert = ({
                             </TouchableOpacity>
                         ))}
                     </View>
-                </View>
-            </View>
+                </Animated.View>
+            </Animated.View>
         </Modal>
     );
 };

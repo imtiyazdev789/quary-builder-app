@@ -85,17 +85,23 @@ class NotificationService {
      */
     async registerDeviceToken(userId) {
         try {
+            // Skip if not on physical device
+            if (!Device.isDevice) {
+                console.log('Skipping push notification registration (not a physical device)');
+                return false;
+            }
+
             const hasPermission = await this.requestPermissions();
 
             if (!hasPermission) {
-                console.warn('Notification permissions not granted');
+                console.log('Notification permissions not granted, skipping registration');
                 return false;
             }
 
             const token = await this.getExpoPushToken();
 
             if (!token) {
-                console.error('Failed to get push token');
+                console.log('Failed to get push token, skipping registration');
                 return false;
             }
 
@@ -103,13 +109,16 @@ class NotificationService {
             const authToken = await AsyncStorage.getItem('authToken');
 
             if (!authToken) {
-                console.error('No auth token found');
+                console.log('No auth token found, skipping device token registration');
                 return false;
             }
 
+            // Import Router dynamically to avoid circular dependency
+            const Router = require('../config/Router').default;
+
             // Send token to backend
             const response = await axios.post(
-                `${API_BASE_URL}/api/users/device-token`,
+                `${API_BASE_URL}${Router.NOTIFICATION.REGISTER_TOKEN}`,
                 {
                     token,
                     platform: Platform.OS,
@@ -123,14 +132,31 @@ class NotificationService {
             );
 
             if (response.data.success) {
-                console.log('Device token registered successfully');
+                console.log('✅ Device token registered successfully');
                 await AsyncStorage.setItem('deviceToken', token);
                 return true;
             }
 
             return false;
         } catch (error) {
-            console.error('Error registering device token:', error);
+            // Gracefully handle errors - don't crash the app
+            console.log('🔍 Device token registration error details:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                message: error.message
+            });
+
+            if (error.response?.status === 404) {
+                console.log('⚠️  Notification endpoint not found (404)');
+            } else if (error.response?.status === 401) {
+                console.log('⚠️  Auth token invalid or expired (401)');
+            } else if (error.response?.status) {
+                console.log(`⚠️  Server error (${error.response.status}):`, error.response.data?.message || 'Unknown error');
+            } else {
+                console.log('⚠️  Network or request error:', error.message);
+            }
+            // Return false but don't throw - app should continue working
             return false;
         }
     }
@@ -147,8 +173,11 @@ class NotificationService {
                 return false;
             }
 
+            // Import Router dynamically to avoid circular dependency
+            const Router = require('../config/Router').default;
+
             await axios.delete(
-                `${API_BASE_URL}/api/users/device-token`,
+                `${API_BASE_URL}${Router.NOTIFICATION.UNREGISTER_TOKEN}`,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
@@ -158,9 +187,11 @@ class NotificationService {
             );
 
             await AsyncStorage.removeItem('deviceToken');
+            console.log('✅ Device token unregistered successfully');
             return true;
         } catch (error) {
-            console.error('Error unregistering device token:', error);
+            // Gracefully handle errors
+            console.log('⚠️  Could not unregister device token:', error.message);
             return false;
         }
     }
@@ -194,11 +225,17 @@ class NotificationService {
      * Remove notification listeners
      */
     removeNotificationListeners() {
-        if (this.notificationListener) {
-            Notifications.removeNotificationSubscription(this.notificationListener);
-        }
-        if (this.responseListener) {
-            Notifications.removeNotificationSubscription(this.responseListener);
+        try {
+            // Check if removeNotificationSubscription exists (not available in Expo Go)
+            if (this.notificationListener && Notifications.removeNotificationSubscription) {
+                Notifications.removeNotificationSubscription(this.notificationListener);
+            }
+            if (this.responseListener && Notifications.removeNotificationSubscription) {
+                Notifications.removeNotificationSubscription(this.responseListener);
+            }
+        } catch (error) {
+            // Silently handle - this is expected in Expo Go
+            console.log('⚠️  Could not remove notification listeners (Expo Go limitation)');
         }
     }
 

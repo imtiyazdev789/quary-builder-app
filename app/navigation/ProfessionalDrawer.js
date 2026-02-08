@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { DrawerContentScrollView } from '@react-navigation/drawer'; // Added this import
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Added this import
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Added this import
 import ProfessionalTabs from './ProfessionalTabs';
 import LeadsScreen from '../screens/professional/LeadsScreen';
 import ProjectsScreen from '../screens/professional/ProjectsScreen';
@@ -76,7 +79,7 @@ const ProfessionalDrawer = () => {
                         onPress={handleLogout}
                         className="px-4 py-4 border-t border-secondary-200 flex-row items-center"
                     >
-                        <Text className="text-lg mr-2">🚪</Text>
+                        <Ionicons name="log-out-outline" size={20} color="#dc2626" style={{ marginRight: 8 }} />
                         <Text className="text-base text-error-600 font-semibold">
                             Logout
                         </Text>
@@ -87,7 +90,7 @@ const ProfessionalDrawer = () => {
                     visible={logoutAlertVisible}
                     title="Logout"
                     message="Are you sure you want to logout?"
-                    icon="👋"
+                    icon="log-out"
                     buttons={[
                         { text: 'Cancel', onPress: () => setLogoutAlertVisible(false), style: 'secondary' },
                         { text: 'Logout', onPress: confirmLogout, style: 'danger' },
