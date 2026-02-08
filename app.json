@@ -39,10 +39,6 @@
             {
               "scheme": "https",
               "host": "*.buildquery.com"
-            },
-            {
-              "scheme": "buildquery",
-              "host": "app"
             }
           ],
           "category": [
@@ -89,10 +85,7 @@
     "extra": {
       "eas": {
         "projectId": "0d455048-6086-42a1-8ed1-e5873e5d638c"
-      },
-      "apiBaseUrl": "http://localhost:3000",
-      "apiBaseUrlProd": "https://your-production-api.com",
-      "nodeEnv": "development"
+      }
     },
     "owner": "buildquery"
   }
