@@ -68,6 +68,10 @@ const RootNavigator = () => {
         <Stack.Navigator
             screenOptions={{
                 headerShown: false,
+                animation: 'slide_from_right', // iOS-style slide animation
+                animationDuration: 300, // Smooth 300ms transition
+                gestureEnabled: true, // Enable swipe-back gesture
+                gestureDirection: 'horizontal',
             }}
         >
             {!isAuthenticated ? (

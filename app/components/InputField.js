@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Animated } from 'react-native';
 import Icon, { IconNames } from './Icon';
 import theme from '../config/theme';
 import ErrorText from './ErrorText';
+import { shake } from '../utils/animations';
 
 /**
  * InputField Component
@@ -42,11 +43,32 @@ const InputField = ({
     leftIcon,
 }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const shakeAnim = useRef(new Animated.Value(0)).current;
 
     const isSecure = secureTextEntry && !isPasswordVisible;
 
+    // Trigger shake animation when error appears
+    useEffect(() => {
+        if (error) {
+            shake(shakeAnim).start();
+        }
+    }, [error]);
+
+    // Get border color based on state
+    const getBorderColor = () => {
+        if (error) return 'border-error-500';
+        if (isFocused) return 'border-primary-500';
+        return 'border-secondary-200';
+    };
+
     return (
-        <View className={`mb-4 ${containerClassName}`}>
+        <Animated.View
+            className={`mb-4 ${containerClassName}`}
+            style={{
+                transform: [{ translateX: shakeAnim }],
+            }}
+        >
             {label && (
                 <Text className="text-sm font-medium text-secondary-800 mb-2">
                     {label}
@@ -59,14 +81,13 @@ const InputField = ({
                         <Icon
                             name={IconNames[leftIcon] || leftIcon}
                             size="lg"
-                            color={error ? theme.colors.error[500] : theme.colors.text.tertiary}
+                            color={error ? theme.colors.error[500] : isFocused ? theme.colors.primary[500] : theme.colors.text.tertiary}
                         />
                     </View>
                 )}
 
                 <TextInput
-                    className={`border rounded-xl py-3 text-base bg-white ${error ? 'border-error-500' : 'border-secondary-200'
-                        } ${multiline ? 'h-24' : ''
+                    className={`border rounded-xl py-3 text-base bg-white ${getBorderColor()} ${multiline ? 'h-24' : ''
                         } ${leftIcon ? 'pl-12 pr-4' : 'px-4'
                         } ${(showPasswordToggle || secureTextEntry) ? 'pr-12' : ''
                         } ${!editable ? 'bg-secondary-50 text-secondary-500' : ''
@@ -75,6 +96,8 @@ const InputField = ({
                     placeholderTextColor="#94a3b8"
                     value={value}
                     onChangeText={onChangeText}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                     keyboardType={keyboardType}
                     maxLength={maxLength}
                     multiline={multiline}
@@ -100,7 +123,7 @@ const InputField = ({
                 )}
             </View>
             <ErrorText error={error} />
-        </View>
+        </Animated.View>
     );
 };
 

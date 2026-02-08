@@ -95,6 +95,9 @@ const ProfessionalTabs = () => {
                         paddingTop: 5,
                         height: 60,
                     },
+                    // Smooth fade animation for tab transitions
+                    animation: 'fade',
+                    animationDuration: 200,
                 }}
             >
                 <Tab.Screen
