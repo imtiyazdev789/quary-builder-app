@@ -12,3 +12,4 @@ export { default as CustomAlert } from './CustomAlert';
 export { default as AnimatedCard } from './AnimatedCard';
 export { default as FadeInView } from './FadeInView';
 export { default as SkeletonLoader } from './SkeletonLoader';
+export { default as Icon, IconNames } from './Icon';

@@ -34,7 +34,7 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Error',
                 message: 'Missing email. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{
                     text: 'Go Back',
                     onPress: () => {
@@ -52,7 +52,7 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Code Sent!',
                 message: `A 6-digit verification code has been sent to ${email}. Please check your inbox.`,
-                icon: '📧',
+                icon: 'mail',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         }, 300);
@@ -82,7 +82,7 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Invalid Code',
                 message: 'Please enter a valid 6-digit code.',
-                icon: '⚠️',
+                icon: 'warning',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             return;
@@ -95,7 +95,7 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Check Your Email!',
                 message: 'A password reset link has been sent to your email. Please check your inbox and click the link to set your new password.',
-                icon: '📧',
+                icon: 'mail',
                 buttons: [{
                     text: 'Go to Login',
                     onPress: () => {
@@ -112,7 +112,7 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Verification Failed',
                 message: result.error || 'Invalid code. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'Try Again', onPress: hideAlert, style: 'primary' }],
             });
         }
@@ -126,14 +126,14 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Code Resent!',
                 message: 'A new verification code has been sent to your email.',
-                icon: '📧',
+                icon: 'mail',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } else {
             showCustomAlert({
                 title: 'Error',
                 message: result.error || 'Failed to resend code. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { ErrorText } from '../../../components';
+import { ErrorText, Icon, IconNames } from '../../../components';
 
 const Step7PasswordDeclaration = ({
     password,
@@ -45,9 +45,11 @@ const Step7PasswordDeclaration = ({
                         className="absolute right-3 top-3"
                         onPress={() => setShowPassword(!showPassword)}
                     >
-                        <Text className="text-xl text-secondary-500">
-                            {showPassword ? '🙈' : '👁️'}
-                        </Text>
+                        <Icon
+                            name={showPassword ? IconNames.eyeOff : IconNames.eye}
+                            size="lg"
+                            color="#64748b"
+                        />
                     </TouchableOpacity>
                 </View>
                 <ErrorText error={errors.password} />
@@ -73,9 +75,11 @@ const Step7PasswordDeclaration = ({
                         className="absolute right-3 top-3"
                         onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
-                        <Text className="text-xl text-secondary-500">
-                            {showConfirmPassword ? '🙈' : '👁️'}
-                        </Text>
+                        <Icon
+                            name={showConfirmPassword ? IconNames.eyeOff : IconNames.eye}
+                            size="lg"
+                            color="#64748b"
+                        />
                     </TouchableOpacity>
                 </View>
                 <ErrorText error={errors.confirmPassword} />
@@ -87,7 +91,7 @@ const Step7PasswordDeclaration = ({
             >
                 <View className={`w-6 h-6 rounded border-2 mr-3 items-center justify-center ${declarationAccepted ? 'bg-primary-600 border-primary-600' : 'border-secondary-300'
                     }`}>
-                    {declarationAccepted && <Text className="text-white text-sm">✓</Text>}
+                    {declarationAccepted && <Icon name={IconNames.checkmark} size="xs" color="white" />}
                 </View>
                 <Text className="flex-1 text-sm text-secondary-600">
                     I hereby declare that all information provided is true and accurate to the best of my knowledge.
@@ -97,8 +101,11 @@ const Step7PasswordDeclaration = ({
             <ErrorText error={errors.declaration} />
 
             <View className="bg-primary-50 rounded-xl p-4 mb-4">
-                <Text className="text-sm text-primary-800 font-medium mb-2">📋 What happens next?</Text>
-                <Text className="text-xs text-primary-700">
+                <View className="flex-row items-center mb-2">
+                    <Icon name={IconNames.information} size="sm" color="#0d9488" style={{ marginRight: 8 }} />
+                    <Text className="text-sm text-primary-800 font-medium">What happens next?</Text>
+                </View>
+                <Text className="text-xs text-primary-700 leading-5">
                     • You'll receive an OTP on your email for verification{'\n'}
                     • Our team will review your documents{'\n'}
                     • Once approved, you can start receiving project requests

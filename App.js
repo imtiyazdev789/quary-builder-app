@@ -79,12 +79,10 @@ function AppContent() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <GestureHandlerRootView className="flex-1 bg-white">
-        <StatusBar style="auto" />
-        <RootNavigator />
-      </GestureHandlerRootView>
-    </SafeAreaView>
+    <GestureHandlerRootView className="flex-1 bg-white">
+      <StatusBar style="auto" />
+      <RootNavigator />
+    </GestureHandlerRootView>
   );
 }
 

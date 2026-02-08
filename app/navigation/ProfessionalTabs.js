@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Dashboard from '../screens/common/Dashboard';
 import LeadsScreen from '../screens/professional/LeadsScreen';
@@ -53,34 +54,37 @@ const ProfessionalTabs = () => {
     };
 
     // Floating hamburger menu component
-    const FloatingMenu = () => (
-        <View style={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            zIndex: 1000,
-        }}>
-            <TouchableOpacity
-                onPress={openDrawer}
-                style={{
-                    padding: 12,
-                    backgroundColor: '#0d9488',
-                    borderRadius: 18,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                }}
-            >
-                <View style={{ gap: 4 }}>
-                    <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
-                    <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
-                    <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
-                </View>
-            </TouchableOpacity>
-        </View>
-    );
+    const FloatingMenu = () => {
+        const insets = useSafeAreaInsets();
+        return (
+            <View style={{
+                position: 'absolute',
+                top: insets.top + 16,
+                right: 16,
+                zIndex: 1000,
+            }}>
+                <TouchableOpacity
+                    onPress={openDrawer}
+                    style={{
+                        padding: 12,
+                        backgroundColor: '#0d9488',
+                        borderRadius: 18,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 5,
+                    }}
+                >
+                    <View style={{ gap: 4 }}>
+                        <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
+                        <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
+                        <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    };
 
     return (
         <>

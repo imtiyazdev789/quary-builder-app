@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import api from '../../config/axios';
 import Router from '../../config/Router';
-import { CustomAlert } from '../../components';
+import { CustomAlert, Icon, IconNames, FadeInView, AnimatedCard } from '../../components';
 
 const ProjectsScreen = () => {
     const navigation = useNavigation();
@@ -219,117 +219,107 @@ const ProjectsScreen = () => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-                <View className="px-4 py-6">
-                    <View className="flex-row justify-between items-center mb-6">
-                        <Text className="text-3xl font-bold text-gray-900">
-                            My Projects
+                <View className="px-6 pt-8 pb-4">
+                    {/* Header */}
+                    <FadeInView delay={100} className="flex-row justify-between items-center mb-8">
+                        <Text className="text-3xl font-bold text-secondary-900">
+                            Projects
                         </Text>
                         <TouchableOpacity
-                            className="bg-primary-600 rounded-lg px-4 py-2"
+                            className="bg-primary-600 rounded-xl px-4 py-2.5 shadow-sm"
                             onPress={() => {
-                                // TODO: Navigate to create project screen
                                 showAlert({
                                     title: 'Coming Soon',
                                     message: 'Project creation feature will be available soon.',
-                                    icon: '🚧',
+                                    icon: 'construct',
                                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                                 });
                             }}
                         >
-                            <Text className="text-white font-semibold">+ Add</Text>
+                            <Text className="text-white font-bold text-sm tracking-wide">+ Add</Text>
                         </TouchableOpacity>
-                    </View>
+                    </FadeInView>
 
                     {projects.length === 0 ? (
-                        <View className="bg-white rounded-lg p-8 items-center">
-                            <Text className="text-6xl mb-4">📁</Text>
-                            <Text className="text-xl font-semibold text-gray-900 mb-2">
-                                No Projects Yet
+                        <FadeInView delay={300} className="flex-1 justify-center items-center py-32">
+                            <Text className="text-base text-secondary-400 text-center font-medium">
+                                No projects yet.
                             </Text>
-                            <Text className="text-base text-gray-600 text-center mb-6">
-                                Start showcasing your work by adding your first project
-                            </Text>
-                            <TouchableOpacity
-                                className="bg-primary-600 rounded-lg px-6 py-3"
-                                onPress={() => {
-                                    // TODO: Navigate to create project screen
-                                    showAlert({
-                                        title: 'Coming Soon',
-                                        message: 'Project creation feature will be available soon.',
-                                        icon: '🚧',
-                                        buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
-                                    });
-                                }}
-                            >
-                                <Text className="text-white font-semibold">Create Your First Project</Text>
-                            </TouchableOpacity>
-                        </View>
+                        </FadeInView>
                     ) : (
-                        projects.map((project) => {
+                        projects.map((project, index) => {
                             const status = getProjectStatus(project);
                             const projectImage = getProjectImage(project);
 
                             return (
-                                <View
-                                    key={project.id || project._id}
-                                    className="bg-white rounded-lg mb-4 shadow-sm overflow-hidden"
-                                >
-                                    {/* Project Image */}
-                                    {projectImage && (
-                                        <Image
-                                            source={{ uri: projectImage }}
-                                            className="w-full h-48"
-                                            resizeMode="cover"
-                                        />
-                                    )}
-
-                                    <View className="p-4">
-                                        <View className="flex-row justify-between items-start mb-2">
-                                            <View className="flex-1 mr-2">
-                                                <Text className="text-lg font-semibold text-gray-900 mb-1">
-                                                    {getProjectTitle(project)}
-                                                </Text>
-                                                <Text className="text-sm text-gray-600 mb-1">
-                                                    {getProjectCategory(project)}
-                                                </Text>
-                                                <Text className="text-xs text-gray-500">
-                                                    📍 {getProjectLocation(project)}
-                                                </Text>
-                                            </View>
-                                            <View className={`px-3 py-1 rounded-full ${status.color}`}>
-                                                <Text className="text-xs font-medium">
+                                <FadeInView key={project.id || project._id} delay={200 + index * 100}>
+                                    <AnimatedCard
+                                        onPress={() => navigation.navigate('ProjectDetails', { projectId: project.id || project._id })}
+                                        className="bg-white rounded-[24px] mb-6 shadow-sm border border-secondary-100 overflow-hidden"
+                                    >
+                                        {/* Project Image */}
+                                        <View className="relative">
+                                            {projectImage ? (
+                                                <Image
+                                                    source={{ uri: projectImage }}
+                                                    className="w-full h-56"
+                                                    resizeMode="cover"
+                                                />
+                                            ) : (
+                                                <View className="w-full h-56 bg-secondary-100 items-center justify-center">
+                                                    <Icon name={IconNames.image} size="xl" color="#94a3b8" />
+                                                </View>
+                                            )}
+                                            <View className={`absolute top-4 right-4 px-3 py-1.5 rounded-full ${status.color} shadow-sm`}>
+                                                <Text className="text-[10px] font-bold uppercase tracking-wider">
                                                     {status.label}
                                                 </Text>
                                             </View>
                                         </View>
 
-                                        {project?.projectBasicDetail?.projectYearOfCompletion && (
-                                            <Text className="text-xs text-gray-500 mb-3">
-                                                Completed: {project.projectBasicDetail.projectYearOfCompletion}
-                                            </Text>
-                                        )}
+                                        <View className="p-5">
+                                            <View className="flex-row justify-between items-start mb-3">
+                                                <View className="flex-1">
+                                                    <Text className="text-xl font-bold text-secondary-900 mb-1">
+                                                        {getProjectTitle(project)}
+                                                    </Text>
+                                                    <View className="flex-row items-center">
+                                                        <View className="bg-primary-50 px-2 py-0.5 rounded mr-2">
+                                                            <Text className="text-[10px] font-bold text-primary-700 uppercase">
+                                                                {getProjectCategory(project)}
+                                                            </Text>
+                                                        </View>
+                                                        {project?.projectBasicDetail?.projectYearOfCompletion && (
+                                                            <Text className="text-xs text-secondary-400">
+                                                                • {project.projectBasicDetail.projectYearOfCompletion}
+                                                            </Text>
+                                                        )}
+                                                    </View>
+                                                </View>
+                                            </View>
 
-                                        <View className="flex-row gap-2 mt-3">
-                                            <TouchableOpacity
-                                                className="flex-1 bg-primary-600 rounded-lg py-2 px-4"
-                                                onPress={() => {
-                                                    // TODO: Navigate to project details screen
-                                                    navigation.navigate('ProjectDetails', { projectId: project.id || project._id });
-                                                }}
-                                            >
-                                                <Text className="text-white text-center font-medium">
-                                                    View Details
+                                            <View className="flex-row items-center mb-4">
+                                                <Icon name={IconNames.location} size="xs" color="#64748b" style={{ marginRight: 4 }} />
+                                                <Text className="text-sm text-secondary-500 font-medium">
+                                                    {getProjectLocation(project)}
                                                 </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                className="bg-red-100 rounded-lg py-2 px-4"
-                                                onPress={() => handleDeleteProject(project.id || project._id)}
-                                            >
-                                                <Text className="text-red-700 font-medium">🗑️</Text>
-                                            </TouchableOpacity>
+                                            </View>
+
+                                            <View className="flex-row items-center justify-between pt-4 border-t border-secondary-50">
+                                                <View className="flex-row items-center">
+                                                    <Text className="text-primary-600 font-bold text-sm">View Case Study</Text>
+                                                    <Icon name={IconNames.chevronForward} size="xs" color="#0d9488" style={{ marginLeft: 4 }} />
+                                                </View>
+                                                <TouchableOpacity
+                                                    className="bg-error-50 p-2.5 rounded-xl border border-error-100"
+                                                    onPress={() => handleDeleteProject(project.id || project._id)}
+                                                >
+                                                    <Icon name={IconNames.trash} size="sm" color="#ef4444" />
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
-                                    </View>
-                                </View>
+                                    </AnimatedCard>
+                                </FadeInView>
                             );
                         })
                     )}

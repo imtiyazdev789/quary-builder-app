@@ -138,9 +138,9 @@ const MyRequestScreen = () => {
                     />
                 }
             >
-                <View className="px-4 py-6">
-                    <Text className="text-3xl font-bold text-gray-900 mb-6">
-                        My Requests
+                <View className="px-6 pt-8 pb-4">
+                    <Text className="text-3xl font-bold text-secondary-900 font-primary">
+                        Requests
                     </Text>
 
                     {requests.length === 0 ? (

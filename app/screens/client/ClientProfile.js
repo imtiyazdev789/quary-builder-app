@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/axios';
 import Router from '../../config/Router';
@@ -16,6 +16,7 @@ import theme from '../../config/theme';
 
 const ClientProfile = () => {
     const { user, updateUser } = useAuth();
+    const insets = useSafeAreaInsets();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -230,7 +231,7 @@ const ClientProfile = () => {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
+        <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
             <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 32 }}>
                 <View className="px-4 py-6">
                     <View className="flex-row justify-end mb-2">
@@ -387,7 +388,7 @@ const ClientProfile = () => {
                 buttons={alertConfig.buttons}
                 onClose={hideAlert}
             />
-        </SafeAreaView>
+        </View>
     );
 };
 

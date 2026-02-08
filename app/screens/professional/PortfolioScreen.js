@@ -15,7 +15,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import api from '../../config/axios';
 import Router from '../../config/Router';
-import { InputField, ErrorText, CustomAlert } from '../../components';
+import { InputField, ErrorText, CustomAlert, Icon, IconNames, FadeInView, AnimatedCard } from '../../components';
 
 const PortfolioScreen = () => {
     const [portfolios, setPortfolios] = useState([]);
@@ -124,7 +124,7 @@ const PortfolioScreen = () => {
             showAlert({
                 title: 'Permission Required',
                 message: 'We need access to your photo library to upload portfolio images.',
-                icon: '📷',
+                icon: 'camera',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             return;
@@ -281,33 +281,37 @@ const PortfolioScreen = () => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-                <View className="px-4 py-6">
+                <View className="px-6 pt-8 pb-4">
                     {/* Header */}
-                    <View className="flex-row justify-between items-start mb-4">
-                        <View className="flex-1 mr-3">
-                            <Text className="text-2xl font-bold text-gray-900">
-                                My Portfolio
-                            </Text>
-                            <Text className="text-xs text-gray-500 mt-1">
-                                Showcase your best work to attract more clients
-                            </Text>
-                        </View>
+                    <FadeInView delay={100} className="flex-row justify-between items-center mb-10">
+                        <Text className="text-3xl font-bold text-secondary-900">
+                            Portfolio
+                        </Text>
                         <TouchableOpacity
-                            className="bg-primary-600 rounded-lg px-3 py-2 self-start"
+                            className={`${isAdding ? 'bg-secondary-200' : 'bg-primary-600'} rounded-xl px-4 py-2.5 shadow-sm flex-row items-center`}
                             onPress={() => setIsAdding((prev) => !prev)}
                         >
-                            <Text className="text-white font-semibold">
-                                {isAdding ? 'Close' : '+ Add'}
+                            <Icon
+                                name={isAdding ? IconNames.close : IconNames.add}
+                                size="xs"
+                                color={isAdding ? '#475569' : 'white'}
+                                style={{ marginRight: 6 }}
+                            />
+                            <Text className={`${isAdding ? 'text-secondary-700' : 'text-white'} font-bold text-sm tracking-wide`}>
+                                {isAdding ? 'Cancel' : 'Add'}
                             </Text>
                         </TouchableOpacity>
-                    </View>
+                    </FadeInView>
 
                     {/* Create Portfolio Form */}
                     {isAdding && (
-                        <View className="bg-white rounded-lg p-4 mb-6 shadow-sm">
-                            <Text className="text-base font-semibold text-gray-900 mb-4">
-                                Add Portfolio Item
-                            </Text>
+                        <FadeInView delay={200} className="bg-white rounded-[32px] p-6 mb-8 shadow-sm border border-secondary-100">
+                            <View className="flex-row items-center mb-6 pb-2 border-b border-secondary-50">
+                                <Icon name={IconNames.add} size="sm" color="#0d9488" style={{ marginRight: 8 }} />
+                                <Text className="text-xl font-bold text-secondary-900">
+                                    New Portfolio Item
+                                </Text>
+                            </View>
 
                             <InputField
                                 label="Title"
@@ -384,13 +388,15 @@ const PortfolioScreen = () => {
                                         </View>
                                     ) : (
                                         <View className="flex-row items-center">
-                                            <Text className="text-2xl mr-3">📷</Text>
+                                            <View className="bg-secondary-200 p-3 rounded-2xl mr-4">
+                                                <Icon name={IconNames.camera} size="md" color="#64748b" />
+                                            </View>
                                             <View>
-                                                <Text className="text-sm font-medium text-secondary-900">
-                                                    Upload Image
+                                                <Text className="text-sm font-bold text-secondary-900">
+                                                    Upload Cover Image
                                                 </Text>
                                                 <Text className="text-xs text-secondary-500 mt-1">
-                                                    Tap to choose a cover image for this project
+                                                    PNG, JPG up to 5MB
                                                 </Text>
                                             </View>
                                         </View>
@@ -412,102 +418,94 @@ const PortfolioScreen = () => {
                                 />
                             </View>
 
-                            <View className="flex-row justify-end mt-2">
+                            <View className="flex-row gap-3 mt-4">
                                 <TouchableOpacity
-                                    className="px-4 py-2 rounded-lg border border-secondary-300 mr-3"
+                                    className="flex-1 px-6 py-4 rounded-2xl bg-secondary-50 items-center"
                                     onPress={() => {
                                         clearForm();
                                         setIsAdding(false);
                                     }}
                                     disabled={submitting}
                                 >
-                                    <Text className="text-secondary-700 font-medium">
-                                        Cancel
-                                    </Text>
+                                    <Text className="text-secondary-600 font-bold">Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    className={`px-5 py-2 rounded-lg ${submitting ? 'bg-primary-300' : 'bg-primary-600'}`}
+                                    className={`flex-2 px-8 py-4 rounded-2xl items-center ${submitting ? 'bg-primary-300' : 'bg-primary-600'}`}
                                     onPress={handleCreatePortfolio}
                                     disabled={submitting}
                                 >
-                                    <Text className="text-white font-semibold">
-                                        {submitting ? 'Saving...' : 'Save'}
-                                    </Text>
+                                    <View className="flex-row items-center">
+                                        {submitting && <ActivityIndicator size="small" color="white" style={{ marginRight: 8 }} />}
+                                        <Text className="text-white font-bold tracking-wide">
+                                            {submitting ? 'Saving Item...' : 'Add to Portfolio'}
+                                        </Text>
+                                    </View>
                                 </TouchableOpacity>
                             </View>
-                        </View>
+                        </FadeInView>
                     )}
 
                     {/* Portfolio List */}
                     {portfolios.length === 0 ? (
-                        <View className="bg-white rounded-lg p-8 items-center">
-                            <Text className="text-6xl mb-4">🖼️</Text>
-                            <Text className="text-xl font-semibold text-gray-900 mb-2">
-                                No Portfolio Items Yet
+                        <FadeInView delay={300} className="flex-1 justify-center items-center py-32">
+                            <Text className="text-base text-secondary-400 text-center font-medium">
+                                No portfolio items yet.
                             </Text>
-                            <Text className="text-base text-gray-600 text-center mb-6">
-                                Start building trust with clients by showcasing your best
-                                completed projects.
-                            </Text>
-                            <TouchableOpacity
-                                className="bg-primary-600 rounded-lg px-6 py-3"
-                                onPress={() => setIsAdding(true)}
-                            >
-                                <Text className="text-white font-semibold">
-                                    Add Your First Portfolio Item
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                        </FadeInView>
                     ) : (
-                        portfolios.map((item) => {
+                        portfolios.map((item, index) => {
                             const imageUrl = getPortfolioImageUrl(item);
                             return (
-                                <View
-                                    key={item.id || item._id}
-                                    className="bg-white rounded-lg mb-4 shadow-sm overflow-hidden"
-                                >
-                                    {imageUrl && (
-                                        <Image
-                                            source={{ uri: imageUrl }}
-                                            className="w-full h-48"
-                                            resizeMode="cover"
-                                        />
-                                    )}
-                                    <View className="p-4">
-                                        <View className="flex-row justify-between items-start mb-2">
-                                            <View className="flex-1 mr-2">
-                                                <Text className="text-lg font-semibold text-gray-900 mb-1">
-                                                    {item.portfolioTitle || 'Untitled Portfolio'}
-                                                </Text>
-                                                <Text className="text-sm text-gray-600 mb-1">
-                                                    {item.buildingType || 'Building type not specified'}
-                                                </Text>
-                                                <Text className="text-xs text-gray-500">
-                                                    📍 {item.portfolioLocation || 'Location not specified'}
-                                                </Text>
-                                            </View>
+                                <FadeInView key={item.id || item._id} delay={200 + index * 100}>
+                                    <AnimatedCard
+                                        className="bg-white rounded-[24px] mb-6 shadow-sm border border-secondary-100 overflow-hidden"
+                                    >
+                                        <View className="relative">
+                                            {imageUrl ? (
+                                                <Image
+                                                    source={{ uri: imageUrl }}
+                                                    className="w-full h-56"
+                                                    resizeMode="cover"
+                                                />
+                                            ) : (
+                                                <View className="w-full h-56 bg-secondary-100 items-center justify-center">
+                                                    <Icon name={IconNames.image} size="xl" color="#94a3b8" />
+                                                </View>
+                                            )}
                                             {item.isFeatured && (
-                                                <View className="px-3 py-1 rounded-full bg-yellow-100">
-                                                    <Text className="text-xs font-medium text-yellow-800">
-                                                        ⭐ Featured
+                                                <View className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-amber-400 shadow-sm flex-row items-center">
+                                                    <Icon name={IconNames.starFilled} size="xxs" color="white" style={{ marginRight: 4 }} />
+                                                    <Text className="text-[10px] font-bold text-white uppercase tracking-wider">
+                                                        Featured
                                                     </Text>
                                                 </View>
                                             )}
                                         </View>
+                                        <View className="p-5">
+                                            <View className="flex-row justify-between items-start mb-2">
+                                                <View className="flex-1">
+                                                    <Text className="text-xl font-bold text-secondary-900 mb-1">
+                                                        {item.portfolioTitle || 'Untitled Project'}
+                                                    </Text>
+                                                    <Text className="text-sm font-semibold text-primary-600 uppercase tracking-tight">
+                                                        {item.buildingType}
+                                                    </Text>
+                                                </View>
+                                            </View>
 
-                                        {item.projectCompletionYear && (
-                                            <Text className="text-xs text-gray-500 mb-2">
-                                                Completed: {formatYear(item.projectCompletionYear)}
-                                            </Text>
-                                        )}
+                                            <View className="flex-row items-center mb-4">
+                                                <Icon name={IconNames.location} size="xs" color="#64748b" style={{ marginRight: 4 }} />
+                                                <Text className="text-xs text-secondary-500 font-medium">
+                                                    {item.portfolioLocation} • {item.projectCompletionYear}
+                                                </Text>
+                                            </View>
 
-                                        {item.portfolioDescription && (
-                                            <Text className="text-sm text-gray-700 mt-1">
+                                            <Text className="text-sm text-secondary-600 leading-5" numberOfLines={3}>
                                                 {item.portfolioDescription}
                                             </Text>
-                                        )}
-                                    </View>
-                                </View>
+                                        </View>
+                                    </AnimatedCard>
+                                </FadeInView>
                             );
                         })
                     )}

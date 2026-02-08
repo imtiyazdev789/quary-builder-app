@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import {
     InputField,
@@ -8,7 +8,8 @@ import {
     DatePickerField,
     CustomButton,
     CustomAlert,
-    ErrorText,
+    Icon,
+    IconNames,
 } from '../../components';
 import { BUSINESS_TYPES } from '../auth/professional-signup/constants';
 import api from '../../config/axios';
@@ -16,6 +17,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const UpdateProfileScreen = ({ navigation }) => {
     const { user } = useAuth();
+    const insets = useSafeAreaInsets();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [errors, setErrors] = useState({});
@@ -108,7 +110,7 @@ const UpdateProfileScreen = ({ navigation }) => {
             showAlert({
                 title: 'Permission Denied',
                 message: 'Please allow access to your photo library.',
-                icon: '📷',
+                icon: 'camera',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             return;
@@ -315,13 +317,16 @@ const UpdateProfileScreen = ({ navigation }) => {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+        <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <View className="px-6 py-6">
+                <View className="px-6 py-4">
                     <View className="flex-row justify-end mb-2">
                         {!isEditing && (
-                            <TouchableOpacity onPress={() => setIsEditing(true)} className="flex-row items-center">
-                                <Text className="text-primary-600 text-lg mr-1">✏️</Text>
+                            <TouchableOpacity
+                                onPress={() => setIsEditing(true)}
+                                className="flex-row items-center bg-primary-50 px-4 py-2 rounded-full"
+                            >
+                                <Icon name={IconNames.create} size="sm" color="#0d9488" style={{ marginRight: 6 }} />
                                 <Text className="text-primary-600 font-semibold">Edit</Text>
                             </TouchableOpacity>
                         )}
@@ -360,12 +365,15 @@ const UpdateProfileScreen = ({ navigation }) => {
                                             width: 128,
                                             height: 128,
                                             borderRadius: 64,
-                                            backgroundColor: '#e0f2fe',
+                                            backgroundColor: '#f1f5f9',
                                             alignItems: 'center',
                                             justifyContent: 'center',
+                                            borderWidth: 1,
+                                            borderColor: '#e2e8f0',
+                                            borderStyle: 'dashed',
                                         }}
                                     >
-                                        <Text className="text-5xl">👤</Text>
+                                        <Icon name={IconNames.person} size="xxl" color="#94a3b8" />
                                     </View>
                                 )}
                             </TouchableOpacity>
@@ -378,9 +386,12 @@ const UpdateProfileScreen = ({ navigation }) => {
 
                         {/* Business Information */}
                         <View className="mb-6">
-                            <Text className="text-lg font-bold text-secondary-900 mb-4">
-                                Business Information
-                            </Text>
+                            <View className="flex-row items-center mb-4 pb-2 border-b border-secondary-100">
+                                <Icon name={IconNames.briefcase} size="sm" color="#0d9488" style={{ marginRight: 8 }} />
+                                <Text className="text-lg font-bold text-secondary-900">
+                                    Business Information
+                                </Text>
+                            </View>
 
                             <InputField
                                 label="Business Name *"
@@ -505,9 +516,12 @@ const UpdateProfileScreen = ({ navigation }) => {
 
                         {/* About Business */}
                         <View className="mb-6">
-                            <Text className="text-lg font-bold text-secondary-900 mb-4">
-                                About Business
-                            </Text>
+                            <View className="flex-row items-center mb-4 pb-2 border-b border-secondary-100">
+                                <Icon name={IconNames.information} size="sm" color="#0d9488" style={{ marginRight: 8 }} />
+                                <Text className="text-lg font-bold text-secondary-900">
+                                    About Business
+                                </Text>
+                            </View>
 
                             <View className="mb-4">
                                 <Text className="text-sm font-medium text-secondary-800 mb-2">
@@ -559,9 +573,8 @@ const UpdateProfileScreen = ({ navigation }) => {
                 buttons={alertConfig.buttons}
                 onClose={hideAlert}
             />
-        </SafeAreaView>
+        </View>
     );
 };
 
 export default UpdateProfileScreen;
-

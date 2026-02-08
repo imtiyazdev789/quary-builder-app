@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 
-const ProfessionalSetting = () => {
+const ProfessionalSetting = ({ navigation }) => {
     const { logout, user } = useAuth();
+    const insets = useSafeAreaInsets();
     const [notifications, setNotifications] = React.useState(true);
     const [emailUpdates, setEmailUpdates] = React.useState(true);
 
@@ -12,7 +14,7 @@ const ProfessionalSetting = () => {
     };
 
     return (
-        <View className="flex-1 bg-gray-50">
+        <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
             <ScrollView className="flex-1">
                 <View className="px-4 py-6">
                     <View className="items-center mb-6">
@@ -44,7 +46,7 @@ const ProfessionalSetting = () => {
                                 trackColor={{ false: '#D1D5DB', true: '#0d9488' }}
                             />
                         </View>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             className="px-4 py-4 border-b border-gray-200"
                             onPress={() => navigation.navigate('UpdateProfile')}
                         >

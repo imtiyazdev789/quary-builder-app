@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/axios';
@@ -10,6 +11,7 @@ import theme from '../../config/theme';
 const Dashboard = () => {
     const { user } = useAuth();
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
     const role = user?.role?.toLowerCase() || 'user';
 
     const [loading, setLoading] = useState(true);
@@ -154,15 +156,12 @@ const Dashboard = () => {
     }
 
     return (
-        <View className="flex-1 bg-gray-50">
+        <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
             <ScrollView className="flex-1">
-                <View className="px-4 py-6">
-                    {/* <Text className="text-3xl font-bold text-gray-900 mb-2">
-                        {content.title}
-                    </Text> */}
-                    <Text className="text-base text-gray-600 mb-6">
+                <View className="px-6 pt-20 pb-6">
+                    {/* <Text className="text-base text-gray-600 mb-6">
                         Welcome to your dashboard
-                    </Text>
+                    </Text> */}
 
                     {error && (
                         <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
