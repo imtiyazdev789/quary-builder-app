@@ -5,6 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { LocationPickerField, InputField } from '../../components';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const ClientSignupScreen = ({ navigation }) => {
     const [firstName, setFirstName] = useState('');
@@ -137,7 +139,7 @@ const ClientSignupScreen = ({ navigation }) => {
             showCustomAlert({
                 title: 'Registration Failed',
                 message: result.error || 'Something went wrong. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         }
@@ -161,7 +163,7 @@ const ClientSignupScreen = ({ navigation }) => {
                     <View className="mb-6">
                         <View className="flex-row items-center mb-2">
                             <View className="w-12 h-12 bg-primary-100 rounded-full items-center justify-center mr-3">
-                                <Text className="text-2xl">🏠</Text>
+                                <Icon name={IconNames.home} size="xl" color={theme.colors.primary[500]} />
                             </View>
                             <View>
                                 <Text className="text-2xl font-bold text-secondary-900">
@@ -278,6 +280,7 @@ const ClientSignupScreen = ({ navigation }) => {
                             value={addressLine1}
                             onChangeText={setAddressLine1}
                             placeholder="Building, Street"
+                            leftIcon="location"
                         />
 
                         <InputField
@@ -285,6 +288,7 @@ const ClientSignupScreen = ({ navigation }) => {
                             value={addressLine2}
                             onChangeText={setAddressLine2}
                             placeholder="Area, Landmark"
+                            leftIcon="location"
                         />
 
                         <View className="flex-row gap-3 mb-4">
@@ -294,6 +298,7 @@ const ClientSignupScreen = ({ navigation }) => {
                                     value={city}
                                     onChangeText={setCity}
                                     placeholder="Enter city"
+                                    leftIcon="location"
                                 />
                             </View>
                             <View className="flex-1">
@@ -302,6 +307,7 @@ const ClientSignupScreen = ({ navigation }) => {
                                     value={state}
                                     onChangeText={setState}
                                     placeholder="Enter state"
+                                    leftIcon="location"
                                 />
                             </View>
                         </View>
@@ -313,12 +319,14 @@ const ClientSignupScreen = ({ navigation }) => {
                             placeholder="Enter 6-digit pincode"
                             keyboardType="number-pad"
                             maxLength={6}
+                            leftIcon="location"
                         />
 
                         {coordinates && (
-                            <View className="bg-success-50 rounded-xl p-3 mt-2">
-                                <Text className="text-success-700 text-xs">
-                                    📍 Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
+                            <View className="bg-success-50 rounded-xl p-3 mt-2 flex-row items-center">
+                                <Icon name={IconNames.location} size="sm" color={theme.colors.success[700]} />
+                                <Text className="text-success-700 text-xs ml-2">
+                                    Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
                                 </Text>
                             </View>
                         )}
@@ -346,9 +354,11 @@ const ClientSignupScreen = ({ navigation }) => {
                                 className="absolute right-3 top-3"
                                 onPress={() => setShowPassword(!showPassword)}
                             >
-                                <Text className="text-xl text-secondary-500">
-                                    {showPassword ? '🙈' : '👁️'}
-                                </Text>
+                                <Icon
+                                    name={showPassword ? IconNames.eyeOff : IconNames.eye}
+                                    size="lg"
+                                    color={theme.colors.text.tertiary}
+                                />
                             </TouchableOpacity>
                         </View>
                         <ErrorText error={errors.password} />
@@ -376,9 +386,11 @@ const ClientSignupScreen = ({ navigation }) => {
                                 className="absolute right-3 top-3"
                                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                             >
-                                <Text className="text-xl text-secondary-500">
-                                    {showConfirmPassword ? '🙈' : '👁️'}
-                                </Text>
+                                <Icon
+                                    name={showConfirmPassword ? IconNames.eyeOff : IconNames.eye}
+                                    size="lg"
+                                    color={theme.colors.text.tertiary}
+                                />
                             </TouchableOpacity>
                         </View>
                         <ErrorText error={errors.confirmPassword} />

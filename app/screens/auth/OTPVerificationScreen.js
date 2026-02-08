@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
     const { emailVerificationId, email, role, showSuccessMessage } = route.params || {};
@@ -37,7 +39,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Error',
                 message: 'Missing verification details. Please sign up again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{
                     text: 'Go Back',
                     onPress: () => {
@@ -56,7 +58,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
                 showCustomAlert({
                     title: 'OTP Sent!',
                     message: `A 6-digit verification code has been sent to ${email}. Please check your inbox.`,
-                    icon: '📧',
+                    icon: 'mail',
                     buttons: [{
                         text: 'OK',
                         onPress: hideAlert,
@@ -91,7 +93,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Invalid OTP',
                 message: 'Please enter a valid 6-digit OTP.',
-                icon: '⚠️',
+                icon: 'warning',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             return;
@@ -103,7 +105,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Verified!',
                 message: 'Your email has been verified successfully! You can now login to your account.',
-                icon: '✅',
+                icon: 'checkmark-circle',
                 buttons: [{
                     text: 'Login Now',
                     onPress: () => {
@@ -119,7 +121,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'Verification Failed',
                 message: result.error || 'Invalid OTP. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'Try Again', onPress: hideAlert, style: 'primary' }],
             });
         }
@@ -133,14 +135,14 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             showCustomAlert({
                 title: 'OTP Resent!',
                 message: 'A new OTP has been sent to your email.',
-                icon: '📧',
+                icon: 'mail',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } else {
             showCustomAlert({
                 title: 'Error',
                 message: result.error || 'Failed to resend OTP. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         }

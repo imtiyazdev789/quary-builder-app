@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const roleOptions = [
     { key: 'user', label: 'Client' },
@@ -87,7 +89,7 @@ const LoginScreen = ({ navigation }) => {
             showCustomAlert({
                 title: 'Login Failed',
                 message: result.error || 'Invalid credentials. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         }
@@ -151,20 +153,29 @@ const LoginScreen = ({ navigation }) => {
                         <Text className="text-sm font-medium text-secondary-800 mb-2">
                             {credentialLabel}
                         </Text>
-                        <TextInput
-                            className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.identifier ? 'border-error-500' : 'border-secondary-200'
-                                }`}
-                            placeholder={credentialPlaceholder}
-                            placeholderTextColor="#94a3b8"
-                            value={identifier}
-                            onChangeText={(text) => {
-                                setIdentifier(text);
-                                clearError('identifier');
-                            }}
-                            keyboardType={credentialKeyboardType}
-                            autoCapitalize="none"
-                            autoComplete={role === 'admin' ? 'off' : 'email'}
-                        />
+                        <View className="relative">
+                            <View className="absolute left-3 top-3 z-10">
+                                <Icon
+                                    name={role === 'admin' ? IconNames.person : IconNames.mail}
+                                    size="lg"
+                                    color={theme.colors.text.tertiary}
+                                />
+                            </View>
+                            <TextInput
+                                className={`border rounded-xl pl-12 pr-4 py-3 text-base bg-white ${errors.identifier ? 'border-error-500' : 'border-secondary-200'
+                                    }`}
+                                placeholder={credentialPlaceholder}
+                                placeholderTextColor="#94a3b8"
+                                value={identifier}
+                                onChangeText={(text) => {
+                                    setIdentifier(text);
+                                    clearError('identifier');
+                                }}
+                                keyboardType={credentialKeyboardType}
+                                autoCapitalize="none"
+                                autoComplete={role === 'admin' ? 'off' : 'email'}
+                            />
+                        </View>
                         <ErrorText error={errors.identifier} />
                     </View>
 
@@ -173,8 +184,15 @@ const LoginScreen = ({ navigation }) => {
                             Password
                         </Text>
                         <View className="relative">
+                            <View className="absolute left-3 top-3 z-10">
+                                <Icon
+                                    name={IconNames.lock}
+                                    size="lg"
+                                    color={theme.colors.text.tertiary}
+                                />
+                            </View>
                             <TextInput
-                                className={`border rounded-xl px-4 py-3 pr-12 text-base bg-white ${errors.password ? 'border-error-500' : 'border-secondary-200'
+                                className={`border rounded-xl pl-12 pr-12 py-3 text-base bg-white ${errors.password ? 'border-error-500' : 'border-secondary-200'
                                     }`}
                                 placeholder="Enter your password"
                                 placeholderTextColor="#94a3b8"
@@ -190,9 +208,11 @@ const LoginScreen = ({ navigation }) => {
                                 className="absolute right-3 top-3"
                                 onPress={() => setShowPassword(!showPassword)}
                             >
-                                <Text className="text-xl text-secondary-500">
-                                    {showPassword ? '🙈' : '👁️'}
-                                </Text>
+                                <Icon
+                                    name={showPassword ? IconNames.eyeOff : IconNames.eye}
+                                    size="lg"
+                                    color={theme.colors.text.tertiary}
+                                />
                             </TouchableOpacity>
                         </View>
                         <ErrorText error={errors.password} />

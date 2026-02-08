@@ -3,6 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const NotificationsScreen = () => {
     const [notifications, setNotifications] = useState([]);
@@ -77,15 +79,15 @@ const NotificationsScreen = () => {
     const getNotificationIcon = (type) => {
         switch (type) {
             case 'request':
-                return '📋';
+                return IconNames.document;
             case 'quotation':
-                return '💰';
+                return IconNames.cash;
             case 'status':
-                return '🔄';
+                return IconNames.sync;
             case 'message':
-                return '💬';
+                return IconNames.chatbubble;
             default:
-                return '🔔';
+                return IconNames.notifications;
         }
     };
 
@@ -158,8 +160,8 @@ const NotificationsScreen = () => {
 
                     {notifications.length === 0 ? (
                         <View className="bg-white rounded-lg p-8 items-center mt-8">
-                            <Text className="text-6xl mb-4">🔔</Text>
-                            <Text className="text-xl font-semibold text-gray-900 mb-2">
+                            <Icon name={IconNames.notifications} size={64} color={theme.colors.text.tertiary} />
+                            <Text className="text-xl font-semibold text-gray-900 mb-2 mt-4">
                                 No Notifications
                             </Text>
                             <Text className="text-base text-gray-600 text-center">
@@ -178,9 +180,11 @@ const NotificationsScreen = () => {
                             >
                                 <View className="flex-row">
                                     <View className="mr-3">
-                                        <Text className="text-3xl">
-                                            {getNotificationIcon(notification.type)}
-                                        </Text>
+                                        <Icon
+                                            name={getNotificationIcon(notification.type)}
+                                            size="xl"
+                                            color={!notification.read ? theme.colors.primary[600] : theme.colors.text.tertiary}
+                                        />
                                     </View>
                                     <View className="flex-1">
                                         <View className="flex-row justify-between items-start mb-1">

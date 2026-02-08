@@ -52,8 +52,7 @@ const ProjectsScreen = () => {
             showAlert({
                 title: 'Error',
                 message: 'Failed to load projects. Please try again.',
-                icon: '❌',
-                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
+                icon: 'close-circle',
             });
             setProjects([]);
         } finally {
@@ -149,7 +148,7 @@ const ProjectsScreen = () => {
         showAlert({
             title: 'Delete Project',
             message: 'Are you sure you want to delete this project? This action cannot be undone.',
-            icon: '⚠️',
+            icon: 'warning',
             buttons: [
                 {
                     text: 'Cancel',
@@ -177,7 +176,7 @@ const ProjectsScreen = () => {
                 showAlert({
                     title: 'Success',
                     message: 'Project deleted successfully',
-                    icon: '✅',
+                    icon: 'checkmark-circle',
                     buttons: [{ text: 'OK', onPress: () => { hideAlert(); fetchProjects(); }, style: 'primary' }],
                 });
             } else {
@@ -192,7 +191,7 @@ const ProjectsScreen = () => {
             showAlert({
                 title: 'Error',
                 message: errorMessage,
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } finally {

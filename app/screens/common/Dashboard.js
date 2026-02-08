@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/axios';
 import Router from '../../config/Router';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const Dashboard = () => {
     const { user } = useAuth();
@@ -197,7 +199,7 @@ const Dashboard = () => {
                                             Submit a project request to professionals
                                         </Text>
                                     </View>
-                                    <Text className="text-3xl ml-3">➕</Text>
+                                    <Icon name={IconNames.add} size="xl" color="white" />
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -213,7 +215,7 @@ const Dashboard = () => {
                                             Discover architects, designers & contractors near you
                                         </Text>
                                     </View>
-                                    <Text className="text-3xl ml-3">📍</Text>
+                                    <Icon name={IconNames.location} size="xl" color="white" />
                                 </View>
                             </TouchableOpacity>
                         </>

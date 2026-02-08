@@ -11,6 +11,8 @@ import {
     ErrorText,
     CustomAlert,
 } from '../../components';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const ClientProfile = () => {
     const { user, updateUser } = useAuth();
@@ -194,14 +196,14 @@ const ClientProfile = () => {
                 showAlert({
                     title: 'Success',
                     message: 'Profile updated successfully.',
-                    icon: '✅',
+                    icon: 'checkmark-circle',
                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                 });
             } else {
                 showAlert({
                     title: 'Update Failed',
                     message: response.data.message || 'Something went wrong. Please try again.',
-                    icon: '❌',
+                    icon: 'close-circle',
                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                 });
             }
@@ -234,8 +236,8 @@ const ClientProfile = () => {
                     <View className="flex-row justify-end mb-2">
                         {!isEditing && (
                             <TouchableOpacity onPress={() => setIsEditing(true)} className="flex-row items-center">
-                                <Text className="text-primary-600 text-lg mr-1">✏️</Text>
-                                <Text className="text-primary-600 font-semibold">Edit</Text>
+                                <Icon name={IconNames.create} size="lg" color={theme.colors.primary[600]} />
+                                <Text className="text-primary-600 font-semibold ml-1">Edit</Text>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -272,6 +274,7 @@ const ClientProfile = () => {
                                     onChangeText={(text) => { setFirstName(text); clearError('firstName'); }}
                                     error={errors.firstName}
                                     editable={isEditing}
+                                    leftIcon="person"
                                 />
                             </View>
                             <View className="flex-1">
@@ -281,6 +284,7 @@ const ClientProfile = () => {
                                     onChangeText={(text) => { setLastName(text); clearError('lastName'); }}
                                     error={errors.lastName}
                                     editable={isEditing}
+                                    leftIcon="person"
                                 />
                             </View>
                         </View>
@@ -293,6 +297,7 @@ const ClientProfile = () => {
                             keyboardType="email-address"
                             autoCapitalize="none"
                             editable={isEditing}
+                            leftIcon="mail"
                         />
 
                         <InputField
@@ -303,6 +308,7 @@ const ClientProfile = () => {
                             keyboardType="phone-pad"
                             maxLength={10}
                             editable={isEditing}
+                            leftIcon="phone"
                         />
 
                         <InputField
@@ -312,6 +318,7 @@ const ClientProfile = () => {
                             error={errors.address}
                             multiline
                             editable={isEditing}
+                            leftIcon="location"
                         />
 
                         <View className="flex-row gap-3">
@@ -321,6 +328,7 @@ const ClientProfile = () => {
                                     value={city}
                                     onChangeText={setCity}
                                     editable={isEditing}
+                                    leftIcon="location"
                                 />
                             </View>
                             <View className="flex-1">
@@ -329,6 +337,7 @@ const ClientProfile = () => {
                                     value={state}
                                     onChangeText={setState}
                                     editable={isEditing}
+                                    leftIcon="location"
                                 />
                             </View>
                         </View>
@@ -341,6 +350,7 @@ const ClientProfile = () => {
                             keyboardType="number-pad"
                             maxLength={6}
                             editable={isEditing}
+                            leftIcon="location"
                         />
                         <ErrorText error={errors.address} />
 

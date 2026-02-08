@@ -148,7 +148,7 @@ const ProfessionalRequestDetailsScreen = () => {
                 showAlert({
                     title: 'Request Accepted!',
                     message: 'The client has been notified of your acceptance. They will receive an email with your contact details.',
-                    icon: '✅',
+                    icon: 'checkmark-circle',
                     buttons: [
                         {
                             text: 'OK',
@@ -172,7 +172,7 @@ const ProfessionalRequestDetailsScreen = () => {
             showAlert({
                 title: 'Error',
                 message: errorMessage,
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } finally {
@@ -197,7 +197,7 @@ const ProfessionalRequestDetailsScreen = () => {
                 showAlert({
                     title: 'Request Rejected',
                     message: 'The client has been notified of your rejection.',
-                    icon: '⚠️',
+                    icon: 'warning',
                     buttons: [
                         {
                             text: 'OK',
@@ -221,7 +221,7 @@ const ProfessionalRequestDetailsScreen = () => {
             showAlert({
                 title: 'Error',
                 message: errorMessage,
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } finally {
@@ -702,7 +702,7 @@ const ProfessionalRequestDetailsScreen = () => {
                                                         showAlert({
                                                             title: 'Error',
                                                             message: 'Failed to open chat. Please try again.',
-                                                            icon: '❌',
+                                                            icon: 'close-circle',
                                                             buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }]
                                                         });
                                                     } finally {

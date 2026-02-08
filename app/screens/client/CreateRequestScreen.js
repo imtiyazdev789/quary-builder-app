@@ -11,6 +11,8 @@ import Step1ProjectBasic from './request-creation/Step1ProjectBasic';
 import Step2ProjectDetails from './request-creation/Step2ProjectDetails';
 import Step3BudgetLocation from './request-creation/Step3BudgetLocation';
 import Step4ContactInfo from './request-creation/Step4ContactInfo';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const CreateRequestScreen = () => {
     const navigation = useNavigation();
@@ -224,7 +226,7 @@ const CreateRequestScreen = () => {
                 showAlert({
                     title: 'Request Created!',
                     message: 'Your project request has been submitted successfully. The professional will review and respond soon.',
-                    icon: '✅',
+                    icon: 'checkmark-circle',
                     buttons: [
                         {
                             text: 'View My Requests',
@@ -259,7 +261,7 @@ const CreateRequestScreen = () => {
             showAlert({
                 title: 'Error',
                 message: errorMessage,
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } finally {
@@ -352,9 +354,10 @@ const CreateRequestScreen = () => {
                             </Text>
                         )}
                         {!professionalId && (
-                            <Text className="text-xs text-warning-600 mt-1">
-                                ⚠️ Please select a professional first
-                            </Text>
+                            <View className="flex-row items-center">
+                                <Icon name={IconNames.warning} size="sm" color={theme.colors.warning[600]} />
+                                <Text className="text-xs text-warning-600 ml-1">Please select a professional first</Text>
+                            </View>
                         )}
                     </View>
                     <TouchableOpacity
@@ -362,7 +365,7 @@ const CreateRequestScreen = () => {
                             showAlert({
                                 title: 'Cancel Request?',
                                 message: 'Are you sure you want to cancel? Your progress will be lost.',
-                                icon: '⚠️',
+                                icon: 'warning',
                                 buttons: [
                                     {
                                         text: 'Yes, Cancel',

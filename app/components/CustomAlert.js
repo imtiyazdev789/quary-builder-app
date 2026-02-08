@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal, Dimensions } from 'react-native';
+import Icon, { IconNames } from './Icon';
+import theme from '../config/theme';
 
 const { width } = Dimensions.get('window');
 
@@ -9,8 +11,8 @@ const { width } = Dimensions.get('window');
  * @param {boolean} visible - Controls alert visibility
  * @param {string} title - Alert heading/title
  * @param {string} message - Alert body text
- * @param {string} icon - Optional emoji/icon to display (e.g., '📧', '✅', '❌')
- * @param {Array} buttons - Array of button objects: [{ text: 'OK', onPress: () => {}, style: 'primary|secondary|danger' }]
+ * @param {string} icon - Icon name from IconNames (e.g., 'checkmark-circle', 'close-circle', 'warning') or legacy emoji
+ * @param {Array} buttons - Array of button objects: [{ text: 'OK', onPress: () => {}, style: 'primary|secondary|danger|destructive' }]
  * @param {function} onClose - Called when alert is dismissed
  * 
  * Usage:
@@ -18,7 +20,7 @@ const { width } = Dimensions.get('window');
  *   visible={showAlert}
  *   title="Success!"
  *   message="Your action was completed."
- *   icon="✅"
+ *   icon="checkmark-circle"
  *   buttons={[
  *     { text: 'Cancel', onPress: () => setShowAlert(false), style: 'secondary' },
  *     { text: 'Continue', onPress: handleContinue, style: 'primary' },
@@ -42,6 +44,7 @@ const CustomAlert = ({
             case 'secondary':
                 return 'bg-secondary-200';
             case 'danger':
+            case 'destructive':
                 return 'bg-error-600';
             case 'outline':
                 return 'bg-white border-2 border-primary-600';
@@ -57,6 +60,7 @@ const CustomAlert = ({
             case 'secondary':
                 return 'text-secondary-700';
             case 'danger':
+            case 'destructive':
                 return 'text-white';
             case 'outline':
                 return 'text-primary-600';
@@ -64,6 +68,26 @@ const CustomAlert = ({
                 return 'text-white';
         }
     };
+
+    // Get icon color based on icon type
+    const getIconColor = (iconName) => {
+        if (iconName.includes('checkmark') || iconName.includes('success')) {
+            return theme.colors.success[500];
+        } else if (iconName.includes('close') || iconName.includes('error')) {
+            return theme.colors.error[500];
+        } else if (iconName.includes('warning')) {
+            return theme.colors.warning[500];
+        } else if (iconName.includes('mail') || iconName.includes('notification')) {
+            return theme.colors.primary[600];
+        } else if (iconName.includes('location')) {
+            return theme.colors.primary[500];
+        }
+        return theme.colors.primary[600];
+    };
+
+    // Check if icon is a valid IconName (not an emoji)
+    const isIconName = icon && IconNames[icon];
+    const isEmoji = icon && !isIconName && icon.length <= 2;
 
     return (
         <Modal
@@ -79,7 +103,23 @@ const CustomAlert = ({
                 >
                     {/* Icon */}
                     {icon ? (
-                        <Text className="text-5xl text-center mb-4">{icon}</Text>
+                        <View className="items-center mb-4">
+                            {isIconName ? (
+                                <Icon
+                                    name={IconNames[icon]}
+                                    size="xxl"
+                                    color={getIconColor(icon)}
+                                />
+                            ) : isEmoji ? (
+                                <Text className="text-5xl text-center">{icon}</Text>
+                            ) : (
+                                <Icon
+                                    name={icon}
+                                    size="xxl"
+                                    color={getIconColor(icon)}
+                                />
+                            )}
+                        </View>
                     ) : null}
 
                     {/* Title */}

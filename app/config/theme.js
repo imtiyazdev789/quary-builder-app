@@ -8,18 +8,18 @@
 export const theme = {
     // Color Palette - Build Query Brand Colors
     colors: {
-        // Primary Colors - Teal (Brand Color)
+        // Primary Colors - Teal (Brand Color) - Matching Frontend
         primary: {
             50: '#f0fdfa',
             100: '#ccfbf1',
-            200: '#99f6e4',
-            300: '#5eead4',
-            400: '#2dd4bf',
-            500: '#14b8a6', // Main primary color
-            600: '#0d9488', // Brand teal
-            700: '#0f766e',
-            800: '#115e59',
-            900: '#134e4a',
+            200: '#A1D6E2', // Light teal from Frontend
+            300: '#67e8f9',
+            400: '#22d3ee',
+            500: '#1995AD', // Main brand teal from Frontend
+            600: '#147A8E', // Darker teal
+            700: '#0e7490',
+            800: '#155e75',
+            900: '#164e63',
         },
 
         // Secondary Colors - Dark Navy (Cards, Headers)
@@ -110,15 +110,14 @@ export const theme = {
             },
         },
 
-        // Background Colors
+        // Background Colors (Light theme only)
         background: {
             light: '#ffffff',
-            dark: '#0f172a',      // Dark navy
-            gray: '#f8fafc',      // Light gray background
+            gray: '#F1F1F2',      // Light gray from Frontend
             muted: '#f1f5f9',     // Slightly darker gray sections
             card: '#ffffff',      // Card backgrounds
-            cardDark: '#1e293b',  // Dark card backgrounds
         },
+
 
         // Text Colors
         text: {
@@ -127,7 +126,7 @@ export const theme = {
             tertiary: '#94a3b8',  // Light for captions
             inverse: '#ffffff',   // White text on dark
             disabled: '#cbd5e1',
-            brand: '#0d9488',     // Teal for links/accents
+            brand: '#1995AD',     // Teal for links/accents (matching Frontend)
         },
 
         // Border Colors

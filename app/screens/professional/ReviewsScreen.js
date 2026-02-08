@@ -51,7 +51,7 @@ const ReviewsScreen = () => {
             showAlert({
                 title: 'Error',
                 message: 'Failed to load reviews. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             setReviews([]);

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const SignupSelectionScreen = ({ navigation }) => {
     return (
@@ -24,7 +26,7 @@ const SignupSelectionScreen = ({ navigation }) => {
                 >
                     <View className="flex-row items-center">
                         <View className="w-16 h-16 bg-primary-100 rounded-full items-center justify-center mr-4">
-                            <Text className="text-3xl">🏠</Text>
+                            <Icon name={IconNames.home} size="xxl" color={theme.colors.primary[500]} />
                         </View>
                         <View className="flex-1">
                             <Text className="text-xl font-bold text-secondary-900 mb-1">
@@ -46,7 +48,7 @@ const SignupSelectionScreen = ({ navigation }) => {
                 >
                     <View className="flex-row items-center">
                         <View className="w-16 h-16 bg-primary-100 rounded-full items-center justify-center mr-4">
-                            <Text className="text-3xl">🏗️</Text>
+                            <Icon name={IconNames.briefcase} size="xxl" color={theme.colors.primary[500]} />
                         </View>
                         <View className="flex-1">
                             <Text className="text-xl font-bold text-secondary-900 mb-1">

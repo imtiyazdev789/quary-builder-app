@@ -7,6 +7,8 @@ import { CustomAlert } from '../../components';
 import api from '../../config/axios';
 import { useAuth } from '../../context/AuthContext';
 import { SERVICE_TYPES } from './request-creation/constants';
+import Icon, { IconNames } from '../../components/Icon';
+import theme from '../../config/theme';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -103,7 +105,7 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                 showAlert({
                     title: 'Permission Denied',
                     message: 'Please allow location access to find nearby professionals.',
-                    icon: '📍',
+                    icon: 'location',
                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                 });
                 return;
@@ -511,13 +513,19 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                                                     {getCategoryLabel(professional.category)}
                                                 </Text>
                                                 <View className="flex-row items-center flex-wrap">
-                                                    <Text className="text-xs text-secondary-500">
-                                                        📍 {professional.distance?.toFixed(1) || 'N/A'} km away
-                                                    </Text>
-                                                    {professional.avgRating > 0 && (
-                                                        <Text className="text-xs text-secondary-500 ml-3">
-                                                            ⭐ {professional.avgRating.toFixed(1)} ({professional.totalReview})
+                                                    <View className="flex-row items-center">
+                                                        <Icon name={IconNames.location} size="xs" color={theme.colors.text.tertiary} />
+                                                        <Text className="text-xs text-secondary-500 ml-1">
+                                                            {professional.distance?.toFixed(1) || 'N/A'} km away
                                                         </Text>
+                                                    </View>
+                                                    {professional.avgRating > 0 && (
+                                                        <View className="flex-row items-center ml-3">
+                                                            <Icon name={IconNames.star} size="xs" color={theme.colors.warning[500]} />
+                                                            <Text className="text-xs text-secondary-500 ml-1">
+                                                                {professional.avgRating.toFixed(1)} ({professional.totalReview})
+                                                            </Text>
+                                                        </View>
                                                     )}
                                                 </View>
                                             </View>
@@ -538,7 +546,7 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                 buttons={alertConfig.buttons}
                 onClose={hideAlert}
             />
-        </SafeAreaView>
+        </SafeAreaView >
     );
 };
 

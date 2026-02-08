@@ -85,7 +85,7 @@ const PortfolioScreen = () => {
             showAlert({
                 title: 'Error',
                 message: 'Failed to load portfolio items. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             setPortfolios([]);
@@ -227,7 +227,7 @@ const PortfolioScreen = () => {
                 showAlert({
                     title: 'Success',
                     message: 'Portfolio item created successfully.',
-                    icon: '✅',
+                    icon: 'checkmark-circle',
                     buttons: [
                         {
                             text: 'OK',
@@ -253,7 +253,7 @@ const PortfolioScreen = () => {
             showAlert({
                 title: 'Error',
                 message: errorMessage,
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
         } finally {
@@ -315,6 +315,7 @@ const PortfolioScreen = () => {
                                 onChangeText={setPortfolioTitle}
                                 placeholder="e.g. 3BHK Apartment in Bangalore"
                                 error={errors.portfolioTitle}
+                                leftIcon="briefcase"
                             />
 
                             <InputField
@@ -323,6 +324,7 @@ const PortfolioScreen = () => {
                                 onChangeText={setBuildingType}
                                 placeholder="e.g. Residential, Commercial"
                                 error={errors.buildingType}
+                                leftIcon="home"
                             />
 
                             <InputField
@@ -331,6 +333,7 @@ const PortfolioScreen = () => {
                                 onChangeText={setPortfolioLocation}
                                 placeholder="City, State"
                                 error={errors.portfolioLocation}
+                                leftIcon="location"
                             />
 
                             <InputField
@@ -340,6 +343,7 @@ const PortfolioScreen = () => {
                                 placeholder="e.g. 2024"
                                 keyboardType="number-pad"
                                 error={errors.projectCompletionYear}
+                                leftIcon="calendar"
                             />
 
                             <InputField
@@ -350,6 +354,7 @@ const PortfolioScreen = () => {
                                 multiline
                                 numberOfLines={4}
                                 error={errors.portfolioDescription}
+                                leftIcon="document"
                             />
 
                             {/* Image Picker */}

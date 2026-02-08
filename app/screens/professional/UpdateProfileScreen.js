@@ -92,9 +92,10 @@ const UpdateProfileScreen = ({ navigation }) => {
             showAlert({
                 title: 'Error',
                 message: 'Failed to load profile. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
+
         } finally {
             setFetching(false);
         }
@@ -260,7 +261,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                 showAlert({
                     title: 'Success',
                     message: 'Profile updated successfully!',
-                    icon: '✅',
+                    icon: 'checkmark-circle',
                     buttons: [
                         {
                             text: 'OK',
@@ -275,7 +276,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                 showAlert({
                     title: 'Error',
                     message: response.data.message || 'Failed to update profile',
-                    icon: '❌',
+                    icon: 'close-circle',
                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                 });
             }
@@ -284,9 +285,10 @@ const UpdateProfileScreen = ({ navigation }) => {
             showAlert({
                 title: 'Error',
                 message: error.response?.data?.message || error.message || 'Failed to update profile',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
+
         } finally {
             setLoading(false);
         }
@@ -387,6 +389,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                                 error={errors.businessName}
                                 placeholder="Enter business name"
                                 maxLength={140}
+                                leftIcon="briefcase"
                             />
 
                             <DropdownSelector
@@ -414,6 +417,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                                 placeholder="https://www.example.com"
                                 keyboardType="url"
                                 autoCapitalize="none"
+                                leftIcon="globe"
                             />
                         </View>
 

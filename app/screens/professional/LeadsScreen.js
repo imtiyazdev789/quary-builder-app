@@ -48,7 +48,7 @@ const LeadsScreen = () => {
             showAlert({
                 title: 'Error',
                 message: 'Failed to load client requests. Please try again.',
-                icon: '❌',
+                icon: 'close-circle',
                 buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
             });
             setRequests([]);
