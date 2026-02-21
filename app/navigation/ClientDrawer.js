@@ -186,7 +186,7 @@ const ClientDrawer = () => {
             <Drawer.Screen
                 name="Profile"
                 component={ClientProfile}
-                options={{ title: 'Profile' }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="CreateRequest"
@@ -206,7 +206,7 @@ const ClientDrawer = () => {
             <Drawer.Screen
                 name="CreateReview"
                 component={CreateReviewScreen}
-                options={{ title: 'Write Review' }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="ProfessionalDetail"

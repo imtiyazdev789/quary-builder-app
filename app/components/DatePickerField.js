@@ -15,6 +15,7 @@ const DatePickerField = ({
     minimumDate,
     maximumDate,
     required = false,
+    disabled = false,
 }) => {
     const [showPicker, setShowPicker] = useState(false);
     const [selectedYear, setSelectedYear] = useState(() => {
@@ -168,9 +169,14 @@ const DatePickerField = ({
                 </Text>
             )}
             <TouchableOpacity
-                style={[styles.trigger, error ? styles.triggerError : styles.triggerNormal]}
+                style={[
+                    styles.trigger,
+                    error ? styles.triggerError : styles.triggerNormal,
+                    disabled && styles.triggerDisabled
+                ]}
                 onPress={() => setShowPicker(true)}
                 activeOpacity={0.7}
+                disabled={disabled}
             >
                 <Text style={value ? styles.triggerTextValue : styles.triggerTextPlaceholder}>
                     {value ? formatDisplayDate(value) : placeholder}
@@ -344,6 +350,10 @@ const styles = StyleSheet.create({
     triggerError: {
         borderWidth: 1.5,
         borderColor: '#ef4444',
+    },
+    triggerDisabled: {
+        backgroundColor: '#f8fafc',
+        opacity: 0.6,
     },
     triggerTextValue: {
         color: '#0f172a',

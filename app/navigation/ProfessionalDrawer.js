@@ -177,30 +177,27 @@ const ProfessionalDrawer = () => {
             <Drawer.Screen
                 name="Profile"
                 component={UpdateProfileScreen}
-                options={{
-                    title: 'Profile',
-                    headerShown: true,
-                }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="Leads"
                 component={LeadsScreen}
-                options={{ title: 'Leads' }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="Projects"
                 component={ProjectsScreen}
-                options={{ title: 'Projects' }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="Portfolio"
                 component={PortfolioScreen}
-                options={{ title: 'Portfolio' }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="Reviews"
                 component={ReviewsScreen}
-                options={{ title: 'Reviews' }}
+                options={{ headerShown: false }}
             />
             <Drawer.Screen
                 name="ProfessionalRequestDetails"

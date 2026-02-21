@@ -24,6 +24,7 @@ const DropdownSelector = ({
     multiple = false,
     selectedMultiple = [],
     variant = 'chips',
+    disabled = false,
 }) => {
     const isSelected = (key) => {
         if (multiple) {
@@ -45,6 +46,19 @@ const DropdownSelector = ({
     };
 
     if (variant === 'list') {
+        const displayOptions = disabled && !multiple ? options.filter(o => isSelected(o.key)) : options;
+
+        if (displayOptions.length === 0 && disabled) {
+            return (
+                <View className="mb-4">
+                    {label && <Text className="text-sm font-semibold text-secondary-800 mb-2 ml-1">{label}</Text>}
+                    <View className="py-4 px-5 border rounded-2xl border-secondary-200 bg-gray-50 opacity-60">
+                        <Text className="text-secondary-500 italic">Not specified</Text>
+                    </View>
+                </View>
+            );
+        }
+
         return (
             <View className="mb-4">
                 {label && (
@@ -52,12 +66,13 @@ const DropdownSelector = ({
                         {label}
                     </Text>
                 )}
-                <View className={`border rounded-2xl overflow-hidden ${error ? 'border-error-500' : 'border-secondary-200'} bg-white`}>
-                    {options.map((option, index) => (
+                <View className={`border rounded-2xl overflow-hidden ${error ? 'border-error-500' : 'border-secondary-200'} ${disabled ? 'bg-gray-50 opacity-90' : 'bg-white'}`}>
+                    {displayOptions.map((option, index) => (
                         <TouchableOpacity
                             key={option.key}
-                            className={`py-4 px-5 flex-row items-center justify-between ${isSelected(option.key) ? 'bg-primary-50' : 'bg-white'
-                                } ${index < options.length - 1 ? 'border-b border-secondary-100' : ''}`}
+                            disabled={disabled}
+                            className={`py-4 px-5 flex-row items-center justify-between ${isSelected(option.key) && !disabled ? 'bg-primary-50' : ''
+                                } ${index < displayOptions.length - 1 ? 'border-b border-secondary-100' : ''}`}
                             onPress={() => handleSelect(option.key)}
                         >
                             <Text className={`text-sm ${isSelected(option.key) ? 'text-primary-700 font-bold' : 'text-secondary-700'}`}>
@@ -77,6 +92,19 @@ const DropdownSelector = ({
     }
 
     // Default: chips variant
+    const displayOptions = disabled ? options.filter(o => isSelected(o.key)) : options;
+
+    if (displayOptions.length === 0 && disabled) {
+        return (
+            <View className="mb-4">
+                {label && <Text className="text-sm font-semibold text-secondary-800 mb-2 ml-1">{label}</Text>}
+                <View className="py-2.5 px-5 rounded-xl border border-secondary-200 bg-gray-50 opacity-60 self-start">
+                    <Text className="text-sm font-medium text-secondary-500 italic">Not specified</Text>
+                </View>
+            </View>
+        );
+    }
+
     return (
         <View className="mb-4">
             {label && (
@@ -85,17 +113,18 @@ const DropdownSelector = ({
                 </Text>
             )}
             <View className="flex-row flex-wrap gap-2">
-                {options.map((option) => (
+                {displayOptions.map((option) => (
                     <TouchableOpacity
                         key={option.key}
-                        className={`py-2.5 px-5 rounded-xl border ${isSelected(option.key)
+                        disabled={disabled}
+                        className={`py-2.5 px-5 rounded-xl border ${isSelected(option.key) && !disabled
                             ? 'bg-primary-600 border-primary-600'
-                            : 'bg-white border-secondary-200'
+                            : disabled ? 'bg-gray-100 border-secondary-200 opacity-90' : 'bg-white border-secondary-200'
                             }`}
                         onPress={() => handleSelect(option.key)}
                         activeOpacity={0.7}
                     >
-                        <Text className={`text-sm font-medium ${isSelected(option.key) ? 'text-white' : 'text-secondary-600'}`}>
+                        <Text className={`text-sm font-medium ${isSelected(option.key) && !disabled ? 'text-white' : 'text-secondary-700'}`}>
                             {option.label}
                         </Text>
                     </TouchableOpacity>
