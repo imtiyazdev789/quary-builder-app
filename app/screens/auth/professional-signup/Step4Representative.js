@@ -17,9 +17,14 @@ const Step4Representative = ({
 }) => {
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">
-                Representative Details
-            </Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    Representative
+                </Text>
+                <Text className="text-secondary-500">
+                    Who should we contact regarding yours requests?
+                </Text>
+            </View>
 
             <InputField
                 label="Representative Name *"
@@ -28,6 +33,7 @@ const Step4Representative = ({
                 error={errors.representativeName}
                 placeholder="Full name"
                 maxLength={120}
+                leftIcon="person"
             />
 
             <DropdownSelector
@@ -46,6 +52,7 @@ const Step4Representative = ({
                 placeholder="10-digit mobile number"
                 keyboardType="phone-pad"
                 maxLength={10}
+                leftIcon="call"
             />
 
             <InputField
@@ -56,6 +63,7 @@ const Step4Representative = ({
                 placeholder="email@example.com"
                 keyboardType="email-address"
                 autoCapitalize="none"
+                leftIcon="mail"
             />
         </View>
     );

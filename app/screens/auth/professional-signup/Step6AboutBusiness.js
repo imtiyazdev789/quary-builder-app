@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { ErrorText, InputField } from '../../../components';
 import { SERVICES_LIST } from './constants';
 
@@ -29,50 +29,34 @@ const Step6AboutBusiness = ({
                 maxLength={160}
             />
 
-            <View className="mb-4">
-                <Text className="text-sm font-medium text-secondary-800 mb-2">
-                    Short Description * <Text className="text-secondary-400 text-xs">(25-150 words)</Text>
-                </Text>
-                <TextInput
-                    className={`border rounded-xl px-4 py-3 text-base bg-white h-32 ${errors.shortDescription ? 'border-error-500' : 'border-secondary-200'
-                        }`}
-                    placeholder="Brief overview of your business (25-150 words)"
-                    placeholderTextColor="#94a3b8"
-                    value={shortDescription}
-                    onChangeText={(text) => {
-                        setShortDescription(text);
-                        clearError('shortDescription');
-                    }}
-                    multiline
-                    numberOfLines={5}
-                    style={{ textAlignVertical: 'top' }}
-                />
-                <Text className="text-xs text-secondary-400 mt-1 ml-1">
-                    {wordCount} words
-                </Text>
-                <ErrorText error={errors.shortDescription} />
-            </View>
+            <InputField
+                label="Short Description (25-150 words)"
+                value={shortDescription}
+                onChangeText={(text) => {
+                    setShortDescription(text);
+                    clearError('shortDescription');
+                }}
+                placeholder="Brief overview of your business"
+                multiline
+                numberOfLines={5}
+                error={errors.shortDescription}
+            />
+            <Text className="text-xs text-secondary-400 -mt-2 mb-3 ml-1">
+                {wordCount} words
+            </Text>
 
-            <View className="mb-4">
-                <Text className="text-sm font-medium text-secondary-800 mb-2">
-                    Detailed Description *
-                </Text>
-                <TextInput
-                    className={`border rounded-xl px-4 py-3 text-base bg-white h-40 ${errors.detailedDescription ? 'border-error-500' : 'border-secondary-200'
-                        }`}
-                    placeholder="Detailed information about your services, experience, and expertise"
-                    placeholderTextColor="#94a3b8"
-                    value={detailedDescription}
-                    onChangeText={(text) => {
-                        setDetailedDescription(text);
-                        clearError('detailedDescription');
-                    }}
-                    multiline
-                    numberOfLines={8}
-                    style={{ textAlignVertical: 'top' }}
-                />
-                <ErrorText error={errors.detailedDescription} />
-            </View>
+            <InputField
+                label="Detailed Description"
+                value={detailedDescription}
+                onChangeText={(text) => {
+                    setDetailedDescription(text);
+                    clearError('detailedDescription');
+                }}
+                placeholder="Detailed information about your services, experience, and expertise"
+                multiline
+                numberOfLines={8}
+                error={errors.detailedDescription}
+            />
 
             <View className="mb-4">
                 <Text className="text-sm font-medium text-secondary-800 mb-2">
@@ -82,17 +66,25 @@ const Step6AboutBusiness = ({
                     {SERVICES_LIST.map((service) => (
                         <TouchableOpacity
                             key={service}
-                            className={`py-2 px-3 rounded-lg border ${selectedServices.includes(service)
-                                ? 'bg-primary-600 border-primary-600'
-                                : 'bg-white border-secondary-200'
-                                }`}
+                            style={{
+                                paddingVertical: 8,
+                                paddingHorizontal: 14,
+                                borderRadius: 12,
+                                borderWidth: 1.5,
+                                borderColor: selectedServices.includes(service) ? '#0d9488' : '#e2e8f0',
+                                backgroundColor: selectedServices.includes(service) ? '#0d9488' : '#ffffff',
+                            }}
                             onPress={() => {
                                 toggleService(service);
                                 clearError('services');
                             }}
+                            activeOpacity={0.7}
                         >
-                            <Text className={`text-xs ${selectedServices.includes(service) ? 'text-white' : 'text-secondary-700'
-                                }`}>
+                            <Text style={{
+                                fontSize: 13,
+                                fontWeight: '600',
+                                color: selectedServices.includes(service) ? '#ffffff' : '#475569',
+                            }}>
                                 {service}
                             </Text>
                         </TouchableOpacity>
@@ -105,4 +97,3 @@ const Step6AboutBusiness = ({
 };
 
 export default Step6AboutBusiness;
-

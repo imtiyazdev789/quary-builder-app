@@ -1,20 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import ErrorText from './ErrorText';
+import Icon, { IconNames } from './Icon';
+import theme from '../config/theme';
 
-/**
- * DatePickerField Component
- * A date picker with modal interface for selecting dates
- * 
- * @param {string} label - Label text for the field
- * @param {string} value - Current date value in YYYY-MM-DD format
- * @param {function} onChange - Callback when date changes (receives YYYY-MM-DD string)
- * @param {string} error - Error message to display
- * @param {string} placeholder - Placeholder text
- * @param {Date} minimumDate - Minimum selectable date
- * @param {Date} maximumDate - Maximum selectable date
- * @param {boolean} required - Show required indicator in label
- */
 const DatePickerField = ({
     label,
     value,
@@ -115,19 +104,20 @@ const DatePickerField = ({
     return (
         <View className="mb-4">
             {label && (
-                <Text className="text-sm font-medium text-secondary-800 mb-2">
+                <Text className="text-sm font-semibold text-secondary-800 mb-2 ml-1">
                     {label} {required && <Text className="text-error-500">*</Text>}
                 </Text>
             )}
             <TouchableOpacity
-                className={`border rounded-xl px-4 py-3 flex-row items-center justify-between ${error ? 'border-error-500' : 'border-secondary-200'
-                    } bg-white`}
+                className={`border rounded-2xl px-4 py-4 flex-row items-center justify-between ${error ? 'border-error-500' : 'border-secondary-200'
+                    } bg-white shadow-sm`}
                 onPress={() => setShowPicker(true)}
+                activeOpacity={0.7}
             >
-                <Text className={value ? 'text-secondary-900 text-base' : 'text-secondary-400 text-base'}>
+                <Text className={value ? 'text-secondary-900 text-base font-medium' : 'text-secondary-400 text-base'}>
                     {value ? formatDisplayDate(value) : placeholder}
                 </Text>
-                <Text className="text-xl">📅</Text>
+                <Icon name={IconNames.calendar} size="md" color={theme.colors.primary[600]} />
             </TouchableOpacity>
             <ErrorText error={error} />
 
@@ -135,94 +125,105 @@ const DatePickerField = ({
             <Modal
                 visible={showPicker}
                 transparent
-                animationType="slide"
+                animationType="fade"
                 onRequestClose={handleCancel}
             >
-                <View className="flex-1 justify-end bg-black/50">
-                    <View className="bg-white rounded-t-3xl max-h-[80%]">
+                <View className="flex-1 justify-end bg-black/60">
+                    <View className="bg-white rounded-t-[32px] overflow-hidden">
                         {/* Header */}
-                        <View className="flex-row justify-between items-center px-6 py-4 border-b border-secondary-100">
-                            <TouchableOpacity onPress={handleCancel}>
-                                <Text className="text-secondary-500 text-base">Cancel</Text>
+                        <View className="px-6 py-5 border-b border-secondary-100 flex-row justify-between items-center">
+                            <TouchableOpacity onPress={handleCancel} className="py-2 px-1">
+                                <Text className="text-secondary-500 text-base font-medium">Cancel</Text>
                             </TouchableOpacity>
-                            <Text className="text-lg font-semibold text-secondary-900">Select Date</Text>
-                            <TouchableOpacity onPress={handleConfirm}>
-                                <Text className="text-primary-600 font-semibold text-base">Done</Text>
+                            <Text className="text-lg font-bold text-secondary-900">Select Date</Text>
+                            <TouchableOpacity onPress={handleConfirm} className="py-2 px-1">
+                                <Text className="text-primary-600 font-bold text-base">Done</Text>
                             </TouchableOpacity>
                         </View>
 
-                        <ScrollView className="px-4 py-4" showsVerticalScrollIndicator={false}>
-                            {/* Year Selector */}
-                            <View className="mb-4">
-                                <Text className="text-sm font-medium text-secondary-600 mb-2">Year</Text>
-                                <ScrollView
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    contentContainerStyle={{ gap: 8 }}
-                                >
-                                    {years.map((year) => (
-                                        <TouchableOpacity
-                                            key={year}
-                                            className={`py-2 px-4 rounded-lg border ${selectedYear === year
-                                                ? 'bg-primary-600 border-primary-600'
-                                                : 'bg-white border-secondary-200'
-                                                }`}
-                                            onPress={() => setSelectedYear(year)}
-                                        >
-                                            <Text className={selectedYear === year ? 'text-white' : 'text-secondary-700'}>
-                                                {year}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
-                            </View>
-
-                            {/* Month Selector */}
-                            <View className="mb-4">
-                                <Text className="text-sm font-medium text-secondary-600 mb-2">Month</Text>
-                                <View className="flex-row flex-wrap gap-2">
-                                    {months.map((month) => (
-                                        <TouchableOpacity
-                                            key={month.key}
-                                            className={`py-2 px-3 rounded-lg border ${selectedMonth === month.key
-                                                ? 'bg-primary-600 border-primary-600'
-                                                : 'bg-white border-secondary-200'
-                                                }`}
-                                            onPress={() => setSelectedMonth(month.key)}
-                                        >
-                                            <Text className={`text-sm ${selectedMonth === month.key ? 'text-white' : 'text-secondary-700'}`}>
-                                                {month.label.slice(0, 3)}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    ))}
+                        <ScrollView className="max-h-[500px]" showsVerticalScrollIndicator={false} bounces={false}>
+                            <View className="p-6">
+                                {/* Year Selector */}
+                                <View className="mb-6">
+                                    <View className="flex-row items-center mb-3">
+                                        <Icon name={IconNames.time} size="sm" color={theme.colors.secondary[400]} style={{ marginRight: 6 }} />
+                                        <Text className="text-sm font-bold text-secondary-700 uppercase tracking-wider">Year</Text>
+                                    </View>
+                                    <ScrollView
+                                        horizontal
+                                        showsHorizontalScrollIndicator={false}
+                                        contentContainerStyle={{ gap: 10 }}
+                                        bounces={true}
+                                    >
+                                        {years.map((year) => (
+                                            <TouchableOpacity
+                                                key={year}
+                                                className={`py-3 px-6 rounded-2xl border ${selectedYear === year
+                                                    ? 'bg-primary-600 border-primary-600 shadow-md shadow-primary-200'
+                                                    : 'bg-secondary-50 border-secondary-100'
+                                                    }`}
+                                                onPress={() => setSelectedYear(year)}
+                                            >
+                                                <Text className={`font-bold ${selectedYear === year ? 'text-white' : 'text-secondary-700'}`}>
+                                                    {year}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </ScrollView>
                                 </View>
-                            </View>
 
-                            {/* Day Selector */}
-                            <View className="mb-4">
-                                <Text className="text-sm font-medium text-secondary-600 mb-2">Day</Text>
-                                <View className="flex-row flex-wrap gap-2">
-                                    {days.map((day) => (
-                                        <TouchableOpacity
-                                            key={day}
-                                            className={`w-10 h-10 rounded-lg border items-center justify-center ${selectedDay === day
-                                                ? 'bg-primary-600 border-primary-600'
-                                                : 'bg-white border-secondary-200'
-                                                }`}
-                                            onPress={() => setSelectedDay(day)}
-                                        >
-                                            <Text className={selectedDay === day ? 'text-white' : 'text-secondary-700'}>
-                                                {day}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    ))}
+                                {/* Month Selector */}
+                                <View className="mb-6">
+                                    <View className="flex-row items-center mb-3">
+                                        <Icon name={IconNames.calendar} size="sm" color={theme.colors.secondary[400]} style={{ marginRight: 6 }} />
+                                        <Text className="text-sm font-bold text-secondary-700 uppercase tracking-wider">Month</Text>
+                                    </View>
+                                    <View className="flex-row flex-wrap gap-2.5">
+                                        {months.map((month) => (
+                                            <TouchableOpacity
+                                                key={month.key}
+                                                className={`py-2.5 px-4 rounded-xl border ${selectedMonth === month.key
+                                                    ? 'bg-primary-600 border-primary-600 shadow-sm'
+                                                    : 'bg-secondary-50 border-secondary-100'
+                                                    }`}
+                                                onPress={() => setSelectedMonth(month.key)}
+                                            >
+                                                <Text className={`text-sm font-bold ${selectedMonth === month.key ? 'text-white' : 'text-secondary-700'}`}>
+                                                    {month.label.slice(0, 3)}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
                                 </View>
-                            </View>
 
-                            {/* Selected Date Preview */}
-                            <View className="pb-6 pt-2">
-                                <View className="bg-primary-50 rounded-xl p-4">
-                                    <Text className="text-center text-primary-700 font-semibold text-lg">
+                                {/* Day Selector */}
+                                <View className="mb-8">
+                                    <View className="flex-row items-center mb-3">
+                                        <Icon name={IconNames.today} size="sm" color={theme.colors.secondary[400]} style={{ marginRight: 6 }} />
+                                        <Text className="text-sm font-bold text-secondary-700 uppercase tracking-wider">Day</Text>
+                                    </View>
+                                    <View className="flex-row flex-wrap gap-2.5">
+                                        {days.map((day) => (
+                                            <TouchableOpacity
+                                                key={day}
+                                                className={`w-11 h-11 rounded-2xl border items-center justify-center ${selectedDay === day
+                                                    ? 'bg-primary-600 border-primary-600 shadow-md shadow-primary-200'
+                                                    : 'bg-secondary-50 border-secondary-100'
+                                                    }`}
+                                                onPress={() => setSelectedDay(day)}
+                                            >
+                                                <Text className={`font-bold ${selectedDay === day ? 'text-white' : 'text-secondary-700'}`}>
+                                                    {day}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                </View>
+
+                                {/* Selected Date Preview */}
+                                <View className="bg-primary-50 rounded-2xl p-5 border border-primary-100">
+                                    <Text className="text-xs text-primary-600 font-bold uppercase text-center mb-1 tracking-widest">Selected Date</Text>
+                                    <Text className="text-center text-primary-900 font-extrabold text-xl">
                                         {formatDisplayDate(`${selectedYear}-${selectedMonth.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`)}
                                     </Text>
                                 </View>

@@ -3,20 +3,9 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import ErrorText from './ErrorText';
+import Icon, { IconNames } from './Icon';
+import theme from '../config/theme';
 
-/**
- * DocumentPickerField Component
- * A field for uploading documents or images
- * 
- * @param {string} label - Label text for the field
- * @param {object} document - Selected document object with { uri, name, mimeType }
- * @param {function} onSelect - Callback when document is selected
- * @param {string} error - Error message to display
- * @param {boolean} required - Show required indicator
- * @param {string} accept - What to accept: 'document', 'image', or 'both' (default)
- * @param {string} placeholder - Custom placeholder text
- * @param {boolean} showPreview - Show image preview for images (default: false)
- */
 const DocumentPickerField = ({
     label,
     document,
@@ -104,35 +93,52 @@ const DocumentPickerField = ({
     return (
         <View className="mb-4">
             {label && (
-                <Text className="text-sm font-medium text-secondary-800 mb-2">
+                <Text className="text-sm font-semibold text-secondary-800 mb-2 ml-1">
                     {label} {required && <Text className="text-error-500">*</Text>}
                 </Text>
             )}
             <TouchableOpacity
-                className={`border rounded-xl px-4 py-4 ${error ? 'border-error-500' : 'border-secondary-200'
-                    } ${document ? 'bg-primary-50 border-primary-300' : 'bg-white'}`}
+                className={`border rounded-2xl px-4 py-4 flex-row items-center border-dashed ${error ? 'border-error-500 bg-error-50' : 'border-secondary-300 bg-secondary-50'
+                    } ${document ? 'bg-primary-50 border-primary-400 border-solid' : ''} shadow-sm`}
                 onPress={handlePress}
+                activeOpacity={0.7}
             >
                 {showPreview && isImage && document ? (
-                    <View className="items-center">
-                        <Image
-                            source={{ uri: document.uri }}
-                            className="w-24 h-24 rounded-lg mb-2"
-                        />
-                        <Text className="text-xs text-primary-600">Tap to change</Text>
+                    <View className="items-center w-full">
+                        <View className="relative">
+                            <Image
+                                source={{ uri: document.uri }}
+                                className="w-24 h-24 rounded-2xl mb-2 border-2 border-primary-200"
+                            />
+                            <View className="absolute -right-2 -top-2 bg-primary-600 rounded-full p-1 border-2 border-white">
+                                <Icon name={IconNames.checkmark} size="xs" color="white" />
+                            </View>
+                        </View>
+                        <Text className="text-xs font-bold text-primary-600 uppercase tracking-wider">Tap to change</Text>
                     </View>
                 ) : (
-                    <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center justify-between w-full">
                         <View className="flex-row items-center flex-1">
-                            <Text className="text-2xl mr-3">{document ? '✅' : '📄'}</Text>
-                            <Text
-                                className={`text-sm flex-1 ${document ? 'text-primary-700' : 'text-secondary-500'}`}
-                                numberOfLines={1}
-                            >
-                                {document ? document.name || 'Document selected' : placeholder}
-                            </Text>
+                            <View className={`w-12 h-12 rounded-xl items-center justify-center mr-3 ${document ? 'bg-primary-100' : 'bg-secondary-200'}`}>
+                                <Icon
+                                    name={document ? IconNames.documentText : (accept === 'image' ? IconNames.image : IconNames.document)}
+                                    size="lg"
+                                    color={document ? theme.colors.primary[600] : theme.colors.secondary[500]}
+                                />
+                            </View>
+                            <View className="flex-1">
+                                <Text
+                                    className={`text-sm font-bold ${document ? 'text-primary-800' : 'text-secondary-600'}`}
+                                    numberOfLines={1}
+                                >
+                                    {document ? document.name || 'File selected' : placeholder}
+                                </Text>
+                                <Text className="text-[10px] text-secondary-400 font-bold uppercase tracking-widest mt-0.5">
+                                    {document ? 'Ready to upload' : `Supports ${getAcceptText()}`}
+                                </Text>
+                            </View>
                         </View>
-                        <Text className="text-secondary-400 text-xs">{getAcceptText()}</Text>
+                        <Icon name={IconNames.upload} size="md" color={document ? theme.colors.primary[600] : theme.colors.secondary[300]} />
                     </View>
                 )}
             </TouchableOpacity>

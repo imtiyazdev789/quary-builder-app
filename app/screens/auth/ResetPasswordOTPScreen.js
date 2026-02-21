@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
+import Icon, { IconNames } from '../../components/Icon';
 
 const ResetPasswordOTPScreen = ({ route, navigation }) => {
     const { email, verificationId, role = 'user' } = route.params || {};
     const [otp, setOtp] = useState('');
-    const [timer, setTimer] = useState(600); // 10 minutes
+    const [timer, setTimer] = useState(600);
     const { verifyPasswordResetOTP, resendPasswordResetOTP, loading } = useAuth();
 
-    // Custom Alert State
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         title: '',
@@ -47,7 +48,6 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             return;
         }
 
-        // Show success message
         setTimeout(() => {
             showCustomAlert({
                 title: 'Code Sent!',
@@ -57,7 +57,6 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
             });
         }, 300);
 
-        // Start countdown timer
         const interval = setInterval(() => {
             setTimer((prev) => {
                 if (prev <= 1) {
@@ -91,7 +90,6 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
         const result = await verifyPasswordResetOTP(email, otp, verificationId, role);
 
         if (result.success) {
-            // Backend sends password reset link via email after OTP verification
             showCustomAlert({
                 title: 'Check Your Email!',
                 message: 'A password reset link has been sent to your email. Please check your inbox and click the link to set your new password.',
@@ -142,26 +140,34 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['bottom']}>
             <View className="flex-1 justify-center px-6">
-                <View className="mb-8">
-                    <Text className="text-4xl font-bold text-secondary-900 mb-2">
-                        Verify Code
-                    </Text>
-                    <Text className="text-base text-secondary-500 mb-2">
+                {/* Premium Header */}
+                <View style={s.headerWrap}>
+                    <LinearGradient
+                        colors={['#fef3c7', '#fde68a']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={s.headerGradient}
+                    >
+                        <View style={s.logoCircle}>
+                            <Icon name={IconNames.lock} size="xxl" color="#d97706" />
+                        </View>
+                    </LinearGradient>
+                    <Text style={s.title}>Verify Code</Text>
+                    <Text style={s.subtitle}>
                         We've sent a 6-digit code to
                     </Text>
-                    <Text className="text-base font-semibold text-primary-600">
-                        {email}
-                    </Text>
+                    <Text style={s.email}>{email}</Text>
                 </View>
 
-                <View className="mb-4">
-                    <Text className="text-sm font-medium text-secondary-800 mb-2">
-                        Enter Code
-                    </Text>
+                {/* OTP Input */}
+                <View style={s.otpContainer}>
                     <TextInput
-                        className="border border-secondary-200 rounded-xl px-4 py-4 text-center text-2xl font-bold tracking-widest bg-white"
+                        style={[
+                            s.otpInput,
+                            otp.length === 6 && { borderColor: '#0d9488', borderWidth: 2 },
+                        ]}
                         placeholder="000000"
-                        placeholderTextColor="#94a3b8"
+                        placeholderTextColor="#cbd5e1"
                         value={otp}
                         onChangeText={(text) => {
                             const digits = text.replace(/[^0-9]/g, '').slice(0, 6);
@@ -173,21 +179,16 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
                     />
                 </View>
 
-                <View className="mb-6">
-                    <Text className="text-center text-sm text-secondary-500">
-                        {timer > 0 ? (
-                            <>
-                                Code expires in{' '}
-                                <Text className="font-semibold text-primary-600">
-                                    {formatTime(timer)}
-                                </Text>
-                            </>
-                        ) : (
-                            <Text className="text-error-600 font-semibold">
-                                Code has expired
-                            </Text>
-                        )}
-                    </Text>
+                {/* Timer */}
+                <View style={s.timerWrap}>
+                    {timer > 0 ? (
+                        <Text style={s.timerText}>
+                            Code expires in{' '}
+                            <Text style={s.timerHighlight}>{formatTime(timer)}</Text>
+                        </Text>
+                    ) : (
+                        <Text style={s.timerExpired}>Code has expired</Text>
+                    )}
                 </View>
 
                 <CustomButton
@@ -199,30 +200,26 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
                     size="md"
                 />
 
-                <View className="flex-row justify-center items-center mt-4">
-                    <Text className="text-secondary-500 text-sm">
-                        Didn't receive code?{' '}
-                    </Text>
+                <View style={s.resendRow}>
+                    <Text style={s.resendText}>Didn't receive code? </Text>
                     <TouchableOpacity
                         onPress={handleResendOTP}
                         disabled={loading || timer > 0}
                     >
-                        <Text
-                            className={`text-sm font-semibold ${timer > 0 ? 'text-secondary-400' : 'text-primary-600'
-                                }`}
-                        >
+                        <Text style={[
+                            s.resendAction,
+                            timer > 0 && { color: '#94a3b8' },
+                        ]}>
                             Resend
                         </Text>
                     </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity
-                    className="mt-6"
+                    style={s.backLink}
                     onPress={() => navigation?.navigate('Login')}
                 >
-                    <Text className="text-center text-primary-600 font-semibold">
-                        Back to Login
-                    </Text>
+                    <Text style={s.backLinkText}>Back to Login</Text>
                 </TouchableOpacity>
             </View>
 
@@ -238,5 +235,101 @@ const ResetPasswordOTPScreen = ({ route, navigation }) => {
     );
 };
 
-export default ResetPasswordOTPScreen;
+const s = StyleSheet.create({
+    headerWrap: {
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    headerGradient: {
+        width: 88,
+        height: 88,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: 'rgba(217,119,6,0.12)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#0f172a',
+        marginBottom: 6,
+    },
+    subtitle: {
+        fontSize: 15,
+        color: '#64748b',
+    },
+    email: {
+        fontSize: 15,
+        fontWeight: '700',
+        color: '#0d9488',
+        marginTop: 2,
+    },
+    otpContainer: {
+        marginBottom: 16,
+    },
+    otpInput: {
+        borderWidth: 1.5,
+        borderColor: '#e2e8f0',
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 18,
+        fontSize: 28,
+        fontWeight: '800',
+        textAlign: 'center',
+        letterSpacing: 12,
+        backgroundColor: '#f8fafc',
+        color: '#0f172a',
+    },
+    timerWrap: {
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    timerText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    timerHighlight: {
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    timerExpired: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#dc2626',
+    },
+    resendRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 4,
+    },
+    resendText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    resendAction: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    backLink: {
+        marginTop: 20,
+        paddingVertical: 8,
+    },
+    backLinkText: {
+        textAlign: 'center',
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#0d9488',
+    },
+});
 
+export default ResetPasswordOTPScreen;

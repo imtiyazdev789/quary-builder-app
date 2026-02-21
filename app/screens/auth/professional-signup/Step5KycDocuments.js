@@ -29,7 +29,14 @@ const Step5KycDocuments = ({
 }) => {
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">KYC & Documents</Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    KYC & Documents
+                </Text>
+                <Text className="text-secondary-500">
+                    Verify your business with official documents
+                </Text>
+            </View>
 
             <DropdownSelector
                 label="KYC Document Type *"
@@ -106,6 +113,7 @@ const Step5KycDocuments = ({
                 onChangeText={setGstNumber}
                 placeholder="Enter GST number (optional)"
                 maxLength={20}
+                leftIcon="briefcase"
             />
 
             <DocumentPickerField

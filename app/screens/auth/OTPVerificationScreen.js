@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
 import Icon, { IconNames } from '../../components/Icon';
-import theme from '../../config/theme';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
     const { emailVerificationId, email, role, showSuccessMessage } = route.params || {};
     const [otp, setOtp] = useState('');
-    const [timer, setTimer] = useState(600); // 10 minutes in seconds
+    const [timer, setTimer] = useState(600);
     const { verifyOtp, resendOtp, loading } = useAuth();
 
-    // Debug: Log received params
     console.log('OTPVerificationScreen params:', { emailVerificationId, email, role });
 
-    // Custom Alert State
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         title: '',
@@ -52,7 +50,6 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             return;
         }
 
-        // Show success message if coming from signup
         if (showSuccessMessage) {
             setTimeout(() => {
                 showCustomAlert({
@@ -68,7 +65,6 @@ const OTPVerificationScreen = ({ route, navigation }) => {
             }, 300);
         }
 
-        // Start countdown timer
         const interval = setInterval(() => {
             setTimer((prev) => {
                 if (prev <= 1) {
@@ -131,7 +127,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         const result = await resendOtp(emailVerificationId, role);
 
         if (result.success) {
-            setTimer(600); // Reset timer to 10 minutes
+            setTimer(600);
             showCustomAlert({
                 title: 'OTP Resent!',
                 message: 'A new OTP has been sent to your email.',
@@ -151,29 +147,36 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'bottom']}>
             <View className="flex-1 justify-center px-6">
-                <View className="mb-8">
-                    <Text className="text-4xl font-bold text-secondary-900 mb-2">
-                        Verify Email
-                    </Text>
-                    <Text className="text-base text-secondary-500 mb-2">
+                {/* Premium Header */}
+                <View style={s.headerWrap}>
+                    <LinearGradient
+                        colors={['#dbeafe', '#bfdbfe']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={s.headerGradient}
+                    >
+                        <View style={s.logoCircle}>
+                            <Icon name={IconNames.mail} size="xxl" color="#2563eb" />
+                        </View>
+                    </LinearGradient>
+                    <Text style={s.title}>Verify Email</Text>
+                    <Text style={s.subtitle}>
                         We've sent a 6-digit OTP to
                     </Text>
-                    <Text className="text-base font-semibold text-primary-600">
-                        {email}
-                    </Text>
+                    <Text style={s.email}>{email}</Text>
                 </View>
 
-                <View className="mb-4">
-                    <Text className="text-sm font-medium text-secondary-800 mb-2">
-                        Enter OTP
-                    </Text>
+                {/* OTP Input */}
+                <View style={s.otpContainer}>
                     <TextInput
-                        className="border border-secondary-200 rounded-xl px-4 py-4 text-center text-2xl font-bold tracking-widest bg-white"
+                        style={[
+                            s.otpInput,
+                            otp.length === 6 && { borderColor: '#0d9488', borderWidth: 2 },
+                        ]}
                         placeholder="000000"
-                        placeholderTextColor="#94a3b8"
+                        placeholderTextColor="#cbd5e1"
                         value={otp}
                         onChangeText={(text) => {
-                            // Only allow digits and limit to 6
                             const digits = text.replace(/[^0-9]/g, '').slice(0, 6);
                             setOtp(digits);
                         }}
@@ -183,21 +186,16 @@ const OTPVerificationScreen = ({ route, navigation }) => {
                     />
                 </View>
 
-                <View className="mb-6">
-                    <Text className="text-center text-sm text-secondary-500">
-                        {timer > 0 ? (
-                            <>
-                                OTP expires in{' '}
-                                <Text className="font-semibold text-primary-600">
-                                    {formatTime(timer)}
-                                </Text>
-                            </>
-                        ) : (
-                            <Text className="text-error-600 font-semibold">
-                                OTP has expired
-                            </Text>
-                        )}
-                    </Text>
+                {/* Timer */}
+                <View style={s.timerWrap}>
+                    {timer > 0 ? (
+                        <Text style={s.timerText}>
+                            OTP expires in{' '}
+                            <Text style={s.timerHighlight}>{formatTime(timer)}</Text>
+                        </Text>
+                    ) : (
+                        <Text style={s.timerExpired}>OTP has expired</Text>
+                    )}
                 </View>
 
                 <CustomButton
@@ -209,34 +207,29 @@ const OTPVerificationScreen = ({ route, navigation }) => {
                     size="md"
                 />
 
-                <View className="flex-row justify-center items-center">
-                    <Text className="text-secondary-500 text-sm">
-                        Didn't receive OTP?{' '}
-                    </Text>
+                <View style={s.resendRow}>
+                    <Text style={s.resendText}>Didn't receive OTP? </Text>
                     <TouchableOpacity
                         onPress={handleResendOtp}
                         disabled={loading || timer > 0}
                     >
-                        <Text
-                            className={`text-sm font-semibold ${timer > 0 ? 'text-secondary-400' : 'text-primary-600'
-                                }`}
-                        >
+                        <Text style={[
+                            s.resendAction,
+                            timer > 0 && { color: '#94a3b8' },
+                        ]}>
                             Resend
                         </Text>
                     </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity
-                    className="mt-6"
+                    style={s.backLink}
                     onPress={() => navigation?.navigate('Login')}
                 >
-                    <Text className="text-center text-primary-600 font-semibold">
-                        Back to Login
-                    </Text>
+                    <Text style={s.backLinkText}>Back to Login</Text>
                 </TouchableOpacity>
             </View>
 
-            {/* Custom Alert */}
             <CustomAlert
                 visible={alertVisible}
                 title={alertConfig.title}
@@ -248,5 +241,102 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         </SafeAreaView>
     );
 };
+
+const s = StyleSheet.create({
+    headerWrap: {
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    headerGradient: {
+        width: 88,
+        height: 88,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: 'rgba(37,99,235,0.12)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#0f172a',
+        marginBottom: 6,
+    },
+    subtitle: {
+        fontSize: 15,
+        color: '#64748b',
+    },
+    email: {
+        fontSize: 15,
+        fontWeight: '700',
+        color: '#0d9488',
+        marginTop: 2,
+    },
+    otpContainer: {
+        marginBottom: 16,
+    },
+    otpInput: {
+        borderWidth: 1.5,
+        borderColor: '#e2e8f0',
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 18,
+        fontSize: 28,
+        fontWeight: '800',
+        textAlign: 'center',
+        letterSpacing: 12,
+        backgroundColor: '#f8fafc',
+        color: '#0f172a',
+    },
+    timerWrap: {
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    timerText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    timerHighlight: {
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    timerExpired: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#dc2626',
+    },
+    resendRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 4,
+    },
+    resendText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    resendAction: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    backLink: {
+        marginTop: 20,
+        paddingVertical: 8,
+    },
+    backLinkText: {
+        textAlign: 'center',
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#0d9488',
+    },
+});
 
 export default OTPVerificationScreen;

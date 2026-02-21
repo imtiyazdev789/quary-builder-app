@@ -1,29 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
+import { InputField } from '../../components';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
 import Icon, { IconNames } from '../../components/Icon';
-import theme from '../../config/theme';
 
 const roleOptions = [
-    { key: 'user', label: 'Client' },
-    { key: 'professional', label: 'Professional' },
-    // { key: 'admin', label: 'Admin' }, // Hidden for now - enable when admin features are ready
+    { key: 'user', label: 'Client', icon: 'home' },
+    { key: 'professional', label: 'Professional', icon: 'briefcase' },
 ];
 
 const LoginScreen = ({ navigation }) => {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [role, setRole] = useState('user'); // 'user' | 'professional' | 'admin'
+    const [role, setRole] = useState('user');
     const { login, loading } = useAuth();
 
-    // Field errors state
     const [errors, setErrors] = useState({});
 
-    // Custom Alert State (for API errors only)
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         title: '',
@@ -41,7 +39,6 @@ const LoginScreen = ({ navigation }) => {
         setAlertVisible(false);
     };
 
-    // Dynamic labels based on role
     const credentialLabel = role === 'admin' ? 'Username' : 'Email';
     const credentialPlaceholder =
         role === 'admin'
@@ -51,7 +48,6 @@ const LoginScreen = ({ navigation }) => {
                 : 'Enter your email';
     const credentialKeyboardType = role === 'admin' ? 'default' : 'email-address';
 
-    // Clear specific field error when user starts typing
     const clearError = (field) => {
         if (errors[field]) {
             setErrors(prev => ({ ...prev, [field]: '' }));
@@ -95,52 +91,54 @@ const LoginScreen = ({ navigation }) => {
         }
     };
 
-    // Error text component
-    const ErrorText = ({ error }) => {
-        if (!error) return null;
-        return (
-            <Text className="text-error-500 text-xs mt-1 ml-1">
-                {error}
-            </Text>
-        );
-    };
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'bottom']}>
-            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
                 <View className="flex-1 justify-center px-6">
-                    <View className="mb-8">
-                        <Text className="text-4xl font-bold text-secondary-900 mb-2">
-                            Welcome Back
-                        </Text>
-                        <Text className="text-base text-secondary-500">
-                            Sign in to continue
-                        </Text>
+                    {/* Premium Header */}
+                    <View style={s.headerWrap}>
+                        <LinearGradient
+                            colors={['#f0fdfa', '#ccfbf1']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={s.headerGradient}
+                        >
+                            <View style={s.logoCircle}>
+                                <Icon name={IconNames.lock} size="xxl" color="#0d9488" />
+                            </View>
+                        </LinearGradient>
+                        <Text style={s.title}>Welcome Back</Text>
+                        <Text style={s.subtitle}>Sign in to your BuildQuery account</Text>
                     </View>
 
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            I am a
-                        </Text>
-                        <View className="flex-row gap-2">
+                    {/* Role Selector */}
+                    <View style={s.roleSection}>
+                        <Text style={s.roleLabel}>I am a</Text>
+                        <View style={s.roleRow}>
                             {roleOptions.map((option) => {
                                 const isActive = role === option.key;
                                 return (
                                     <TouchableOpacity
                                         key={option.key}
-                                        className={`flex-1 py-3 px-2 rounded-xl border-2 ${isActive
-                                            ? 'bg-primary-600 border-primary-600'
-                                            : 'bg-white border-secondary-200'
-                                            }`}
+                                        style={[
+                                            s.roleChip,
+                                            isActive && s.roleChipActive,
+                                        ]}
                                         onPress={() => {
                                             setRole(option.key);
                                             clearError('identifier');
                                         }}
+                                        activeOpacity={0.7}
                                     >
-                                        <Text
-                                            className={`text-center font-medium ${isActive ? 'text-white' : 'text-secondary-700'
-                                                }`}
-                                        >
+                                        <Icon
+                                            name={IconNames[option.icon]}
+                                            size="sm"
+                                            color={isActive ? '#ffffff' : '#64748b'}
+                                        />
+                                        <Text style={[
+                                            s.roleChipText,
+                                            isActive && s.roleChipTextActive,
+                                        ]}>
                                             {option.label}
                                         </Text>
                                     </TouchableOpacity>
@@ -149,82 +147,41 @@ const LoginScreen = ({ navigation }) => {
                         </View>
                     </View>
 
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            {credentialLabel}
-                        </Text>
-                        <View className="relative">
-                            <View className="absolute left-3 top-3 z-10">
-                                <Icon
-                                    name={role === 'admin' ? IconNames.person : IconNames.mail}
-                                    size="lg"
-                                    color={theme.colors.text.tertiary}
-                                />
-                            </View>
-                            <TextInput
-                                className={`border rounded-xl pl-12 pr-4 py-3 text-base bg-white ${errors.identifier ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder={credentialPlaceholder}
-                                placeholderTextColor="#94a3b8"
-                                value={identifier}
-                                onChangeText={(text) => {
-                                    setIdentifier(text);
-                                    clearError('identifier');
-                                }}
-                                keyboardType={credentialKeyboardType}
-                                autoCapitalize="none"
-                                autoComplete={role === 'admin' ? 'off' : 'email'}
-                            />
-                        </View>
-                        <ErrorText error={errors.identifier} />
-                    </View>
+                    {/* Floating Label Input Fields */}
+                    <InputField
+                        label={credentialLabel}
+                        value={identifier}
+                        onChangeText={(text) => {
+                            setIdentifier(text);
+                            clearError('identifier');
+                        }}
+                        placeholder={credentialPlaceholder}
+                        keyboardType={credentialKeyboardType}
+                        autoCapitalize="none"
+                        error={errors.identifier}
+                        leftIcon={role === 'admin' ? 'person' : 'mail'}
+                    />
 
-                    <View className="mb-6">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Password
-                        </Text>
-                        <View className="relative">
-                            <View className="absolute left-3 top-3 z-10">
-                                <Icon
-                                    name={IconNames.lock}
-                                    size="lg"
-                                    color={theme.colors.text.tertiary}
-                                />
-                            </View>
-                            <TextInput
-                                className={`border rounded-xl pl-12 pr-12 py-3 text-base bg-white ${errors.password ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="Enter your password"
-                                placeholderTextColor="#94a3b8"
-                                value={password}
-                                onChangeText={(text) => {
-                                    setPassword(text);
-                                    clearError('password');
-                                }}
-                                secureTextEntry={!showPassword}
-                                autoCapitalize="none"
-                            />
-                            <TouchableOpacity
-                                className="absolute right-3 top-3"
-                                onPress={() => setShowPassword(!showPassword)}
-                            >
-                                <Icon
-                                    name={showPassword ? IconNames.eyeOff : IconNames.eye}
-                                    size="lg"
-                                    color={theme.colors.text.tertiary}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <ErrorText error={errors.password} />
-                    </View>
+                    <InputField
+                        label="Password"
+                        value={password}
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            clearError('password');
+                        }}
+                        placeholder="Enter your password"
+                        secureTextEntry={!showPassword}
+                        showPasswordToggle
+                        autoCapitalize="none"
+                        error={errors.password}
+                        leftIcon="lock"
+                    />
 
                     <TouchableOpacity
-                        className="mb-4 self-end"
+                        style={s.forgotLink}
                         onPress={() => navigation?.navigate('ForgotPassword')}
                     >
-                        <Text className="text-primary-600 font-medium text-sm">
-                            Forgot Password?
-                        </Text>
+                        <Text style={s.forgotText}>Forgot Password?</Text>
                     </TouchableOpacity>
 
                     <CustomButton
@@ -235,45 +192,16 @@ const LoginScreen = ({ navigation }) => {
                         size="md"
                     />
 
-                    <View className="flex-row justify-center items-center mt-4">
-                        <Text className="text-secondary-500 text-sm">
-                            Don't have an account?{' '}
-                        </Text>
+                    {/* Sign Up Link */}
+                    <View style={s.bottomLink}>
+                        <Text style={s.bottomLinkText}>Don't have an account? </Text>
                         <TouchableOpacity onPress={() => navigation?.navigate('Signup')}>
-                            <Text className="text-primary-600 font-semibold text-sm">
-                                Sign Up
-                            </Text>
+                            <Text style={s.bottomLinkAction}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
-
-                    {/* Demo Mode Section - Remove in production */}
-                    {/* <View className="mt-8 pt-6 border-t border-secondary-200">
-                        <Text className="text-center text-secondary-400 text-xs mb-3 uppercase tracking-wider">
-                            Demo Mode
-                        </Text>
-                        <View className="flex-row gap-2">
-                            <View className="flex-1">
-                                <CustomButton
-                                    title="Client App"
-                                    onPress={() => navigation?.navigate('DemoClientDrawer')}
-                                    variant="secondary"
-                                    size="sm"
-                                />
-                            </View>
-                            <View className="flex-1">
-                                <CustomButton
-                                    title="Professional App"
-                                    onPress={() => navigation?.navigate('DemoProfessionalDrawer')}
-                                    variant="secondary"
-                                    size="sm"
-                                />
-                            </View>
-                        </View>
-                    </View> */}
                 </View>
             </ScrollView>
 
-            {/* Custom Alert - for API errors only */}
             <CustomAlert
                 visible={alertVisible}
                 title={alertConfig.title}
@@ -285,5 +213,102 @@ const LoginScreen = ({ navigation }) => {
         </SafeAreaView>
     );
 };
+
+const s = StyleSheet.create({
+    headerWrap: {
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    headerGradient: {
+        width: 88,
+        height: 88,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: 'rgba(13,148,136,0.12)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: '800',
+        color: '#0f172a',
+        marginBottom: 6,
+    },
+    subtitle: {
+        fontSize: 15,
+        color: '#64748b',
+        fontWeight: '400',
+    },
+    roleSection: {
+        marginBottom: 8,
+    },
+    roleLabel: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: '#475569',
+        marginBottom: 10,
+        marginLeft: 2,
+    },
+    roleRow: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    roleChip: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 14,
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: '#e2e8f0',
+        backgroundColor: '#ffffff',
+    },
+    roleChipActive: {
+        backgroundColor: '#0d9488',
+        borderColor: '#0d9488',
+    },
+    roleChipText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#475569',
+    },
+    roleChipTextActive: {
+        color: '#ffffff',
+    },
+    forgotLink: {
+        alignSelf: 'flex-end',
+        marginBottom: 20,
+        marginTop: -4,
+    },
+    forgotText: {
+        color: '#0d9488',
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    bottomLink: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 18,
+    },
+    bottomLinkText: {
+        color: '#64748b',
+        fontSize: 14,
+    },
+    bottomLinkAction: {
+        color: '#0d9488',
+        fontSize: 14,
+        fontWeight: '700',
+    },
+});
 
 export default LoginScreen;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
 import { LocationPickerField, InputField } from '../../components';
 import CustomAlert from '../../components/CustomAlert';
@@ -28,10 +29,8 @@ const ClientSignupScreen = ({ navigation }) => {
 
     const { signup, loading } = useAuth();
 
-    // Field errors state
     const [errors, setErrors] = useState({});
 
-    // Custom Alert State
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         title: '',
@@ -49,7 +48,6 @@ const ClientSignupScreen = ({ navigation }) => {
         setAlertVisible(false);
     };
 
-    // Clear specific field error when user starts typing
     const clearError = (field) => {
         if (errors[field]) {
             setErrors(prev => ({ ...prev, [field]: '' }));
@@ -115,8 +113,7 @@ const ClientSignupScreen = ({ navigation }) => {
             email,
             mobileNumber,
             password,
-            role: 'user', // Always 'user' for client signup
-            // Location data
+            role: 'user',
             coordinates,
             address: {
                 line1: addressLine1,
@@ -145,283 +142,220 @@ const ClientSignupScreen = ({ navigation }) => {
         }
     };
 
-    // Error text component
-    const ErrorText = ({ error }) => {
-        if (!error) return null;
-        return (
-            <Text className="text-error-500 text-xs mt-1 ml-1">
-                {error}
-            </Text>
-        );
-    };
-
     return (
         <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
-            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
                 <View className="flex-1 px-6 py-6">
-                    {/* Header */}
-                    <View className="mb-6">
-                        <View className="flex-row items-center mb-2">
-                            <View className="w-12 h-12 bg-primary-100 rounded-full items-center justify-center mr-3">
-                                <Icon name={IconNames.home} size="xl" color={theme.colors.primary[500]} />
-                            </View>
-                            <View>
-                                <Text className="text-2xl font-bold text-secondary-900">
-                                    Client Registration
-                                </Text>
-                                <Text className="text-sm text-secondary-500">
-                                    Create your account to get started
-                                </Text>
-                            </View>
+                    {/* Premium Header */}
+                    <View style={s.headerWrap}>
+                        <LinearGradient
+                            colors={['#f0fdfa', '#ccfbf1']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={s.headerBadge}
+                        >
+                            <Icon name={IconNames.home} size="xl" color="#0d9488" />
+                        </LinearGradient>
+                        <View style={{ marginLeft: 14, flex: 1 }}>
+                            <Text style={s.title}>Client Registration</Text>
+                            <Text style={s.subtitle}>Create your account to get started</Text>
                         </View>
                     </View>
 
-                    {/* Form Fields */}
-                    <View className="flex-row gap-3 mb-4">
-                        <View className="flex-1">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">
-                                First Name *
-                            </Text>
-                            <TextInput
-                                className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.firstName ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="First name"
-                                placeholderTextColor="#94a3b8"
+                    {/* Name Fields */}
+                    <View style={s.row}>
+                        <View style={{ flex: 1 }}>
+                            <InputField
+                                label="First Name"
                                 value={firstName}
                                 onChangeText={(text) => {
                                     setFirstName(text);
                                     clearError('firstName');
                                 }}
+                                placeholder="First name"
                                 maxLength={20}
+                                error={errors.firstName}
+                                leftIcon="person"
                             />
-                            <ErrorText error={errors.firstName} />
                         </View>
-                        <View className="flex-1">
-                            <Text className="text-sm font-medium text-secondary-800 mb-2">
-                                Last Name *
-                            </Text>
-                            <TextInput
-                                className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.lastName ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="Last name"
-                                placeholderTextColor="#94a3b8"
+                        <View style={{ flex: 1 }}>
+                            <InputField
+                                label="Last Name"
                                 value={lastName}
                                 onChangeText={(text) => {
                                     setLastName(text);
                                     clearError('lastName');
                                 }}
+                                placeholder="Last name"
                                 maxLength={20}
+                                error={errors.lastName}
+                                leftIcon="person"
                             />
-                            <ErrorText error={errors.lastName} />
                         </View>
                     </View>
 
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Email *
-                        </Text>
-                        <TextInput
-                            className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.email ? 'border-error-500' : 'border-secondary-200'
-                                }`}
-                            placeholder="Enter your email"
-                            placeholderTextColor="#94a3b8"
-                            value={email}
-                            onChangeText={(text) => {
-                                setEmail(text);
-                                clearError('email');
-                            }}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoComplete="email"
-                        />
-                        <ErrorText error={errors.email} />
-                    </View>
-
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Mobile Number *
-                        </Text>
-                        <TextInput
-                            className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.mobileNumber ? 'border-error-500' : 'border-secondary-200'
-                                }`}
-                            placeholder="Enter 10-digit mobile number"
-                            placeholderTextColor="#94a3b8"
-                            value={mobileNumber}
-                            onChangeText={(text) => {
-                                const digits = text.replace(/[^0-9]/g, '').slice(0, 10);
-                                setMobileNumber(digits);
-                                clearError('mobileNumber');
-                            }}
-                            keyboardType="phone-pad"
-                            maxLength={10}
-                        />
-                        <ErrorText error={errors.mobileNumber} />
-                    </View>
-
-                    {/* Location Section */}
-                    <View className="mb-4">
-                        <Text className="text-lg font-bold text-secondary-900 mb-3">
-                            Location Details
-                        </Text>
-
-                        <LocationPickerField
-                            onLocationSelect={(locationData) => {
-                                setCoordinates(locationData.coordinates);
-                                if (locationData.addressLine1) setAddressLine1(locationData.addressLine1);
-                                if (locationData.addressLine2) setAddressLine2(locationData.addressLine2);
-                                if (locationData.city) setCity(locationData.city);
-                                if (locationData.state) setState(locationData.state);
-                                if (locationData.pincode) setPincode(locationData.pincode);
-                            }}
-                        />
-
-                        <InputField
-                            label="Address Line 1"
-                            value={addressLine1}
-                            onChangeText={setAddressLine1}
-                            placeholder="Building, Street"
-                            leftIcon="location"
-                        />
-
-                        <InputField
-                            label="Address Line 2"
-                            value={addressLine2}
-                            onChangeText={setAddressLine2}
-                            placeholder="Area, Landmark"
-                            leftIcon="location"
-                        />
-
-                        <View className="flex-row gap-3 mb-4">
-                            <View className="flex-1">
-                                <InputField
-                                    label="City"
-                                    value={city}
-                                    onChangeText={setCity}
-                                    placeholder="Enter city"
-                                    leftIcon="location"
-                                />
-                            </View>
-                            <View className="flex-1">
-                                <InputField
-                                    label="State"
-                                    value={state}
-                                    onChangeText={setState}
-                                    placeholder="Enter state"
-                                    leftIcon="location"
-                                />
-                            </View>
-                        </View>
-
-                        <InputField
-                            label="Pincode"
-                            value={pincode}
-                            onChangeText={(text) => setPincode(text.replace(/[^0-9]/g, '').slice(0, 6))}
-                            placeholder="Enter 6-digit pincode"
-                            keyboardType="number-pad"
-                            maxLength={6}
-                            leftIcon="location"
-                        />
-
-                        {coordinates && (
-                            <View className="bg-success-50 rounded-xl p-3 mt-2 flex-row items-center">
-                                <Icon name={IconNames.location} size="sm" color={theme.colors.success[700]} />
-                                <Text className="text-success-700 text-xs ml-2">
-                                    Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
-                                </Text>
-                            </View>
-                        )}
-                    </View>
-
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Password *
-                        </Text>
-                        <View className="relative">
-                            <TextInput
-                                className={`border rounded-xl px-4 py-3 pr-12 text-base bg-white ${errors.password ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="Enter password (min 6 characters)"
-                                placeholderTextColor="#94a3b8"
-                                value={password}
-                                onChangeText={(text) => {
-                                    setPassword(text);
-                                    clearError('password');
-                                }}
-                                secureTextEntry={!showPassword}
-                                autoCapitalize="none"
-                            />
-                            <TouchableOpacity
-                                className="absolute right-3 top-3"
-                                onPress={() => setShowPassword(!showPassword)}
-                            >
-                                <Icon
-                                    name={showPassword ? IconNames.eyeOff : IconNames.eye}
-                                    size="lg"
-                                    color={theme.colors.text.tertiary}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <ErrorText error={errors.password} />
-                    </View>
-
-                    <View className="mb-6">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Confirm Password *
-                        </Text>
-                        <View className="relative">
-                            <TextInput
-                                className={`border rounded-xl px-4 py-3 pr-12 text-base bg-white ${errors.confirmPassword ? 'border-error-500' : 'border-secondary-200'
-                                    }`}
-                                placeholder="Confirm password"
-                                placeholderTextColor="#94a3b8"
-                                value={confirmPassword}
-                                onChangeText={(text) => {
-                                    setConfirmPassword(text);
-                                    clearError('confirmPassword');
-                                }}
-                                secureTextEntry={!showConfirmPassword}
-                                autoCapitalize="none"
-                            />
-                            <TouchableOpacity
-                                className="absolute right-3 top-3"
-                                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                                <Icon
-                                    name={showConfirmPassword ? IconNames.eyeOff : IconNames.eye}
-                                    size="lg"
-                                    color={theme.colors.text.tertiary}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <ErrorText error={errors.confirmPassword} />
-                    </View>
-
-                    <CustomButton
-                        title="Create Account"
-                        onPress={handleSignup}
-                        loading={loading}
-                        variant="primary"
-                        size="md"
+                    <InputField
+                        label="Email"
+                        value={email}
+                        onChangeText={(text) => {
+                            setEmail(text);
+                            clearError('email');
+                        }}
+                        placeholder="Enter your email"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        error={errors.email}
+                        leftIcon="mail"
                     />
 
-                    <View className="flex-row justify-center items-center mt-4">
-                        <Text className="text-secondary-500 text-sm">
-                            Already have an account?{' '}
-                        </Text>
-                        <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-                            <Text className="text-primary-600 font-semibold text-sm">
-                                Sign In
+                    <InputField
+                        label="Mobile Number"
+                        value={mobileNumber}
+                        onChangeText={(text) => {
+                            const digits = text.replace(/[^0-9]/g, '').slice(0, 10);
+                            setMobileNumber(digits);
+                            clearError('mobileNumber');
+                        }}
+                        placeholder="Enter 10-digit mobile number"
+                        keyboardType="phone-pad"
+                        maxLength={10}
+                        error={errors.mobileNumber}
+                        leftIcon="call"
+                    />
+
+                    {/* Location Section */}
+                    <View style={s.sectionDivider}>
+                        <View style={s.sectionLine} />
+                        <Text style={s.sectionTitle}>Location Details</Text>
+                        <View style={s.sectionLine} />
+                    </View>
+
+                    <LocationPickerField
+                        onLocationSelect={(locationData) => {
+                            setCoordinates(locationData.coordinates);
+                            if (locationData.addressLine1) setAddressLine1(locationData.addressLine1);
+                            if (locationData.addressLine2) setAddressLine2(locationData.addressLine2);
+                            if (locationData.city) setCity(locationData.city);
+                            if (locationData.state) setState(locationData.state);
+                            if (locationData.pincode) setPincode(locationData.pincode);
+                        }}
+                    />
+
+                    <InputField
+                        label="Address Line 1"
+                        value={addressLine1}
+                        onChangeText={setAddressLine1}
+                        placeholder="Building, Street"
+                        leftIcon="location"
+                    />
+
+                    <InputField
+                        label="Address Line 2"
+                        value={addressLine2}
+                        onChangeText={setAddressLine2}
+                        placeholder="Area, Landmark"
+                        leftIcon="location"
+                    />
+
+                    <View style={s.row}>
+                        <View style={{ flex: 1 }}>
+                            <InputField
+                                label="City"
+                                value={city}
+                                onChangeText={setCity}
+                                placeholder="Enter city"
+                                leftIcon="location"
+                            />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <InputField
+                                label="State"
+                                value={state}
+                                onChangeText={setState}
+                                placeholder="Enter state"
+                                leftIcon="location"
+                            />
+                        </View>
+                    </View>
+
+                    <InputField
+                        label="Pincode"
+                        value={pincode}
+                        onChangeText={(text) => setPincode(text.replace(/[^0-9]/g, '').slice(0, 6))}
+                        placeholder="Enter 6-digit pincode"
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        leftIcon="location"
+                    />
+
+                    {coordinates && (
+                        <View style={s.coordsBadge}>
+                            <Icon name={IconNames.location} size="sm" color="#15803d" />
+                            <Text style={s.coordsText}>
+                                Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
                             </Text>
+                        </View>
+                    )}
+
+                    {/* Password Section */}
+                    <View style={s.sectionDivider}>
+                        <View style={s.sectionLine} />
+                        <Text style={s.sectionTitle}>Set Password</Text>
+                        <View style={s.sectionLine} />
+                    </View>
+
+                    <InputField
+                        label="Password"
+                        value={password}
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            clearError('password');
+                        }}
+                        placeholder="Enter password (min 6 characters)"
+                        secureTextEntry={!showPassword}
+                        showPasswordToggle
+                        autoCapitalize="none"
+                        error={errors.password}
+                        leftIcon="lock"
+                    />
+
+                    <InputField
+                        label="Confirm Password"
+                        value={confirmPassword}
+                        onChangeText={(text) => {
+                            setConfirmPassword(text);
+                            clearError('confirmPassword');
+                        }}
+                        placeholder="Confirm password"
+                        secureTextEntry={!showConfirmPassword}
+                        showPasswordToggle
+                        autoCapitalize="none"
+                        error={errors.confirmPassword}
+                        leftIcon="lock"
+                    />
+
+                    <View style={{ marginTop: 4 }}>
+                        <CustomButton
+                            title="Create Account"
+                            onPress={handleSignup}
+                            loading={loading}
+                            variant="primary"
+                            size="md"
+                        />
+                    </View>
+
+                    <View style={s.bottomLink}>
+                        <Text style={s.bottomLinkText}>Already have an account? </Text>
+                        <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
+                            <Text style={s.bottomLinkAction}>Sign In</Text>
                         </TouchableOpacity>
                     </View>
 
                     <TouchableOpacity
-                        className="mt-4 py-3"
+                        style={s.backLink}
                         onPress={() => navigation?.navigate('Signup')}
                     >
-                        <Text className="text-center text-secondary-500 text-sm">
-                            ← Back to signup options
-                        </Text>
+                        <Text style={s.backLinkText}>← Back to signup options</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -438,6 +372,88 @@ const ClientSignupScreen = ({ navigation }) => {
     );
 };
 
+const s = StyleSheet.create({
+    headerWrap: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+    headerBadge: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: '800',
+        color: '#0f172a',
+    },
+    subtitle: {
+        fontSize: 13,
+        color: '#64748b',
+        marginTop: 2,
+    },
+    row: {
+        flexDirection: 'row',
+        gap: 12,
+    },
+    sectionDivider: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8,
+        gap: 12,
+    },
+    sectionLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#e2e8f0',
+    },
+    sectionTitle: {
+        fontSize: 13,
+        fontWeight: '700',
+        color: '#475569',
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+    },
+    coordsBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f0fdf4',
+        borderRadius: 12,
+        padding: 12,
+        marginBottom: 8,
+    },
+    coordsText: {
+        color: '#15803d',
+        fontSize: 12,
+        marginLeft: 8,
+    },
+    bottomLink: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 16,
+    },
+    bottomLinkText: {
+        color: '#64748b',
+        fontSize: 14,
+    },
+    bottomLinkAction: {
+        color: '#0d9488',
+        fontSize: 14,
+        fontWeight: '700',
+    },
+    backLink: {
+        marginTop: 12,
+        paddingVertical: 12,
+    },
+    backLinkText: {
+        textAlign: 'center',
+        color: '#64748b',
+        fontSize: 13,
+    },
+});
+
 export default ClientSignupScreen;
-
-

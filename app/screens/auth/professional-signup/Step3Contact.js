@@ -16,9 +16,14 @@ const Step3Contact = ({
 }) => {
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">
-                Company Contact
-            </Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    Company Contact
+                </Text>
+                <Text className="text-secondary-500">
+                    How can clients reach your business?
+                </Text>
+            </View>
 
             <InputField
                 label="Company Email *"
@@ -28,6 +33,7 @@ const Step3Contact = ({
                 placeholder="company@example.com"
                 keyboardType="email-address"
                 autoCapitalize="none"
+                leftIcon="mail"
             />
 
             <InputField
@@ -38,6 +44,7 @@ const Step3Contact = ({
                 placeholder="10-digit phone number"
                 keyboardType="phone-pad"
                 maxLength={10}
+                leftIcon="call"
             />
 
             <InputField
@@ -47,6 +54,7 @@ const Step3Contact = ({
                 placeholder="10-digit WhatsApp number"
                 keyboardType="phone-pad"
                 maxLength={10}
+                leftIcon="call"
             />
 
             <InputField
@@ -56,6 +64,7 @@ const Step3Contact = ({
                 placeholder="https://www.example.com"
                 keyboardType="url"
                 autoCapitalize="none"
+                leftIcon="globe"
             />
         </View>
     );

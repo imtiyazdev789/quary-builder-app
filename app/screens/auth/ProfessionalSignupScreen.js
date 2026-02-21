@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { CustomAlert, CustomButton } from '../../components';
+import Icon, { IconNames } from '../../components/Icon';
 import api from '../../config/axios';
 import useProfessionalSignupStore from '../../store/useProfessionalSignupStore';
 import Step1BusinessInfo from './professional-signup/Step1BusinessInfo';
@@ -712,32 +714,37 @@ const ProfessionalSignupScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
-            {/* Progress bar */}
-            <View className="px-6 pt-4 pb-2">
-                <View className="flex-row items-center justify-between mb-2">
-                    <Text className="text-sm text-secondary-500">Step {currentStep} of {TOTAL_STEPS}</Text>
-                    <Text className="text-sm font-medium text-primary-600">
+            {/* Premium Progress Bar */}
+            <View style={ps.progressWrap}>
+                <View style={ps.progressHeader}>
+                    <View style={ps.stepBadge}>
+                        <Icon name={IconNames.checkmarkCircle} size="sm" color="#0d9488" />
+                        <Text style={ps.stepBadgeText}>Step {currentStep} of {TOTAL_STEPS}</Text>
+                    </View>
+                    <Text style={ps.percentText}>
                         {Math.round((currentStep / TOTAL_STEPS) * 100)}%
                     </Text>
                 </View>
-                <View className="h-2 bg-secondary-100 rounded-full">
-                    <View
-                        className="h-2 bg-primary-600 rounded-full"
-                        style={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
+                <View style={ps.progressTrack}>
+                    <LinearGradient
+                        colors={['#0d9488', '#14b8a6']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={[ps.progressFill, { width: `${(currentStep / TOTAL_STEPS) * 100}%` }]}
                     />
                 </View>
             </View>
 
-            <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+            <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                 <View className="py-4">
                     {renderStep()}
                 </View>
             </ScrollView>
 
             {/* Navigation buttons */}
-            <View className="px-6 py-4 border-t border-secondary-100">
-                <View className="flex-row gap-3">
-                    <View className="flex-1">
+            <View style={ps.navFooter}>
+                <View style={ps.navRow}>
+                    <View style={{ flex: 1 }}>
                         <CustomButton
                             title={currentStep === 1 ? "Back" : "Previous"}
                             onPress={currentStep === 1 ? handleBack : handlePrevious}
@@ -746,7 +753,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
                             icon="←"
                         />
                     </View>
-                    <View className="flex-1">
+                    <View style={{ flex: 1 }}>
                         {currentStep < TOTAL_STEPS ? (
                             <CustomButton
                                 title="Next"
@@ -780,5 +787,54 @@ const ProfessionalSignupScreen = ({ navigation }) => {
     );
 };
 
-export default ProfessionalSignupScreen;
+const ps = StyleSheet.create({
+    progressWrap: {
+        paddingHorizontal: 24,
+        paddingTop: 16,
+        paddingBottom: 8,
+    },
+    progressHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 8,
+    },
+    stepBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    stepBadgeText: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: '#475569',
+    },
+    percentText: {
+        fontSize: 13,
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    progressTrack: {
+        height: 6,
+        backgroundColor: '#e2e8f0',
+        borderRadius: 3,
+        overflow: 'hidden',
+    },
+    progressFill: {
+        height: 6,
+        borderRadius: 3,
+    },
+    navFooter: {
+        paddingHorizontal: 24,
+        paddingVertical: 16,
+        borderTopWidth: 1,
+        borderTopColor: '#f1f5f9',
+        backgroundColor: '#ffffff',
+    },
+    navRow: {
+        flexDirection: 'row',
+        gap: 12,
+    },
+});
 
+export default ProfessionalSignupScreen;

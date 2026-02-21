@@ -17,9 +17,14 @@ const Step1BusinessInfo = ({
 }) => {
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">
-                Business Information
-            </Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    Business Profile
+                </Text>
+                <Text className="text-secondary-500">
+                    Tell us about your professional identity
+                </Text>
+            </View>
 
             <InputField
                 label="Business Name *"
@@ -28,6 +33,7 @@ const Step1BusinessInfo = ({
                 error={errors.businessName}
                 placeholder="Enter business name"
                 maxLength={140}
+                leftIcon="briefcase"
             />
 
             <DropdownSelector

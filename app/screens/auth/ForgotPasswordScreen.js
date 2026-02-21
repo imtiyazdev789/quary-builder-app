@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
+import { InputField } from '../../components';
 import CustomAlert from '../../components/CustomAlert';
 import CustomButton from '../../components/CustomButton';
+import Icon, { IconNames } from '../../components/Icon';
 
 const roleOptions = [
-    { key: 'user', label: 'Client' },
-    { key: 'professional', label: 'Professional' },
+    { key: 'user', label: 'Client', icon: 'home' },
+    { key: 'professional', label: 'Professional', icon: 'briefcase' },
 ];
 
 const ForgotPasswordScreen = ({ navigation }) => {
@@ -16,7 +19,6 @@ const ForgotPasswordScreen = ({ navigation }) => {
     const [errors, setErrors] = useState({});
     const { requestPasswordReset, loading } = useAuth();
 
-    // Custom Alert State
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         title: '',
@@ -64,14 +66,12 @@ const ForgotPasswordScreen = ({ navigation }) => {
         const result = await requestPasswordReset(email, role);
 
         if (result.success) {
-            // Backend returns emailVerificationId directly as data
             navigation.navigate('ResetPasswordOTP', {
                 email: email,
                 role: role,
-                verificationId: result.data, // emailVerificationId is returned directly
+                verificationId: result.data,
             });
         } else {
-            // If no account found, suggest checking role
             let errorMessage = result.error || 'Failed to send reset code. Please try again.';
             if (result.error?.toLowerCase().includes('no account')) {
                 errorMessage += '\n\nPlease make sure you selected the correct account type (Client or Professional).';
@@ -85,49 +85,53 @@ const ForgotPasswordScreen = ({ navigation }) => {
         }
     };
 
-    // Error text component
-    const ErrorText = ({ error }) => {
-        if (!error) return null;
-        return (
-            <Text className="text-error-500 text-xs mt-1 ml-1">
-                {error}
-            </Text>
-        );
-    };
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['bottom']}>
-            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
                 <View className="flex-1 justify-center px-6">
-                    <View className="mb-8">
-                        <Text className="text-4xl font-bold text-secondary-900 mb-2">
-                            Forgot Password?
-                        </Text>
-                        <Text className="text-base text-secondary-500">
-                            Enter your email address and we'll send you a verification code to reset your password.
+                    {/* Premium Header */}
+                    <View style={s.headerWrap}>
+                        <LinearGradient
+                            colors={['#fef3c7', '#fde68a']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={s.headerGradient}
+                        >
+                            <View style={s.logoCircle}>
+                                <Icon name={IconNames.lock} size="xxl" color="#d97706" />
+                            </View>
+                        </LinearGradient>
+                        <Text style={s.title}>Forgot Password?</Text>
+                        <Text style={s.subtitle}>
+                            Enter your email and we'll send you a verification code to reset your password.
                         </Text>
                     </View>
 
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            I am a
-                        </Text>
-                        <View className="flex-row gap-2">
+                    {/* Role Selector */}
+                    <View style={s.roleSection}>
+                        <Text style={s.roleLabel}>I am a</Text>
+                        <View style={s.roleRow}>
                             {roleOptions.map((option) => {
                                 const isActive = role === option.key;
                                 return (
                                     <TouchableOpacity
                                         key={option.key}
-                                        className={`flex-1 py-3 px-4 rounded-xl border-2 ${isActive
-                                            ? 'bg-primary-600 border-primary-600'
-                                            : 'bg-white border-secondary-200'
-                                            }`}
+                                        style={[
+                                            s.roleChip,
+                                            isActive && s.roleChipActive,
+                                        ]}
                                         onPress={() => setRole(option.key)}
+                                        activeOpacity={0.7}
                                     >
-                                        <Text
-                                            className={`text-center font-medium ${isActive ? 'text-white' : 'text-secondary-700'
-                                                }`}
-                                        >
+                                        <Icon
+                                            name={IconNames[option.icon]}
+                                            size="sm"
+                                            color={isActive ? '#ffffff' : '#64748b'}
+                                        />
+                                        <Text style={[
+                                            s.roleChipText,
+                                            isActive && s.roleChipTextActive,
+                                        ]}>
                                             {option.label}
                                         </Text>
                                     </TouchableOpacity>
@@ -136,36 +140,31 @@ const ForgotPasswordScreen = ({ navigation }) => {
                         </View>
                     </View>
 
-                    <View className="mb-6">
-                        <Text className="text-sm font-medium text-secondary-800 mb-2">
-                            Email Address
-                        </Text>
-                        <TextInput
-                            className={`border rounded-xl px-4 py-3 text-base bg-white ${errors.email ? 'border-error-500' : 'border-secondary-200'
-                                }`}
-                            placeholder="Enter your registered email"
-                            placeholderTextColor="#94a3b8"
-                            value={email}
-                            onChangeText={(text) => {
-                                setEmail(text);
-                                clearError('email');
-                            }}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoComplete="email"
-                        />
-                        <ErrorText error={errors.email} />
-                    </View>
-
-                    <CustomButton
-                        title="Send Reset Code"
-                        onPress={handleRequestReset}
-                        loading={loading}
-                        variant="primary"
-                        size="md"
+                    <InputField
+                        label="Email Address"
+                        value={email}
+                        onChangeText={(text) => {
+                            setEmail(text);
+                            clearError('email');
+                        }}
+                        placeholder="Enter your registered email"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        error={errors.email}
+                        leftIcon="mail"
                     />
 
-                    <View className="mt-6">
+                    <View style={{ marginTop: 4 }}>
+                        <CustomButton
+                            title="Send Reset Code"
+                            onPress={handleRequestReset}
+                            loading={loading}
+                            variant="primary"
+                            size="md"
+                        />
+                    </View>
+
+                    <View style={{ marginTop: 16 }}>
                         <CustomButton
                             title="Back to Login"
                             onPress={() => navigation.goBack()}
@@ -188,5 +187,78 @@ const ForgotPasswordScreen = ({ navigation }) => {
     );
 };
 
-export default ForgotPasswordScreen;
+const s = StyleSheet.create({
+    headerWrap: {
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    headerGradient: {
+        width: 88,
+        height: 88,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: 'rgba(217,119,6,0.12)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: '800',
+        color: '#0f172a',
+        marginBottom: 8,
+    },
+    subtitle: {
+        fontSize: 14,
+        color: '#64748b',
+        textAlign: 'center',
+        lineHeight: 20,
+        paddingHorizontal: 12,
+    },
+    roleSection: {
+        marginBottom: 8,
+    },
+    roleLabel: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: '#475569',
+        marginBottom: 10,
+        marginLeft: 2,
+    },
+    roleRow: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    roleChip: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 14,
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: '#e2e8f0',
+        backgroundColor: '#ffffff',
+    },
+    roleChipActive: {
+        backgroundColor: '#0d9488',
+        borderColor: '#0d9488',
+    },
+    roleChipText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#475569',
+    },
+    roleChipTextActive: {
+        color: '#ffffff',
+    },
+});
 
+export default ForgotPasswordScreen;

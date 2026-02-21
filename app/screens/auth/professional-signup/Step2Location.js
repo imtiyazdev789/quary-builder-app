@@ -32,9 +32,14 @@ const Step2Location = ({
 
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">
-                Location Details
-            </Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    Location Office
+                </Text>
+                <Text className="text-secondary-500">
+                    Where is your business registered?
+                </Text>
+            </View>
 
             <LocationPickerField onLocationSelect={handleLocationSelect} />
 
@@ -43,6 +48,7 @@ const Step2Location = ({
                 value={addressLine1}
                 onChangeText={setAddressLine1}
                 placeholder="Building, Street"
+                leftIcon="location"
             />
 
             <InputField
@@ -50,46 +56,62 @@ const Step2Location = ({
                 value={addressLine2}
                 onChangeText={setAddressLine2}
                 placeholder="Area, Landmark"
+                leftIcon="location"
             />
 
-            <InputField
-                label="City *"
-                value={city}
-                onChangeText={(text) => { setCity(text); clearError('city'); }}
-                error={errors.city}
-                placeholder="Enter city"
-            />
+            <View className="flex-row gap-3">
+                <View className="flex-1">
+                    <InputField
+                        label="City *"
+                        value={city}
+                        onChangeText={(text) => { setCity(text); clearError('city'); }}
+                        error={errors.city}
+                        placeholder="City"
+                        leftIcon="location"
+                    />
+                </View>
+                <View className="flex-1">
+                    <InputField
+                        label="District *"
+                        value={district}
+                        onChangeText={(text) => { setDistrict(text); clearError('district'); }}
+                        error={errors.district}
+                        placeholder="District"
+                        leftIcon="location"
+                    />
+                </View>
+            </View>
 
-            <InputField
-                label="District *"
-                value={district}
-                onChangeText={(text) => { setDistrict(text); clearError('district'); }}
-                error={errors.district}
-                placeholder="Enter district"
-            />
-
-            <InputField
-                label="State *"
-                value={state}
-                onChangeText={(text) => { setState(text); clearError('state'); }}
-                error={errors.state}
-                placeholder="Enter state"
-            />
-
-            <InputField
-                label="Pincode *"
-                value={pincode}
-                onChangeText={(text) => { setPincode(text.replace(/[^0-9]/g, '').slice(0, 6)); clearError('pincode'); }}
-                error={errors.pincode}
-                placeholder="Enter 6-digit pincode"
-                keyboardType="number-pad"
-                maxLength={6}
-            />
+            <View className="flex-row gap-3">
+                <View className="flex-1">
+                    <InputField
+                        label="State *"
+                        value={state}
+                        onChangeText={(text) => { setState(text); clearError('state'); }}
+                        error={errors.state}
+                        placeholder="State"
+                        leftIcon="location"
+                    />
+                </View>
+                <View className="flex-1">
+                    <InputField
+                        label="Pincode *"
+                        value={pincode}
+                        onChangeText={(text) => { setPincode(text.replace(/[^0-9]/g, '').slice(0, 6)); clearError('pincode'); }}
+                        error={errors.pincode}
+                        placeholder="6-digit"
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        leftIcon="location"
+                    />
+                </View>
+            </View>
 
             {coordinates && (
-                <View className="bg-success-50 rounded-xl p-3 mt-2">
-                    <Text className="text-success-700 text-xs">
-                        📍 Location: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
+                <View className="bg-success-50 rounded-xl p-4 mt-2 flex-row items-center border border-success-100">
+                    <Text className="text-lg mr-2">📍</Text>
+                    <Text className="text-success-700 text-xs font-medium">
+                        Coordinates Verified: {coordinates.latitude.toFixed(4)}, {coordinates.longitude.toFixed(4)}
                     </Text>
                 </View>
             )}
