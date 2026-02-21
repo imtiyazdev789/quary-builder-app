@@ -81,6 +81,8 @@ const Router = {
 
         // List
         GET_PROFESSIONAL_LIST: '/professional/list',
+        GET_NEARBY: '/professional/nearby',
+        GET_RADIUS_OPTIONS: '/professional/radius-options',
     },
 
     // ============================================

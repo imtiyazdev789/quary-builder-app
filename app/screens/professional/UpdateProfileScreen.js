@@ -15,6 +15,7 @@ import FadeInView from '../../components/FadeInView';
 import { SkeletonProfile } from '../../components/SkeletonLoader';
 import { BUSINESS_TYPES } from '../auth/professional-signup/constants';
 import api from '../../config/axios';
+import Router from '../../config/Router';
 import { useAuth } from '../../context/AuthContext';
 
 const UpdateProfileScreen = ({ navigation }) => {
@@ -52,7 +53,7 @@ const UpdateProfileScreen = ({ navigation }) => {
     const fetchProfile = async () => {
         try {
             setFetching(true);
-            const response = await api.get('/api/professionaldetails');
+            const response = await api.get(Router.PROFESSIONAL.GET_MY_PROFILE);
             if (response.data.success && response.data.data) {
                 const p = response.data.data;
                 setBusinessName(p.businessName || '');
@@ -139,7 +140,7 @@ const UpdateProfileScreen = ({ navigation }) => {
                     name: representativePhoto.fileName || 'photo.jpg',
                 });
             }
-            const response = await api.patch('/api/updateprofprofile', formData, {
+            const response = await api.patch(Router.PROFESSIONAL.UPDATE_PROFILE, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             if (response.data.success) {

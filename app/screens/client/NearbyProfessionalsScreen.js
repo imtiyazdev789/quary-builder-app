@@ -5,6 +5,7 @@ import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { CustomAlert } from '../../components';
 import api from '../../config/axios';
+import Router from '../../config/Router';
 import { useAuth } from '../../context/AuthContext';
 import { SERVICE_TYPES } from './request-creation/constants';
 import Icon, { IconNames } from '../../components/Icon';
@@ -138,7 +139,7 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
 
     const fetchRadiusOptions = async () => {
         try {
-            const response = await api.get('/professional/radius-options');
+            const response = await api.get(Router.PROFESSIONAL.GET_RADIUS_OPTIONS);
             if (response.data.success && response.data.data?.options) {
                 const options = response.data.data.options.map(opt => ({
                     key: opt.value.toString(),
@@ -163,7 +164,7 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
 
         try {
             setLoading(true);
-            const response = await api.get('/professional/nearby', {
+            const response = await api.get(Router.PROFESSIONAL.GET_NEARBY, {
                 params: {
                     lat: userLocation.latitude,
                     lng: userLocation.longitude,

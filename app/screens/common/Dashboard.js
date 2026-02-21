@@ -122,7 +122,7 @@ const ClientDashboard = ({ dashboardData, error, navigation, user, insets }) => 
     const fetchNearbyProfessionals = async () => {
         if (!userLocation) return;
         try {
-            const response = await api.get('/professional/nearby', {
+            const response = await api.get(Router.PROFESSIONAL.GET_NEARBY, {
                 params: {
                     lat: userLocation.latitude,
                     lng: userLocation.longitude,
@@ -354,7 +354,7 @@ const ProfessionalDashboard = ({ dashboardData, error, navigation, user, insets 
         <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
             <ScrollView
                 style={{ flex: 1 }}
-                contentContainerStyle={{ paddingTop: insets.top + 20, paddingBottom: 40 }}
+                contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 40 }}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={{ paddingHorizontal: 24, paddingTop: 48 }}>

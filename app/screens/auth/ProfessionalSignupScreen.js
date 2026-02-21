@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { CustomAlert, CustomButton } from '../../components';
 import Icon, { IconNames } from '../../components/Icon';
 import api from '../../config/axios';
+import Router from '../../config/Router';
 import useProfessionalSignupStore from '../../store/useProfessionalSignupStore';
 import Step1BusinessInfo from './professional-signup/Step1BusinessInfo';
 import Step2Location from './professional-signup/Step2Location';
@@ -544,7 +545,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
 
             console.log('Submitting professional registration...');
 
-            const response = await api.post('/auth/professional/newregister', formData, {
+            const response = await api.post(Router.AUTH.PROFESSIONAL_REGISTER, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
