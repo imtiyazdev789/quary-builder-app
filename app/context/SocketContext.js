@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useAuth } from "./AuthContext";
+import authEvents from "../config/authEvents";
 
 const SocketContext = createContext();
 
@@ -53,7 +54,10 @@ export const SocketProvider = ({ children }) => {
 
         newSocket.on("connect_error", (err) => {
             console.error("❌ Socket connection error:", err.message);
-            // alert(`Chat connection error: ${err.message}`);
+            // If JWT is expired or invalid, force-logout
+            if (err.message && (err.message.includes('jwt expired') || err.message.includes('Authentication error'))) {
+                authEvents.emit('SESSION_EXPIRED');
+            }
         });
 
         newSocket.on("disconnect", () => {

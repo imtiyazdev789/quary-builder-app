@@ -1,5 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import authEvents from './authEvents';
 
 // Create axios instance
 const api = axios.create({
@@ -30,11 +31,13 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // Handle 401 Unauthorized
+        // Handle 401 Unauthorized (jwt expired / invalid)
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             await AsyncStorage.removeItem('authToken');
             await AsyncStorage.removeItem('userData');
+            // Notify AuthContext to force-logout and redirect to login
+            authEvents.emit('SESSION_EXPIRED');
         }
 
         // Log network errors
@@ -47,3 +50,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+

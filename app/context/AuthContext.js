@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../config/axios';
 import Router from '../config/Router';
+import authEvents from '../config/authEvents';
 
 const AuthContext = createContext();
 
@@ -22,6 +23,20 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         checkAuthStatus();
+    }, []);
+
+    // Listen for SESSION_EXPIRED from axios 401 interceptor
+    // and force-logout so the user is redirected to login screen
+    useEffect(() => {
+        const unsubscribe = authEvents.subscribe((event) => {
+            if (event === 'SESSION_EXPIRED') {
+                console.log('⚠️ Session expired — forcing logout');
+                setUser(null);
+                setToken(null);
+                setIsAuthenticated(false);
+            }
+        });
+        return unsubscribe;
     }, []);
 
     const checkAuthStatus = async () => {
