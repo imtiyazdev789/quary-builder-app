@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { CustomAlert, CustomButton } from '../../components';
@@ -330,10 +330,12 @@ const CreateRequestScreen = () => {
 
     if (fetchingProfile) {
         return (
-            <SafeAreaView className="flex-1 bg-white">
-                <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size="large" color="#0d9488" />
-                    <Text className="text-secondary-600 mt-4">Loading...</Text>
+            <SafeAreaView className="flex-1 bg-gray-50">
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#f0fdfa', justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
+                        <Icon name={IconNames.sync} size="lg" color="#0d9488" />
+                    </View>
+                    <Text style={{ fontSize: 14, color: '#64748b', fontWeight: '500' }}>Preparing your request…</Text>
                 </View>
             </SafeAreaView>
         );
@@ -342,21 +344,20 @@ const CreateRequestScreen = () => {
     return (
         <SafeAreaView className="flex-1 bg-gray-50" edges={['top', 'bottom']}>
             {/* Header */}
-            <View className="bg-white px-4 py-4 border-b border-secondary-200">
-                <View className="flex-row items-center justify-between mb-2">
-                    <View className="flex-1">
-                        <Text className="text-2xl font-bold text-secondary-900">
-                            Create Request
-                        </Text>
+            <View style={cStyles.header}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={cStyles.pageTitle}>Create Request</Text>
                         {professionalId && (
-                            <Text className="text-xs text-secondary-500 mt-1">
-                                Professional selected
-                            </Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                                <Icon name={IconNames.checkmarkCircle} size="xs" color="#10b981" />
+                                <Text style={{ fontSize: 12, color: '#10b981', marginLeft: 4, fontWeight: '600' }}>Professional selected</Text>
+                            </View>
                         )}
                         {!professionalId && (
-                            <View className="flex-row items-center">
-                                <Icon name={IconNames.warning} size="sm" color={theme.colors.warning[600]} />
-                                <Text className="text-xs text-warning-600 ml-1">Please select a professional first</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                                <Icon name={IconNames.warning} size="sm" color="#f59e0b" />
+                                <Text style={{ fontSize: 12, color: '#f59e0b', marginLeft: 4 }}>Please select a professional first</Text>
                             </View>
                         )}
                     </View>
@@ -379,39 +380,51 @@ const CreateRequestScreen = () => {
                                 ],
                             });
                         }}
-                        className="px-3 py-1"
+                        style={{ paddingHorizontal: 8, paddingVertical: 4 }}
                     >
-                        <Text className="text-primary-600 font-medium">Cancel</Text>
+                        <Text style={{ color: '#0d9488', fontWeight: '600', fontSize: 14 }}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Progress Indicator */}
-                <View className="flex-row items-center mt-2">
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((step) => (
                         <React.Fragment key={step}>
                             <View
-                                className={`w-8 h-8 rounded-full items-center justify-center ${step <= currentStep
-                                    ? 'bg-primary-600'
-                                    : 'bg-secondary-200'
-                                    }`}
+                                style={[
+                                    cStyles.stepDot,
+                                    step <= currentStep
+                                        ? { backgroundColor: '#0d9488' }
+                                        : { backgroundColor: '#e2e8f0' },
+                                ]}
                             >
-                                <Text
-                                    className={`text-sm font-bold ${step <= currentStep ? 'text-white' : 'text-secondary-500'
-                                        }`}
-                                >
-                                    {step}
-                                </Text>
+                                {step < currentStep ? (
+                                    <Icon name={IconNames.checkmark} size="xs" color="#ffffff" />
+                                ) : (
+                                    <Text
+                                        style={[
+                                            cStyles.stepNumber,
+                                            step <= currentStep ? { color: '#ffffff' } : { color: '#94a3b8' },
+                                        ]}
+                                    >
+                                        {step}
+                                    </Text>
+                                )}
                             </View>
                             {step < TOTAL_STEPS && (
                                 <View
-                                    className={`flex-1 h-1 mx-2 ${step < currentStep ? 'bg-primary-600' : 'bg-secondary-200'
-                                        }`}
+                                    style={[
+                                        cStyles.stepLine,
+                                        step < currentStep
+                                            ? { backgroundColor: '#0d9488' }
+                                            : { backgroundColor: '#e2e8f0' },
+                                    ]}
                                 />
                             )}
                         </React.Fragment>
                     ))}
                 </View>
-                <Text className="text-xs text-secondary-500 mt-2">
+                <Text style={{ fontSize: 12, color: '#64748b', marginTop: 8, fontWeight: '500' }}>
                     Step {currentStep} of {TOTAL_STEPS}
                 </Text>
             </View>
@@ -424,8 +437,8 @@ const CreateRequestScreen = () => {
             </ScrollView>
 
             {/* Navigation Buttons */}
-            <View className="bg-white border-t border-secondary-200 px-4 py-4">
-                <View className="flex-row justify-between">
+            <View style={cStyles.footer}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flex: 1, marginRight: 8 }}>
                         <CustomButton
                             title="Previous"
@@ -446,10 +459,11 @@ const CreateRequestScreen = () => {
                         <>
                             {!professionalId && (
                                 <TouchableOpacity
-                                    className="flex-1 ml-2 bg-warning-600 rounded-xl py-3 px-4 items-center justify-center"
+                                    style={{ flex: 1, marginLeft: 8, backgroundColor: '#f59e0b', borderRadius: 16, paddingVertical: 14, alignItems: 'center', justifyContent: 'center' }}
                                     onPress={() => navigation.navigate('NearbyProfessionals')}
+                                    activeOpacity={0.85}
                                 >
-                                    <Text className="text-white font-semibold text-base">
+                                    <Text style={{ color: '#ffffff', fontWeight: '700', fontSize: 15 }}>
                                         Select Professional First
                                     </Text>
                                 </TouchableOpacity>
@@ -479,5 +493,44 @@ const CreateRequestScreen = () => {
         </SafeAreaView>
     );
 };
+
+const cStyles = StyleSheet.create({
+    header: {
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 16,
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f1f5f9',
+    },
+    pageTitle: {
+        fontSize: 24,
+        fontWeight: '800',
+        color: '#0f172a',
+    },
+    stepDot: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    stepNumber: {
+        fontSize: 13,
+        fontWeight: '700',
+    },
+    stepLine: {
+        flex: 1,
+        height: 3,
+        borderRadius: 1.5,
+        marginHorizontal: 6,
+    },
+    footer: {
+        backgroundColor: '#ffffff',
+        borderTopWidth: 1,
+        borderTopColor: '#f1f5f9',
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+    },
+});
 
 export default CreateRequestScreen;

@@ -138,4 +138,7 @@ export const IconNames = {
     help: 'help-circle-outline',
     refresh: 'refresh-outline',
     sync: 'sync-outline',
+    chevronForward: 'chevron-forward-outline',
+    checkmark: 'checkmark-outline',
+    checkmarkCircle: 'checkmark-circle-outline',
 };

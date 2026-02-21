@@ -437,16 +437,16 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                     }}
                 >
                     {/* List Header with Toggle */}
-                    <View className="px-4 py-3 border-b border-secondary-100 flex-row justify-between items-center bg-white">
-                        <Text className="text-lg font-semibold text-secondary-900">
-                            Found {filteredProfessionals.length} Professional{filteredProfessionals.length !== 1 ? 's' : ''}
+                    <View style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#f1f5f9', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white' }}>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: '#0f172a' }}>
+                            {filteredProfessionals.length} Professional{filteredProfessionals.length !== 1 ? 's' : ''} Found
                         </Text>
                         {filteredProfessionals.length > 0 && (
                             <TouchableOpacity
                                 onPress={() => setListExpanded(!listExpanded)}
-                                className="px-3 py-1 bg-primary-100 rounded-lg"
+                                style={{ paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#f0fdfa', borderRadius: 12 }}
                             >
-                                <Text className="text-primary-600 text-sm font-medium">
+                                <Text style={{ color: '#0d9488', fontSize: 13, fontWeight: '600' }}>
                                     {listExpanded ? '▼ Minimize' : '▲ Expand'}
                                 </Text>
                             </TouchableOpacity>
@@ -471,17 +471,20 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                             }
                         >
                             {filteredProfessionals.length === 0 ? (
-                                <View className="flex-1 justify-center items-center py-12 px-4">
-                                    <Text className="text-4xl mb-3">🔍</Text>
-                                    <Text className="text-secondary-600 text-center mb-2">
-                                        No professionals found with the selected filters
+                                <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 40, paddingHorizontal: 16 }}>
+                                    <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: '#f1f5f9', justifyContent: 'center', alignItems: 'center', marginBottom: 14 }}>
+                                        <Icon name={IconNames.search} size="lg" color="#94a3b8" />
+                                    </View>
+                                    <Text style={{ fontSize: 15, fontWeight: '600', color: '#0f172a', marginBottom: 4 }}>No Professionals Found</Text>
+                                    <Text style={{ fontSize: 13, color: '#64748b', textAlign: 'center', lineHeight: 18 }}>
+                                        Try adjusting your filters or increasing the search radius.
                                     </Text>
                                     {hasActiveFilters && (
                                         <TouchableOpacity
                                             onPress={clearFilters}
-                                            className="mt-4 px-6 py-2 bg-primary-600 rounded-lg"
+                                            style={{ marginTop: 14, paddingHorizontal: 20, paddingVertical: 10, backgroundColor: '#0d9488', borderRadius: 14 }}
                                         >
-                                            <Text className="text-white font-medium">Clear Filters</Text>
+                                            <Text style={{ color: '#ffffff', fontWeight: '600', fontSize: 14 }}>Clear Filters</Text>
                                         </TouchableOpacity>
                                     )}
                                 </View>
@@ -489,46 +492,55 @@ const NearbyProfessionalsScreen = ({ navigation }) => {
                                 filteredProfessionals.map((professional) => (
                                     <TouchableOpacity
                                         key={professional._id}
-                                        className="px-4 py-4 border-b border-secondary-100"
+                                        style={{ marginHorizontal: 12, marginVertical: 6, backgroundColor: '#ffffff', borderRadius: 18, padding: 14, borderWidth: 1, borderColor: '#f1f5f9' }}
                                         onPress={() => {
                                             navigation.navigate('ProfessionalDetail', {
                                                 professionalId: professional._id
                                             });
                                         }}
+                                        activeOpacity={0.7}
                                     >
-                                        <View className="flex-row">
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <View
-                                                className="w-12 h-12 rounded-full items-center justify-center mr-3"
-                                                style={{ backgroundColor: getCategoryColor(professional.category) + '20' }}
+                                                style={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: 16,
+                                                    backgroundColor: getCategoryColor(professional.category) + '20',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    marginRight: 12,
+                                                }}
                                             >
-                                                <Text className="text-xl">
-                                                    {professional.logo ? '🏢' : '👷'}
+                                                <Text style={{ fontSize: 16, fontWeight: '700', color: getCategoryColor(professional.category) }}>
+                                                    {getCategoryLabel(professional.category).charAt(0)}
                                                 </Text>
                                             </View>
-                                            <View className="flex-1">
-                                                <Text className="text-base font-bold text-secondary-900 mb-1">
+                                            <View style={{ flex: 1 }}>
+                                                <Text style={{ fontSize: 15, fontWeight: '700', color: '#0f172a', marginBottom: 2 }} numberOfLines={1}>
                                                     {professional.businessName}
                                                 </Text>
-                                                <Text className="text-sm text-secondary-600 mb-1">
+                                                <Text style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>
                                                     {getCategoryLabel(professional.category)}
                                                 </Text>
-                                                <View className="flex-row items-center flex-wrap">
-                                                    <View className="flex-row items-center">
-                                                        <Icon name={IconNames.location} size="xs" color={theme.colors.text.tertiary} />
-                                                        <Text className="text-xs text-secondary-500 ml-1">
-                                                            {professional.distance?.toFixed(1) || 'N/A'} km away
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                                                        <Icon name={IconNames.location} size="xs" color="#64748b" />
+                                                        <Text style={{ fontSize: 11, color: '#64748b' }}>
+                                                            {professional.distance?.toFixed(1) || 'N/A'} km
                                                         </Text>
                                                     </View>
                                                     {professional.avgRating > 0 && (
-                                                        <View className="flex-row items-center ml-3">
-                                                            <Icon name={IconNames.star} size="xs" color={theme.colors.warning[500]} />
-                                                            <Text className="text-xs text-secondary-500 ml-1">
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                                                            <Icon name={IconNames.star} size="xs" color="#f59e0b" />
+                                                            <Text style={{ fontSize: 11, color: '#64748b' }}>
                                                                 {professional.avgRating.toFixed(1)} ({professional.totalReview})
                                                             </Text>
                                                         </View>
                                                     )}
                                                 </View>
                                             </View>
+                                            <Icon name={IconNames.chevronForward} size="sm" color="#cbd5e1" />
                                         </View>
                                     </TouchableOpacity>
                                 ))
