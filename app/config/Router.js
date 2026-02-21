@@ -47,7 +47,7 @@ const Router = {
     USER: {
         // Profile
         GET_PROFILE: '/user/profile',
-        UPDATE_PROFILE: '/api/user/updateprofile',
+        UPDATE_PROFILE: '/user/updateprofile',
 
         // Dashboard
         GET_DASHBOARD_DETAILS: '/user/getuserdashboarddetail',
@@ -58,9 +58,9 @@ const Router = {
     // ============================================
     PROFESSIONAL: {
         // Profile
-        GET_PROFILE_DETAILS: (id) => `/api/professionaldetails/${id}`,
-        GET_MY_PROFILE: '/api/professionaldetails',
-        UPDATE_PROFILE: '/api/updateprofprofile',
+        GET_PROFILE_DETAILS: (id) => `/professionaldetails/${id}`,
+        GET_MY_PROFILE: '/professionaldetails',
+        UPDATE_PROFILE: '/updateprofprofile',
 
         // Dashboard
         GET_DASHBOARD_INFO: '/professional/dashboard/info',
@@ -77,7 +77,7 @@ const Router = {
         DELETE_PROJECT: (id) => `/profes/deleteproject/${id}`,
 
         // Account
-        DELETE_ACCOUNT: '/api/delete',
+        DELETE_ACCOUNT: '/delete',
 
         // List
         GET_PROFESSIONAL_LIST: '/professional/list',
@@ -104,8 +104,8 @@ const Router = {
     // REVIEW ROUTES
     // ============================================
     REVIEW: {
-        CREATE_REVIEW: '/api/createreview',
-        GET_PROFESSIONAL_REVIEWS: '/api/getprofessionalreviews',
+        CREATE_REVIEW: '/createreview',
+        GET_PROFESSIONAL_REVIEWS: '/getprofessionalreviews',
     },
 
     // ============================================
@@ -113,15 +113,15 @@ const Router = {
     // ============================================
     UPLOAD: {
         UPLOADS: '/uploads',
-        API_UPLOADS: '/api/uploads',
+        API_UPLOADS: '/uploads',
     },
 
     // ============================================
     // NOTIFICATION ROUTES
     // ============================================
     NOTIFICATION: {
-        REGISTER_TOKEN: '/api/notifications/device-token',
-        UNREGISTER_TOKEN: '/api/notifications/device-token',
+        REGISTER_TOKEN: '/notifications/device-token',
+        UNREGISTER_TOKEN: '/notifications/device-token',
     },
 
     // ============================================

@@ -31,13 +31,14 @@ export const SocketProvider = ({ children }) => {
 
         // Get base URL - ensure we connect to root, not /api
         const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL || "http://192.168.1.1:5000";
-        // Strip trailing slash and trailing /api if present
+        // Strip trailing slash and trailing /api if present to get the pure origin
         const socketURL = baseURL.replace(/\/$/, "").replace(/\/api$/, "");
 
-        console.log("🔌 Connecting to Socket.io:", socketURL);
+        console.log("🔌 Connecting to Socket.io:", socketURL, "with path /api/socket.io");
 
         // Create socket connection
         const newSocket = io(socketURL, {
+            path: "/api/socket.io", // Matches the backend & Nginx configuration
             auth: {
                 token: token,
             },
