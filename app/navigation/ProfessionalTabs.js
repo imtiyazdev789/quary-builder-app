@@ -91,15 +91,28 @@ const ProfessionalTabs = () => {
             <FloatingMenu />
             <Tab.Navigator
                 screenOptions={{
-                    headerShown: false, // Completely hide header
-                    tabBarActiveTintColor: '#0d9488', // Brand teal
-                    tabBarInactiveTintColor: '#64748b',
-                    tabBarStyle: {
-                        paddingBottom: 5,
-                        paddingTop: 5,
-                        height: 60,
+                    headerShown: false,
+                    tabBarActiveTintColor: '#0d9488',
+                    tabBarInactiveTintColor: '#94a3b8',
+                    tabBarLabelStyle: {
+                        fontSize: 12,
+                        fontWeight: '600',
+                        marginTop: -2,
                     },
-                    // Smooth fade animation for tab transitions
+                    tabBarStyle: {
+                        paddingBottom: 8,
+                        paddingTop: 10,
+                        height: 68,
+                        borderTopWidth: 0,
+                        backgroundColor: '#ffffff',
+                        elevation: 16,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: -4 },
+                        shadowOpacity: 0.08,
+                        shadowRadius: 12,
+                        borderTopLeftRadius: 20,
+                        borderTopRightRadius: 20,
+                    },
                     animation: 'fade',
                     animationDuration: 200,
                 }}
