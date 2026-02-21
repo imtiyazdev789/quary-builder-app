@@ -326,10 +326,10 @@ const ClientDashboard = ({ dashboardData, error, navigation, user, insets }) => 
                         )}
 
                         {/* ── Recent Activity ───────────── */}
-                        <View style={styles.recentActivity}>
+                        {/* <View style={styles.recentActivity}>
                             <Text style={styles.sectionTitle}>Quick Actions</Text>
                             <Text style={styles.recentSubtext}>View and manage your activities</Text>
-                        </View>
+                        </View> */}
 
                         <View style={{ height: 40 }} />
                     </BottomSheetScrollView>
@@ -751,10 +751,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 16,
         marginBottom: 12,
+        minHeight: 150, // Fixed height consistency
+        justifyContent: 'space-between',
     },
     statIconCircle: {
-        width: 36,
-        height: 36,
+        width: 40,
+        height: 40,
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',

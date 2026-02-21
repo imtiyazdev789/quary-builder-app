@@ -195,6 +195,7 @@ const ClientProfile = () => {
                     profilePhoto: updated.profilePhoto || profilePhoto?.uri || photoPreview,
                 });
 
+                setIsEditing(false); // Hide buttons after success
                 showAlert({
                     title: 'Success',
                     message: 'Profile updated successfully.',
