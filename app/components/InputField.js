@@ -111,7 +111,7 @@ const InputField = ({
 
     return (
         <Animated.View
-            className={`mb-5 ${containerClassName}`}
+            className={`mb-6 ${containerClassName}`}
             style={{
                 transform: [{ translateX: shakeAnim }],
             }}
@@ -133,13 +133,13 @@ const InputField = ({
                     style={[
                         styles.input,
                         {
-                            height: multiline ? 96 : 52,
+                            height: multiline ? 96 : 50,
                             borderColor: getBorderColor(),
                             borderWidth: getBorderWidth(),
                             paddingLeft: leftIcon ? 44 : 16,
                             paddingRight: (showPasswordToggle || secureTextEntry) ? 48 : 16,
                             textAlignVertical: multiline ? 'top' : 'center',
-                            paddingTop: multiline ? 18 : 0,
+                            paddingTop: multiline ? 18 : 10,
                             backgroundColor: !editable ? '#f8fafc' : '#ffffff',
                             color: !editable ? '#94a3b8' : '#1e293b',
                         },

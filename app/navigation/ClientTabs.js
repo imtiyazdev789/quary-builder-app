@@ -53,106 +53,70 @@ const ClientTabs = () => {
         navigation.dispatch(DrawerActions.openDrawer());
     };
 
-    // Floating hamburger menu component
-    const FloatingMenu = () => {
-        const insets = useSafeAreaInsets();
-        return (
-            <View style={{
-                position: 'absolute',
-                top: insets.top + 16,
-                right: 16,
-                zIndex: 1000,
-            }}>
-                <TouchableOpacity
-                    onPress={openDrawer}
-                    style={{
-                        padding: 12,
-                        backgroundColor: '#0d9488',
-                        borderRadius: 18,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.25,
-                        shadowRadius: 3.84,
-                        elevation: 5,
-                    }}
-                >
-                    <View style={{ gap: 4 }}>
-                        <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
-                        <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
-                        <View style={{ width: 24, height: 3, backgroundColor: '#fff', borderRadius: 2 }} />
-                    </View>
-                </TouchableOpacity>
-            </View>
-        );
-    };
-
     return (
-        <>
-            <FloatingMenu />
-            <Tab.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    tabBarActiveTintColor: '#0d9488',
-                    tabBarInactiveTintColor: '#94a3b8',
-                    tabBarLabelStyle: {
-                        fontSize: 12,
-                        fontWeight: '600',
-                        marginTop: -2,
-                    },
-                    tabBarStyle: {
-                        paddingBottom: 8,
-                        paddingTop: 10,
-                        height: 68,
-                        borderTopWidth: 0,
-                        backgroundColor: '#ffffff',
-                        elevation: 16,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: -4 },
-                        shadowOpacity: 0.08,
-                        shadowRadius: 12,
-                        borderTopLeftRadius: 20,
-                        borderTopRightRadius: 20,
-                    },
-                    animation: 'fade',
-                    animationDuration: 200,
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: '#0d9488',
+                tabBarInactiveTintColor: '#94a3b8',
+                tabBarLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: '600',
+                    marginTop: -2,
+                },
+                tabBarStyle: {
+                    paddingBottom: 8,
+                    paddingTop: 10,
+                    height: 68,
+                    borderTopWidth: 0,
+                    backgroundColor: '#ffffff',
+                    elevation: 16,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -4 },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 12,
+                    borderRadius: 50,
+                    paddingHorizontal: 10,
+                },
+                animation: 'fade',
+                animationDuration: 200,
+            }}
+        >
+            <Tab.Screen
+                name="Dashboard"
+                component={Dashboard}
+                options={{
+                    title: 'Dashboard',
+                    tabBarLabel: 'Dashboard',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="home" size={size} color={color} />
+                    ),
                 }}
-            >
-                <Tab.Screen
-                    name="Dashboard"
-                    component={Dashboard}
-                    options={{
-                        title: 'Dashboard',
-                        tabBarLabel: 'Dashboard',
-                        tabBarIcon: ({ color, size }) => (
-                            <Ionicons name="home" size={size} color={color} />
-                        ),
-                    }}
-                />
-                <Tab.Screen
-                    name="MyRequest"
-                    component={MyRequestScreen}
-                    options={{
-                        title: 'My Requests',
-                        tabBarLabel: 'Requests',
-                        tabBarIcon: ({ color, size }) => (
-                            <Ionicons name="document-text" size={size} color={color} />
-                        ),
-                    }}
-                />
-                {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
-                {/* <Tab.Screen
-                    name="Chat"
-                    component={ChatListScreen}
-                    options={{
-                        title: 'Messages',
-                        tabBarLabel: 'Chat',
-                        tabBarIcon: ({ color, size }) => (
-                            <Text style={{ color, fontSize: size }}>💬</Text>
-                        ),
-                    }}
-                /> */}
-            </Tab.Navigator>
-        </>
+            />
+            <Tab.Screen
+                name="MyRequest"
+                component={MyRequestScreen}
+                options={{
+                    title: 'My Requests',
+                    tabBarLabel: 'Requests',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="document-text" size={size} color={color} />
+                    ),
+                }}
+            />
+            {/* CHAT FEATURE - TEMPORARILY HIDDEN */}
+            {/* <Tab.Screen
+                name="Chat"
+                component={ChatListScreen}
+                options={{
+                    title: 'Messages',
+                    tabBarLabel: 'Chat',
+                    tabBarIcon: ({ color, size }) => (
+                        <Text style={{ color, fontSize: size }}>💬</Text>
+                    ),
+                }}
+            /> */}
+        </Tab.Navigator>
     );
 };
 

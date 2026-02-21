@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Platform, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -39,6 +39,28 @@ const getCategoryLabel = (category) => ({
     'MEPConsultant': 'M',
     'Contractor': 'C',
 }[category] || '?');
+
+const UserAvatar = ({ user, size = 44 }) => {
+    const initials = (user?.name || user?.email || 'U').charAt(0).toUpperCase();
+    const photoUri = user?.profilePhoto
+        ? (user.profilePhoto.startsWith('http')
+            ? user.profilePhoto
+            : `${process.env.EXPO_PUBLIC_API_BASE_URL}${user.profilePhoto.replace(/^\//, '')}`)
+        : null;
+
+    return (
+        <View style={[styles.avatarCircle, { width: size, height: size, borderRadius: size / 2 }]}>
+            {photoUri ? (
+                <Image
+                    source={{ uri: photoUri }}
+                    style={[styles.avatarImage, { width: size, height: size, borderRadius: size / 2 }]}
+                />
+            ) : (
+                <Text style={[styles.avatarText, { fontSize: size * 0.4 }]}>{initials}</Text>
+            )}
+        </View>
+    );
+};
 
 // ─── Stat card config ───────────────────────────────────
 const CLIENT_STAT_CONFIG = [
@@ -170,26 +192,30 @@ const ClientDashboard = ({ dashboardData, error, navigation, user, insets }) => 
                 )}
 
                 {/* ── Floating Top Bar ───────────────────── */}
-                <View style={[styles.floatingHeader, { top: insets.top + 8 }]}>
+                <View style={[styles.floatingHeader, { top: insets.top + 4 }]}>
                     <View style={styles.floatingHeaderInner}>
-                        {/* Avatar circle */}
-                        <View style={styles.avatarCircle}>
-                            <Text style={styles.avatarText}>
-                                {(user?.name || user?.email || 'U').charAt(0).toUpperCase()}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 1, marginLeft: 12 }}>
+                        <View style={{ flex: 1 }}>
                             <Text style={styles.greetingSmall}>{getGreeting()}</Text>
                             <Text style={styles.greetingName} numberOfLines={1}>
                                 {user?.name || 'there'}
                             </Text>
                         </View>
+
                         {/* Notification bell */}
                         <TouchableOpacity
                             style={styles.notifButton}
                             onPress={() => navigation.navigate('Notifications')}
                         >
                             <Icon name={IconNames.notifications} size="lg" color="#0d9488" />
+                        </TouchableOpacity>
+
+                        {/* Avatar circle (Drawer trigger) */}
+                        <TouchableOpacity
+                            onPress={() => navigation.openDrawer()}
+                            activeOpacity={0.8}
+                            style={{ marginLeft: 12 }}
+                        >
+                            <UserAvatar user={user} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -334,8 +360,18 @@ const ProfessionalDashboard = ({ dashboardData, error, navigation, user, insets 
                 <View style={{ paddingHorizontal: 24, paddingTop: 48 }}>
                     {/* ── Greeting ──────────────────── */}
                     <FadeInView delay={100}>
-                        <Text style={styles.proGreetingSmall}>{getGreeting()}</Text>
-                        <Text style={styles.proGreetingName}>{user?.name || 'Professional'}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.proGreetingSmall}>{getGreeting()}</Text>
+                                <Text style={styles.proGreetingName}>{user?.name || 'Professional'}</Text>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => navigation.openDrawer()}
+                                activeOpacity={0.8}
+                            >
+                                <UserAvatar user={user} size={50} />
+                            </TouchableOpacity>
+                        </View>
                         <View style={styles.accentBar} />
                     </FadeInView>
 
@@ -552,17 +588,17 @@ const styles = StyleSheet.create({
     // ── Floating Header ─────────────────────
     floatingHeader: {
         position: 'absolute',
-        left: 16,
-        right: 16,
+        left: 10,
+        right: 10,
         zIndex: 100,
     },
     floatingHeaderInner: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'rgba(255,255,255,0.95)',
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+        borderRadius: 25,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
         ...Platform.select({
             ios: { shadowColor: '#0f172a', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12 },
             android: { elevation: 8 },
@@ -580,6 +616,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: '700',
+    },
+    avatarImage: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
     },
     greetingSmall: {
         fontSize: 12,
