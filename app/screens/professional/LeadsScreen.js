@@ -1,13 +1,15 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import api from '../../config/axios';
 import Router from '../../config/Router';
 import { CustomAlert, Icon, IconNames, FadeInView, AnimatedCard } from '../../components';
+import { SkeletonCard } from '../../components/SkeletonLoader';
 
 const LeadsScreen = () => {
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -120,19 +122,26 @@ const LeadsScreen = () => {
 
     if (loading && !refreshing) {
         return (
-            <SafeAreaView className="flex-1 bg-gray-50" edges={['top', 'bottom']}>
-                <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size="large" color="#0d9488" />
-                    <Text className="text-secondary-600 mt-4">Loading requests...</Text>
+            <View style={{ flex: 1, backgroundColor: '#f8fafc', paddingTop: insets.top + 20 }}>
+                <View style={{ paddingHorizontal: 24, paddingTop: 40, marginBottom: 16 }}>
+                    <View style={{ width: 100, height: 28, borderRadius: 8, backgroundColor: '#e2e8f0' }} />
+                    <View style={{ width: 48, height: 4, borderRadius: 2, backgroundColor: '#e2e8f0', marginTop: 8 }} />
                 </View>
-            </SafeAreaView>
+                {[1, 2, 3].map((i) => (
+                    <View key={i} style={{ paddingHorizontal: 24, marginBottom: 14 }}>
+                        <SkeletonCard />
+                    </View>
+                ))}
+            </View>
         );
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50" edges={['top', 'bottom']}>
+        <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
             <ScrollView
-                className="flex-1"
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingTop: insets.top + 20, paddingHorizontal: 24, paddingBottom: 40 }}
+                showsVerticalScrollIndicator={false}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
@@ -141,101 +150,106 @@ const LeadsScreen = () => {
                     />
                 }
             >
-                <View className="px-6 pt-8 pb-4">
-                    <FadeInView delay={100}>
-                        <Text className="text-3xl font-bold text-secondary-900 font-primary">
-                            Leads
-                        </Text>
-                    </FadeInView>
+                <FadeInView delay={100}>
+                    <View style={{ paddingTop: 40, marginBottom: 20 }}>
+                        <Text style={styles.pageTitle}>Leads</Text>
+                        <View style={styles.accentBar} />
+                    </View>
+                </FadeInView>
 
-                    {requests.length === 0 ? (
-                        <FadeInView delay={300} className="flex-1 justify-center items-center py-32">
-                            <Text className="text-base text-secondary-400 text-center font-medium">
-                                No leads yet.
+                {requests.length === 0 ? (
+                    <FadeInView delay={300}>
+                        <View style={styles.emptyContainer}>
+                            <View style={styles.emptyIconCircle}>
+                                <Icon name={IconNames.people} size="xl" color="#94a3b8" />
+                            </View>
+                            <Text style={styles.emptyTitle}>No Leads Yet</Text>
+                            <Text style={styles.emptySubtext}>
+                                New client requests matching your profile will appear here.
                             </Text>
-                        </FadeInView>
-                    ) : (
-                        requests.map((request, index) => (
-                            <FadeInView key={request.id} delay={200 + index * 100}>
-                                <AnimatedCard
-                                    onPress={() => navigation.navigate('ProfessionalRequestDetails', { request })}
-                                    className="bg-white rounded-[24px] mb-4 shadow-sm border border-secondary-100 overflow-hidden"
-                                >
-                                    <View className="p-5">
-                                        <View className="flex-row justify-between items-start mb-4">
-                                            <View className="flex-1 mr-2">
-                                                <Text className="text-lg font-bold text-secondary-900 mb-1">
-                                                    {request.clientName}
-                                                </Text>
-                                                <View className="flex-row items-center">
-                                                    <Icon name={IconNames.briefcase} size="xs" color="#94a3b8" style={{ marginRight: 4 }} />
-                                                    <Text className="text-sm text-secondary-500 font-medium">
-                                                        {getCategoryLabel(request.clientProjectCategory)}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                            <View className={`px-3 py-1.5 rounded-full flex-row items-center ${getStatusColor(request.status)}`}>
-                                                <Icon
-                                                    name={request.status === 'new' ? IconNames.notifications : request.status === 'accepted' ? IconNames.checkmarkCircle : IconNames.closeCircle}
-                                                    size="xs"
-                                                    color="currentColor"
-                                                    style={{ marginRight: 4 }}
-                                                />
-                                                <Text className="text-[10px] font-bold uppercase tracking-wider">
-                                                    {getStatusDisplay(request.status)}
-                                                </Text>
-                                            </View>
-                                        </View>
-
-                                        {request.clientProjectDetail && (
-                                            <Text
-                                                className="text-sm text-secondary-600 mb-4 leading-5"
-                                                numberOfLines={2}
-                                            >
-                                                {request.clientProjectDetail}
+                        </View>
+                    </FadeInView>
+                ) : (
+                    requests.map((request, index) => (
+                        <FadeInView key={request.id} delay={200 + index * 100}>
+                            <AnimatedCard
+                                onPress={() => navigation.navigate('ProfessionalRequestDetails', { request })}
+                                className="bg-white rounded-[24px] mb-4 shadow-sm border border-secondary-100 overflow-hidden"
+                            >
+                                <View className="p-5">
+                                    <View className="flex-row justify-between items-start mb-4">
+                                        <View className="flex-1 mr-2">
+                                            <Text className="text-lg font-bold text-secondary-900 mb-1">
+                                                {request.clientName}
                                             </Text>
-                                        )}
-
-                                        <View className="flex-row flex-wrap gap-2 mb-4">
-                                            {request.clientProjectServicesType && request.clientProjectServicesType.length > 0 && (
-                                                request.clientProjectServicesType.slice(0, 3).map((service, sIndex) => (
-                                                    <View
-                                                        key={sIndex}
-                                                        className="bg-secondary-50 px-3 py-1 rounded-lg border border-secondary-100"
-                                                    >
-                                                        <Text className="text-[10px] font-bold text-secondary-600 uppercase">
-                                                            {service}
-                                                        </Text>
-                                                    </View>
-                                                ))
-                                            )}
+                                            <View className="flex-row items-center">
+                                                <Icon name={IconNames.briefcase} size="xs" color="#94a3b8" style={{ marginRight: 4 }} />
+                                                <Text className="text-sm text-secondary-500 font-medium">
+                                                    {getCategoryLabel(request.clientProjectCategory)}
+                                                </Text>
+                                            </View>
                                         </View>
-
-                                        <View className="flex-row justify-between items-center pt-4 border-t border-secondary-50">
-                                            <View className="items-center flex-1">
-                                                <Icon name={IconNames.card} size="xs" color="#64748b" style={{ marginBottom: 4 }} />
-                                                <Text className="text-[10px] font-bold text-secondary-400 uppercase tracking-tighter mb-1">Budget</Text>
-                                                <Text className="text-xs font-bold text-secondary-900">{request.clientProjectBudgetRange}</Text>
-                                            </View>
-                                            <View className="w-[1px] h-8 bg-secondary-100 mx-2" />
-                                            <View className="items-center flex-1">
-                                                <Icon name={IconNames.time} size="xs" color="#64748b" style={{ marginBottom: 4 }} />
-                                                <Text className="text-[10px] font-bold text-secondary-400 uppercase tracking-tighter mb-1">Timeline</Text>
-                                                <Text className="text-xs font-bold text-secondary-900">{request.clientProjectTimeLine}</Text>
-                                            </View>
-                                            <View className="w-[1px] h-8 bg-secondary-100 mx-2" />
-                                            <View className="items-center flex-1">
-                                                <Icon name={IconNames.calendar} size="xs" color="#64748b" style={{ marginBottom: 4 }} />
-                                                <Text className="text-[10px] font-bold text-secondary-400 uppercase tracking-tighter mb-1">Received</Text>
-                                                <Text className="text-xs font-bold text-secondary-900">{formatDate(request.createdAt)}</Text>
-                                            </View>
+                                        <View className={`px-3 py-1.5 rounded-full flex-row items-center ${getStatusColor(request.status)}`}>
+                                            <Icon
+                                                name={request.status === 'new' ? IconNames.notifications : request.status === 'accepted' ? IconNames.checkmarkCircle : IconNames.closeCircle}
+                                                size="xs"
+                                                color="currentColor"
+                                                style={{ marginRight: 4 }}
+                                            />
+                                            <Text className="text-[10px] font-bold uppercase tracking-wider">
+                                                {getStatusDisplay(request.status)}
+                                            </Text>
                                         </View>
                                     </View>
-                                </AnimatedCard>
-                            </FadeInView>
-                        ))
-                    )}
-                </View>
+
+                                    {request.clientProjectDetail && (
+                                        <Text
+                                            className="text-sm text-secondary-600 mb-4 leading-5"
+                                            numberOfLines={2}
+                                        >
+                                            {request.clientProjectDetail}
+                                        </Text>
+                                    )}
+
+                                    <View className="flex-row flex-wrap gap-2 mb-4">
+                                        {request.clientProjectServicesType && request.clientProjectServicesType.length > 0 && (
+                                            request.clientProjectServicesType.slice(0, 3).map((service, sIndex) => (
+                                                <View
+                                                    key={sIndex}
+                                                    className="bg-secondary-50 px-3 py-1 rounded-lg border border-secondary-100"
+                                                >
+                                                    <Text className="text-[10px] font-bold text-secondary-600 uppercase">
+                                                        {service}
+                                                    </Text>
+                                                </View>
+                                            ))
+                                        )}
+                                    </View>
+
+                                    <View className="flex-row justify-between items-center pt-4 border-t border-secondary-50">
+                                        <View className="items-center flex-1">
+                                            <Icon name={IconNames.card} size="xs" color="#64748b" style={{ marginBottom: 4 }} />
+                                            <Text className="text-[10px] font-bold text-secondary-400 uppercase tracking-tighter mb-1">Budget</Text>
+                                            <Text className="text-xs font-bold text-secondary-900">{request.clientProjectBudgetRange}</Text>
+                                        </View>
+                                        <View className="w-[1px] h-8 bg-secondary-100 mx-2" />
+                                        <View className="items-center flex-1">
+                                            <Icon name={IconNames.time} size="xs" color="#64748b" style={{ marginBottom: 4 }} />
+                                            <Text className="text-[10px] font-bold text-secondary-400 uppercase tracking-tighter mb-1">Timeline</Text>
+                                            <Text className="text-xs font-bold text-secondary-900">{request.clientProjectTimeLine}</Text>
+                                        </View>
+                                        <View className="w-[1px] h-8 bg-secondary-100 mx-2" />
+                                        <View className="items-center flex-1">
+                                            <Icon name={IconNames.calendar} size="xs" color="#64748b" style={{ marginBottom: 4 }} />
+                                            <Text className="text-[10px] font-bold text-secondary-400 uppercase tracking-tighter mb-1">Received</Text>
+                                            <Text className="text-xs font-bold text-secondary-900">{formatDate(request.createdAt)}</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </AnimatedCard>
+                        </FadeInView>
+                    ))
+                )}
             </ScrollView>
 
             <CustomAlert
@@ -246,8 +260,50 @@ const LeadsScreen = () => {
                 buttons={alertConfig.buttons}
                 onClose={hideAlert}
             />
-        </SafeAreaView>
+        </View>
     );
 };
+
+const styles = StyleSheet.create({
+    pageTitle: {
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#0f172a',
+    },
+    accentBar: {
+        width: 48,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: '#0d9488',
+        marginTop: 8,
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 60,
+    },
+    emptyIconCircle: {
+        width: 72,
+        height: 72,
+        borderRadius: 24,
+        backgroundColor: '#f1f5f9',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    emptyTitle: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#0f172a',
+        marginBottom: 8,
+    },
+    emptySubtext: {
+        fontSize: 14,
+        color: '#64748b',
+        textAlign: 'center',
+        paddingHorizontal: 32,
+        lineHeight: 20,
+    },
+});
 
 export default LeadsScreen;
