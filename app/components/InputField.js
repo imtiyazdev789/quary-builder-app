@@ -1,20 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import Icon, { IconNames } from './Icon';
 import theme from '../config/theme';
 import ErrorText from './ErrorText';
 import { shake } from '../utils/animations';
 
 /**
- * InputField Component
- * A reusable text input with label, error handling, optional left icon, and password visibility toggle
+ * InputField Component — Material Design Floating Label
  * 
- * @param {string} label - Label text for the input
+ * The label starts as placeholder text inside the input box.
+ * On focus or when the field has a value, it animates up to the top-left border
+ * with a white background cutout behind it.
+ * 
+ * @param {string} label - Label text (used as floating label)
  * @param {string} value - Current input value
  * @param {function} onChangeText - Callback when text changes
  * @param {string} error - Error message to display
- * @param {string} placeholder - Placeholder text
- * @param {string} keyboardType - Keyboard type (default, email-address, phone-pad, number-pad, url)
+ * @param {string} placeholder - Optional placeholder (falls back to label)
+ * @param {string} keyboardType - Keyboard type
  * @param {number} maxLength - Maximum character length
  * @param {boolean} multiline - Enable multiline input
  * @param {number} numberOfLines - Number of lines for multiline
@@ -23,7 +26,7 @@ import { shake } from '../utils/animations';
  * @param {boolean} autoCapitalize - Auto capitalize setting
  * @param {boolean} editable - Whether the input is editable
  * @param {string} containerClassName - Additional container styles
- * @param {string} leftIcon - Icon name to display on the left (e.g., 'mail', 'person', 'phone', 'lock')
+ * @param {string} leftIcon - Icon name to display on the left
  */
 const InputField = ({
     label,
@@ -45,8 +48,19 @@ const InputField = ({
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const shakeAnim = useRef(new Animated.Value(0)).current;
+    const labelAnim = useRef(new Animated.Value(value ? 1 : 0)).current;
 
     const isSecure = secureTextEntry && !isPasswordVisible;
+    const isFloated = isFocused || (value && value.length > 0);
+
+    // Animate label position when focus/value changes
+    useEffect(() => {
+        Animated.timing(labelAnim, {
+            toValue: isFloated ? 1 : 0,
+            duration: 180,
+            useNativeDriver: false, // We animate layout properties (top, fontSize)
+        }).start();
+    }, [isFloated]);
 
     // Trigger shake animation when error appears
     useEffect(() => {
@@ -55,29 +69,57 @@ const InputField = ({
         }
     }, [error]);
 
-    // Get border color based on state
+    // Animated label styles
+    const labelLeftOffset = leftIcon ? 40 : 12;
+    const inputHeight = multiline ? 96 : 52;
+
+    const labelTop = labelAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [inputHeight / 2 - 10, -9], // center of input → top border
+    });
+
+    const labelFontSize = labelAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [16, 12],
+    });
+
+    const labelLeft = labelAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [labelLeftOffset, 10],
+    });
+
+    // Label color
+    const getLabelColor = () => {
+        if (error) return theme.colors.error[500];
+        if (isFocused) return theme.colors.primary[500];
+        if (value && value.length > 0) return theme.colors.text.secondary || '#64748b';
+        return '#94a3b8'; // placeholder gray
+    };
+
+    // Border color
     const getBorderColor = () => {
-        if (error) return 'border-error-500';
-        if (isFocused) return 'border-primary-500';
-        return 'border-secondary-200';
+        if (error) return theme.colors.error[500];
+        if (isFocused) return theme.colors.primary[500];
+        return '#e2e8f0'; // secondary-200
+    };
+
+    // Border width (thicker on focus)
+    const getBorderWidth = () => {
+        if (isFocused || error) return 2;
+        return 1.5;
     };
 
     return (
         <Animated.View
-            className={`mb-4 ${containerClassName}`}
+            className={`mb-5 ${containerClassName}`}
             style={{
                 transform: [{ translateX: shakeAnim }],
             }}
         >
-            {label && (
-                <Text className="text-sm font-medium text-secondary-800 mb-2">
-                    {label}
-                </Text>
-            )}
-            <View className="relative">
+            <View style={styles.inputContainer}>
                 {/* Left Icon */}
                 {leftIcon && (
-                    <View className="absolute left-3 top-3 z-10">
+                    <View style={styles.leftIconContainer}>
                         <Icon
                             name={IconNames[leftIcon] || leftIcon}
                             size="lg"
@@ -86,14 +128,22 @@ const InputField = ({
                     </View>
                 )}
 
+                {/* TextInput */}
                 <TextInput
-                    className={`border rounded-xl py-3 text-base bg-white ${getBorderColor()} ${multiline ? 'h-24' : ''
-                        } ${leftIcon ? 'pl-12 pr-4' : 'px-4'
-                        } ${(showPasswordToggle || secureTextEntry) ? 'pr-12' : ''
-                        } ${!editable ? 'bg-secondary-50 text-secondary-500' : ''
-                        }`}
-                    placeholder={placeholder}
-                    placeholderTextColor="#94a3b8"
+                    style={[
+                        styles.input,
+                        {
+                            height: multiline ? 96 : 52,
+                            borderColor: getBorderColor(),
+                            borderWidth: getBorderWidth(),
+                            paddingLeft: leftIcon ? 44 : 16,
+                            paddingRight: (showPasswordToggle || secureTextEntry) ? 48 : 16,
+                            textAlignVertical: multiline ? 'top' : 'center',
+                            paddingTop: multiline ? 18 : 0,
+                            backgroundColor: !editable ? '#f8fafc' : '#ffffff',
+                            color: !editable ? '#94a3b8' : '#1e293b',
+                        },
+                    ]}
                     value={value}
                     onChangeText={onChangeText}
                     onFocus={() => setIsFocused(true)}
@@ -105,13 +155,46 @@ const InputField = ({
                     secureTextEntry={isSecure}
                     autoCapitalize={autoCapitalize}
                     editable={editable}
-                    style={multiline ? { textAlignVertical: 'top' } : {}}
+                    placeholder="" // We use the animated label as placeholder
+                    placeholderTextColor="#94a3b8"
                 />
+
+                {/* Floating Label */}
+                {label && (
+                    <Animated.View
+                        style={[
+                            styles.labelWrapper,
+                            {
+                                top: labelTop,
+                                left: labelLeft,
+                            },
+                        ]}
+                        pointerEvents="none"
+                    >
+                        <View style={[
+                            styles.labelBackground,
+                            isFloated ? styles.labelBackgroundFloated : null,
+                        ]}>
+                            <Animated.Text
+                                style={[
+                                    styles.labelText,
+                                    {
+                                        fontSize: labelFontSize,
+                                        color: getLabelColor(),
+                                    },
+                                ]}
+                                numberOfLines={1}
+                            >
+                                {label}
+                            </Animated.Text>
+                        </View>
+                    </Animated.View>
+                )}
 
                 {/* Password Toggle */}
                 {showPasswordToggle && (
                     <TouchableOpacity
-                        className="absolute right-3 top-3"
+                        style={styles.passwordToggle}
                         onPress={() => setIsPasswordVisible(!isPasswordVisible)}
                     >
                         <Icon
@@ -127,5 +210,45 @@ const InputField = ({
     );
 };
 
-export default InputField;
+const styles = StyleSheet.create({
+    inputContainer: {
+        position: 'relative',
+    },
+    input: {
+        borderRadius: 14,
+        fontSize: 16,
+        fontWeight: '400',
+    },
+    leftIconContainer: {
+        position: 'absolute',
+        left: 14,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        zIndex: 10,
+    },
+    labelWrapper: {
+        position: 'absolute',
+        zIndex: 20,
+    },
+    labelBackground: {
+        paddingHorizontal: 0,
+    },
+    labelBackgroundFloated: {
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 6,
+        borderRadius: 4,
+    },
+    labelText: {
+        fontWeight: '500',
+    },
+    passwordToggle: {
+        position: 'absolute',
+        right: 14,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
+    },
+});
 
+export default InputField;
