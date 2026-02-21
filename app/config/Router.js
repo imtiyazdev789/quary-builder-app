@@ -34,12 +34,20 @@ const Router = {
     },
 
     // ============================================
+    // ADMIN ROUTES
+    // ============================================
+    ADMIN: {
+        LOGIN: '/admin/login',
+        DASHBOARD_DETAILS: '/admin/dashboarddetails',
+    },
+
+    // ============================================
     // USER ROUTES
     // ============================================
     USER: {
         // Profile
         GET_PROFILE: '/user/profile',
-        UPDATE_PROFILE: '/api/user/updateprofile',
+        UPDATE_PROFILE: '/user/updateprofile',
 
         // Dashboard
         GET_DASHBOARD_DETAILS: '/user/getuserdashboarddetail',
@@ -50,9 +58,9 @@ const Router = {
     // ============================================
     PROFESSIONAL: {
         // Profile
-        GET_PROFILE_DETAILS: (id) => `/api/professionaldetails/${id}`,
-        GET_MY_PROFILE: '/api/professionaldetails',
-        UPDATE_PROFILE: '/api/updateprofprofile',
+        GET_PROFILE_DETAILS: (id) => `/professionaldetails/${id}`,
+        GET_MY_PROFILE: '/professionaldetails',
+        UPDATE_PROFILE: '/updateprofprofile',
 
         // Dashboard
         GET_DASHBOARD_INFO: '/professional/dashboard/info',
@@ -69,10 +77,12 @@ const Router = {
         DELETE_PROJECT: (id) => `/profes/deleteproject/${id}`,
 
         // Account
-        DELETE_ACCOUNT: '/api/delete',
+        DELETE_ACCOUNT: '/delete',
 
         // List
         GET_PROFESSIONAL_LIST: '/professional/list',
+        GET_NEARBY: '/professional/nearby',
+        GET_RADIUS_OPTIONS: '/professional/radius-options',
     },
 
     // ============================================
@@ -96,29 +106,8 @@ const Router = {
     // REVIEW ROUTES
     // ============================================
     REVIEW: {
-        CREATE_REVIEW: '/api/createreview',
-        GET_PROFESSIONAL_REVIEWS: '/api/getprofessionalreviews',
-    },
-
-    // ============================================
-    // ADMIN ROUTES
-    // ============================================
-    ADMIN: {
-        // Authentication
-        LOGIN: '/admin/login',
-
-        // Dashboard
-        GET_DASHBOARD_DETAILS: '/admin/dashboarddetails',
-
-        // Client Management
-        GET_CLIENT_DETAILS: '/admin/clientDetails',
-
-        // Professional Management
-        GET_PROFESSIONAL_DETAILS: (professionalId) => `/admin/prof/indetails/${professionalId}`,
-        GET_PROFESSIONALS_LIST: '/admin/prof/details',
-        UPDATE_PROFESSIONAL_STATUS: (id) => `/admin/prof/updatestatus/${id}`,
-        GET_PROFESSIONAL_PROJECTS: (professionalId) => `/admin/prof/project/details/${professionalId}`,
-        VERIFY_PROJECT: (projectId) => `/admin/prof/project/verification/${projectId}`,
+        CREATE_REVIEW: '/createreview',
+        GET_PROFESSIONAL_REVIEWS: '/getprofessionalreviews',
     },
 
     // ============================================
@@ -126,9 +115,25 @@ const Router = {
     // ============================================
     UPLOAD: {
         UPLOADS: '/uploads',
-        API_UPLOADS: '/api/uploads',
+        API_UPLOADS: '/uploads',
+    },
+
+    // ============================================
+    // NOTIFICATION ROUTES
+    // ============================================
+    NOTIFICATION: {
+        REGISTER_TOKEN: '/notifications/device-token',
+        UNREGISTER_TOKEN: '/notifications/device-token',
+    },
+
+    // ============================================
+    // CHAT ROUTES
+    // ============================================
+    CHAT: {
+        GET_CONVERSATIONS: '/chat/conversations',
+        GET_CONVERSATION_BY_REQUEST: (requestId) => `/chat/request/${requestId}`,
+        GET_MESSAGES: (conversationId) => `/chat/messages/${conversationId}`,
     },
 };
 
 export default Router;
-

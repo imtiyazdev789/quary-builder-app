@@ -3,6 +3,8 @@
 # dependencies
 node_modules/
 
+buildquery-3d7c4-firebase-adminsdk-fbsvc-7d720b1db0.json
+
 # Expo
 .expo/
 dist/

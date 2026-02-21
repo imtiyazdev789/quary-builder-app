@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135308353332",
+    "project_id": "buildquery-3d7c4",
+    "storage_bucket": "buildquery-3d7c4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135308353332:android:929b1bd9dbf95e155a0f61",
+        "android_client_info": {
+          "package_name": "com.querybuilder.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP4wgyAd2V56pzwPa7Xni_SIoYeBt9jaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

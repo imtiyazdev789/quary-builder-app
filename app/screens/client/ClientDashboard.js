@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ClientDashboard = () => {
+    const insets = useSafeAreaInsets();
+
     return (
-        <View className="flex-1 bg-gray-50">
-            <ScrollView className="flex-1">
-                <View className="px-4 py-6">
-                    <Text className="text-3xl font-bold text-gray-900 mb-2">
-                        Client Dashboard
-                    </Text>
+        <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+                <View className="px-6 pt-10 pb-6">
                     <Text className="text-base text-gray-600 mb-6">
                         Welcome to your dashboard
                     </Text>

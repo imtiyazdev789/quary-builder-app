@@ -1,22 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
+import CustomAlert from '../../components/CustomAlert';
+import CustomButton from '../../components/CustomButton';
+import Icon, { IconNames } from '../../components/Icon';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
-    const { emailVerificationId, email, role } = route.params || {};
+    const { emailVerificationId, email, role, showSuccessMessage } = route.params || {};
     const [otp, setOtp] = useState('');
-    const [timer, setTimer] = useState(600); // 10 minutes in seconds
+    const [timer, setTimer] = useState(600);
     const { verifyOtp, resendOtp, loading } = useAuth();
+
+    console.log('OTPVerificationScreen params:', { emailVerificationId, email, role });
+
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [alertConfig, setAlertConfig] = useState({
+        title: '',
+        message: '',
+        icon: '',
+        buttons: [],
+    });
+
+    const showCustomAlert = (config) => {
+        setAlertConfig(config);
+        setAlertVisible(true);
+    };
+
+    const hideAlert = () => {
+        setAlertVisible(false);
+    };
 
     useEffect(() => {
         if (!emailVerificationId || !email || !role) {
-            Alert.alert('Error', 'Missing verification details. Please sign up again.');
-            navigation?.navigate('Signup');
+            showCustomAlert({
+                title: 'Error',
+                message: 'Missing verification details. Please sign up again.',
+                icon: 'close-circle',
+                buttons: [{
+                    text: 'Go Back',
+                    onPress: () => {
+                        hideAlert();
+                        navigation?.navigate('Signup');
+                    },
+                    style: 'primary'
+                }],
+            });
             return;
         }
 
-        // Start countdown timer
+        if (showSuccessMessage) {
+            setTimeout(() => {
+                showCustomAlert({
+                    title: 'OTP Sent!',
+                    message: `A 6-digit verification code has been sent to ${email}. Please check your inbox.`,
+                    icon: 'mail',
+                    buttons: [{
+                        text: 'OK',
+                        onPress: hideAlert,
+                        style: 'primary'
+                    }],
+                });
+            }, 300);
+        }
+
         const interval = setInterval(() => {
             setTimer((prev) => {
                 if (prev <= 1) {
@@ -38,21 +86,40 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
     const handleVerifyOtp = async () => {
         if (!otp || otp.length !== 6) {
-            Alert.alert('Error', 'Please enter a valid 6-digit OTP');
+            showCustomAlert({
+                title: 'Invalid OTP',
+                message: 'Please enter a valid 6-digit OTP.',
+                icon: 'warning',
+                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
+            });
             return;
         }
 
         const result = await verifyOtp(emailVerificationId, otp, role);
 
         if (result.success) {
-            Alert.alert('Success', 'Email verified successfully! Please login.', [
-                {
-                    text: 'OK',
-                    onPress: () => navigation?.navigate('Login'),
-                },
-            ]);
+            showCustomAlert({
+                title: 'Verified!',
+                message: 'Your email has been verified successfully! You can now login to your account.',
+                icon: 'checkmark-circle',
+                buttons: [{
+                    text: 'Login Now',
+                    onPress: () => {
+                        hideAlert();
+                        setTimeout(() => {
+                            navigation?.navigate('Login');
+                        }, 100);
+                    },
+                    style: 'primary'
+                }],
+            });
         } else {
-            Alert.alert('Verification Failed', result.error);
+            showCustomAlert({
+                title: 'Verification Failed',
+                message: result.error || 'Invalid OTP. Please try again.',
+                icon: 'close-circle',
+                buttons: [{ text: 'Try Again', onPress: hideAlert, style: 'primary' }],
+            });
         }
     };
 
@@ -60,107 +127,216 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         const result = await resendOtp(emailVerificationId, role);
 
         if (result.success) {
-            setTimer(600); // Reset timer to 10 minutes
-            Alert.alert('Success', 'OTP has been resent to your email');
+            setTimer(600);
+            showCustomAlert({
+                title: 'OTP Resent!',
+                message: 'A new OTP has been sent to your email.',
+                icon: 'mail',
+                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
+            });
         } else {
-            Alert.alert('Error', result.error);
+            showCustomAlert({
+                title: 'Error',
+                message: result.error || 'Failed to resend OTP. Please try again.',
+                icon: 'close-circle',
+                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
+            });
         }
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'bottom']}>
             <View className="flex-1 justify-center px-6">
-            <View className="mb-8">
-                <Text className="text-4xl font-bold text-gray-900 mb-2">
-                    Verify Email
-                </Text>
-                <Text className="text-base text-gray-600 mb-2">
-                    We've sent a 6-digit OTP to
-                </Text>
-                <Text className="text-base font-semibold text-gray-900">
-                    {email}
-                </Text>
-            </View>
-
-            <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Enter OTP
-                </Text>
-                <TextInput
-                    className="border border-gray-300 rounded-lg px-4 py-3 text-base text-center text-2xl font-bold tracking-widest"
-                    placeholder="000000"
-                    value={otp}
-                    onChangeText={(text) => {
-                        // Only allow digits and limit to 6
-                        const digits = text.replace(/[^0-9]/g, '').slice(0, 6);
-                        setOtp(digits);
-                    }}
-                    keyboardType="number-pad"
-                    maxLength={6}
-                    autoFocus
-                />
-            </View>
-
-            <View className="mb-6">
-                <Text className="text-center text-sm text-gray-600">
-                    {timer > 0 ? (
-                        <>
-                            OTP expires in{' '}
-                            <Text className="font-semibold text-blue-600">
-                                {formatTime(timer)}
-                            </Text>
-                        </>
-                    ) : (
-                        <Text className="text-red-600 font-semibold">
-                            OTP has expired
-                        </Text>
-                    )}
-                </Text>
-            </View>
-
-            <TouchableOpacity
-                className="bg-blue-600 rounded-lg py-4 items-center mb-4"
-                onPress={handleVerifyOtp}
-                disabled={loading || otp.length !== 6}
-            >
-                {loading ? (
-                    <ActivityIndicator color="white" />
-                ) : (
-                    <Text className="text-white text-lg font-semibold">
-                        Verify OTP
-                    </Text>
-                )}
-            </TouchableOpacity>
-
-            <View className="flex-row justify-center items-center">
-                <Text className="text-gray-600 text-sm">
-                    Didn't receive OTP?{' '}
-                </Text>
-                <TouchableOpacity
-                    onPress={handleResendOtp}
-                    disabled={loading || timer > 0}
-                >
-                    <Text
-                        className={`text-sm font-semibold ${timer > 0 ? 'text-gray-400' : 'text-blue-600'
-                            }`}
+                {/* Premium Header */}
+                <View style={[s.headerWrap, { paddingTop: 20 }]}>
+                    <LinearGradient
+                        colors={['#dbeafe', '#bfdbfe']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={s.headerGradient}
                     >
-                        Resend
+                        <View style={s.logoCircle}>
+                            <Icon name={IconNames.mail} size="xxl" color="#2563eb" />
+                        </View>
+                    </LinearGradient>
+                    <Text style={s.title}>Verify Email</Text>
+                    <Text style={s.subtitle}>
+                        We've sent a 6-digit OTP to
                     </Text>
+                    <Text style={s.email}>{email}</Text>
+                </View>
+
+                {/* OTP Input */}
+                <View style={s.otpContainer}>
+                    <TextInput
+                        style={[
+                            s.otpInput,
+                            otp.length === 6 && { borderColor: '#0d9488', borderWidth: 2 },
+                        ]}
+                        placeholder="000000"
+                        placeholderTextColor="#cbd5e1"
+                        value={otp}
+                        onChangeText={(text) => {
+                            const digits = text.replace(/[^0-9]/g, '').slice(0, 6);
+                            setOtp(digits);
+                        }}
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        autoFocus
+                    />
+                </View>
+
+                {/* Timer */}
+                <View style={s.timerWrap}>
+                    {timer > 0 ? (
+                        <Text style={s.timerText}>
+                            OTP expires in{' '}
+                            <Text style={s.timerHighlight}>{formatTime(timer)}</Text>
+                        </Text>
+                    ) : (
+                        <Text style={s.timerExpired}>OTP has expired</Text>
+                    )}
+                </View>
+
+                <CustomButton
+                    title="Verify OTP"
+                    onPress={handleVerifyOtp}
+                    loading={loading}
+                    disabled={otp.length !== 6}
+                    variant="primary"
+                    size="md"
+                />
+
+                <View style={s.resendRow}>
+                    <Text style={s.resendText}>Didn't receive OTP? </Text>
+                    <TouchableOpacity
+                        onPress={handleResendOtp}
+                        disabled={loading || timer > 0}
+                    >
+                        <Text style={[
+                            s.resendAction,
+                            timer > 0 && { color: '#94a3b8' },
+                        ]}>
+                            Resend
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                    style={s.backLink}
+                    onPress={() => navigation?.navigate('Login')}
+                >
+                    <Text style={s.backLinkText}>Back to Login</Text>
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity
-                className="mt-6"
-                onPress={() => navigation?.navigate('Login')}
-            >
-                <Text className="text-center text-blue-600 font-semibold">
-                    Back to Login
-                </Text>
-            </TouchableOpacity>
-            </View>
+            <CustomAlert
+                visible={alertVisible}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                icon={alertConfig.icon}
+                buttons={alertConfig.buttons}
+                onClose={hideAlert}
+            />
         </SafeAreaView>
     );
 };
 
-export default OTPVerificationScreen;
+const s = StyleSheet.create({
+    headerWrap: {
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    headerGradient: {
+        width: 88,
+        height: 88,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: 'rgba(37,99,235,0.12)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#0f172a',
+        marginBottom: 6,
+    },
+    subtitle: {
+        fontSize: 15,
+        color: '#64748b',
+    },
+    email: {
+        fontSize: 15,
+        fontWeight: '700',
+        color: '#0d9488',
+        marginTop: 2,
+    },
+    otpContainer: {
+        marginBottom: 16,
+    },
+    otpInput: {
+        borderWidth: 1.5,
+        borderColor: '#e2e8f0',
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 18,
+        fontSize: 28,
+        fontWeight: '800',
+        textAlign: 'center',
+        letterSpacing: 12,
+        backgroundColor: '#f8fafc',
+        color: '#0f172a',
+    },
+    timerWrap: {
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    timerText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    timerHighlight: {
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    timerExpired: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#dc2626',
+    },
+    resendRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 4,
+    },
+    resendText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    resendAction: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#0d9488',
+    },
+    backLink: {
+        marginTop: 20,
+        paddingVertical: 8,
+    },
+    backLinkText: {
+        textAlign: 'center',
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#0d9488',
+    },
+});
 
+export default OTPVerificationScreen;
