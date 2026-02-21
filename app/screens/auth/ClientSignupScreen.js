@@ -143,7 +143,7 @@ const ClientSignupScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
             <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
                 <View className="flex-1 px-6 py-6">
                     {/* Premium Header */}

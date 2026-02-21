@@ -9,6 +9,7 @@ import { SocketProvider } from './app/context/SocketContext';
 import { NotificationProvider } from './app/context/NotificationContext';
 import RootNavigator from './app/navigation/RootNavigator';
 import { useCustomFonts } from './app/config/fonts';
+import { navigationRef } from './app/navigation/navigationRef';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -91,7 +92,7 @@ export default function App() {
     <SafeAreaProvider>
       <AuthProvider>
         <SocketProvider>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <NotificationProvider>
               <AppContent />
             </NotificationProvider>

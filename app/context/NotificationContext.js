@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import * as navigationRef from '../navigation/navigationRef';
 import notificationService from '../services/notificationService';
 import { useAuth } from './AuthContext';
 
@@ -14,7 +14,6 @@ export const useNotification = () => {
 };
 
 export const NotificationProvider = ({ children }) => {
-    const navigation = useNavigation();
     const { user, isAuthenticated } = useAuth();
     const [notificationPermission, setNotificationPermission] = useState(false);
     const [lastNotification, setLastNotification] = useState(null);
@@ -82,25 +81,25 @@ export const NotificationProvider = ({ children }) => {
             switch (data.type) {
                 case 'NEW_REQUEST':
                     if (data.requestId) {
-                        navigation.navigate('RequestDetails', { requestId: data.requestId });
+                        navigationRef.navigate('RequestDetails', { requestId: data.requestId });
                     }
                     break;
 
                 case 'REQUEST_ACCEPTED':
                     if (data.requestId) {
-                        navigation.navigate('RequestDetails', { requestId: data.requestId });
+                        navigationRef.navigate('RequestDetails', { requestId: data.requestId });
                     }
                     break;
 
                 case 'NEW_MESSAGE':
                     if (data.chatId) {
-                        navigation.navigate('Chat', { chatId: data.chatId });
+                        navigationRef.navigate('Chat', { chatId: data.chatId });
                     }
                     break;
 
                 case 'REQUEST_COMPLETED':
                     if (data.requestId) {
-                        navigation.navigate('RequestDetails', { requestId: data.requestId });
+                        navigationRef.navigate('RequestDetails', { requestId: data.requestId });
                     }
                     break;
 

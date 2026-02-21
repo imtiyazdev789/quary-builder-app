@@ -713,7 +713,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
             {/* Premium Progress Bar */}
             <View style={ps.progressWrap}>
                 <View style={ps.progressHeader}>

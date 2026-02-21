@@ -16,22 +16,25 @@ const DatePickerField = ({
 }) => {
     const [showPicker, setShowPicker] = useState(false);
     const [selectedYear, setSelectedYear] = useState(() => {
-        if (value) {
-            return parseInt(value.split('-')[0]);
+        if (value && value.includes('-')) {
+            const parsed = parseInt(value.split('-')[0]);
+            if (!isNaN(parsed)) return parsed;
         }
-        return new Date().getFullYear();
+        return maximumDate ? maximumDate.getFullYear() : new Date().getFullYear();
     });
     const [selectedMonth, setSelectedMonth] = useState(() => {
-        if (value) {
-            return parseInt(value.split('-')[1]);
+        if (value && value.includes('-')) {
+            const parsed = parseInt(value.split('-')[1]);
+            if (!isNaN(parsed)) return parsed;
         }
-        return new Date().getMonth() + 1;
+        return (maximumDate ? maximumDate.getMonth() : new Date().getMonth()) + 1;
     });
     const [selectedDay, setSelectedDay] = useState(() => {
-        if (value) {
-            return parseInt(value.split('-')[2]);
+        if (value && value.includes('-')) {
+            const parsed = parseInt(value.split('-')[2]);
+            if (!isNaN(parsed)) return parsed;
         }
-        return new Date().getDate();
+        return maximumDate ? maximumDate.getDate() : new Date().getDate();
     });
 
     const months = [
@@ -85,21 +88,106 @@ const DatePickerField = ({
     };
 
     const handleCancel = () => {
-        // Reset to current value
-        if (value) {
-            setSelectedYear(parseInt(value.split('-')[0]));
-            setSelectedMonth(parseInt(value.split('-')[1]));
-            setSelectedDay(parseInt(value.split('-')[2]));
+        // Reset to current value if valid
+        if (value && value.includes('-')) {
+            const parts = value.split('-');
+            if (parts.length === 3) {
+                const y = parseInt(parts[0]);
+                const m = parseInt(parts[1]);
+                const d = parseInt(parts[2]);
+                if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                    setSelectedYear(y);
+                    setSelectedMonth(m);
+                    setSelectedDay(d);
+                }
+            }
         }
         setShowPicker(false);
     };
 
-    // Adjust day if it exceeds days in new month
+    // Adjust day if it exceeds days in new month OR is outside valid range
     React.useEffect(() => {
-        if (selectedDay > daysInMonth) {
-            setSelectedDay(daysInMonth);
+        let updatedMonth = selectedMonth;
+        let updatedDay = selectedDay;
+        let changed = false;
+
+        // Ensure month is within bounds
+        if (maximumDate && selectedYear === maximumDate.getFullYear()) {
+            const maxM = maximumDate.getMonth() + 1;
+            if (updatedMonth > maxM) {
+                updatedMonth = maxM;
+                changed = true;
+            }
         }
-    }, [selectedMonth, selectedYear, daysInMonth]);
+        if (minimumDate && selectedYear === minimumDate.getFullYear()) {
+            const minM = minimumDate.getMonth() + 1;
+            if (updatedMonth < minM) {
+                updatedMonth = minM;
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            setSelectedMonth(updatedMonth);
+        }
+
+        // Ensure day is within days in month
+        const maxDays = getDaysInMonth(selectedYear, updatedMonth);
+        if (updatedDay > maxDays) {
+            updatedDay = maxDays;
+            changed = true;
+        }
+
+        // Ensure day is within bounds
+        if (maximumDate && selectedYear === maximumDate.getFullYear() && updatedMonth === (maximumDate.getMonth() + 1)) {
+            const maxD = maximumDate.getDate();
+            if (updatedDay > maxD) {
+                updatedDay = maxD;
+                changed = true;
+            }
+        }
+        if (minimumDate && selectedYear === minimumDate.getFullYear() && updatedMonth === (minimumDate.getMonth() + 1)) {
+            const minD = minimumDate.getDate();
+            if (updatedDay < minD) {
+                updatedDay = minD;
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            setSelectedDay(updatedDay);
+        }
+    }, [selectedYear, selectedMonth, selectedDay, maximumDate, minimumDate]);
+
+    const isMonthDisabled = (monthKey) => {
+        if (maximumDate) {
+            const maxYear = maximumDate.getFullYear();
+            const maxMonth = maximumDate.getMonth() + 1;
+            if (selectedYear === maxYear && monthKey > maxMonth) return true;
+        }
+        if (minimumDate) {
+            const minYear = minimumDate.getFullYear();
+            const minMonth = minimumDate.getMonth() + 1;
+            if (selectedYear === minYear && monthKey < minMonth) return true;
+        }
+        return false;
+    };
+
+    const isDayDisabled = (day) => {
+        if (maximumDate) {
+            const maxYear = maximumDate.getFullYear();
+            const maxMonth = maximumDate.getMonth() + 1;
+            const maxDay = maximumDate.getDate();
+            if (selectedYear === maxYear && selectedMonth === maxMonth && day > maxDay) return true;
+        }
+        if (minimumDate) {
+            const minYear = minimumDate.getFullYear();
+            const minMonth = minimumDate.getMonth() + 1;
+            const minDay = minimumDate.getDate();
+            if (selectedYear === minYear && selectedMonth === minMonth && day < minDay) return true;
+        }
+        return false;
+    };
 
     return (
         <View className="mb-4">
@@ -179,20 +267,24 @@ const DatePickerField = ({
                                         <Text className="text-sm font-bold text-secondary-700 uppercase tracking-wider">Month</Text>
                                     </View>
                                     <View className="flex-row flex-wrap gap-2.5">
-                                        {months.map((month) => (
-                                            <TouchableOpacity
-                                                key={month.key}
-                                                className={`py-2.5 px-4 rounded-xl border ${selectedMonth === month.key
-                                                    ? 'bg-primary-600 border-primary-600 shadow-sm'
-                                                    : 'bg-secondary-50 border-secondary-100'
-                                                    }`}
-                                                onPress={() => setSelectedMonth(month.key)}
-                                            >
-                                                <Text className={`text-sm font-bold ${selectedMonth === month.key ? 'text-white' : 'text-secondary-700'}`}>
-                                                    {month.label.slice(0, 3)}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        ))}
+                                        {months.map((month) => {
+                                            const disabled = isMonthDisabled(month.key);
+                                            return (
+                                                <TouchableOpacity
+                                                    key={month.key}
+                                                    disabled={disabled}
+                                                    className={`py-2.5 px-4 rounded-xl border ${selectedMonth === month.key
+                                                        ? 'bg-primary-600 border-primary-600 shadow-sm'
+                                                        : disabled ? 'bg-secondary-50 border-secondary-50 opacity-30' : 'bg-secondary-50 border-secondary-100'
+                                                        }`}
+                                                    onPress={() => setSelectedMonth(month.key)}
+                                                >
+                                                    <Text className={`text-sm font-bold ${selectedMonth === month.key ? 'text-white' : disabled ? 'text-secondary-300' : 'text-secondary-700'}`}>
+                                                        {month.label.slice(0, 3)}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
                                     </View>
                                 </View>
 
@@ -203,20 +295,24 @@ const DatePickerField = ({
                                         <Text className="text-sm font-bold text-secondary-700 uppercase tracking-wider">Day</Text>
                                     </View>
                                     <View className="flex-row flex-wrap gap-2.5">
-                                        {days.map((day) => (
-                                            <TouchableOpacity
-                                                key={day}
-                                                className={`w-11 h-11 rounded-2xl border items-center justify-center ${selectedDay === day
-                                                    ? 'bg-primary-600 border-primary-600 shadow-md shadow-primary-200'
-                                                    : 'bg-secondary-50 border-secondary-100'
-                                                    }`}
-                                                onPress={() => setSelectedDay(day)}
-                                            >
-                                                <Text className={`font-bold ${selectedDay === day ? 'text-white' : 'text-secondary-700'}`}>
-                                                    {day}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        ))}
+                                        {days.map((day) => {
+                                            const disabled = isDayDisabled(day);
+                                            return (
+                                                <TouchableOpacity
+                                                    key={day}
+                                                    disabled={disabled}
+                                                    className={`w-11 h-11 rounded-2xl border items-center justify-center ${selectedDay === day
+                                                        ? 'bg-primary-600 border-primary-600 shadow-md shadow-primary-200'
+                                                        : disabled ? 'bg-secondary-50 border-secondary-50 opacity-30' : 'bg-secondary-50 border-secondary-100'
+                                                        }`}
+                                                    onPress={() => setSelectedDay(day)}
+                                                >
+                                                    <Text className={`font-bold ${selectedDay === day ? 'text-white' : disabled ? 'text-secondary-300' : 'text-secondary-700'}`}>
+                                                        {day}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
                                     </View>
                                 </View>
 
