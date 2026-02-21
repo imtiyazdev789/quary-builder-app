@@ -104,7 +104,14 @@ export const IconNames = {
     camera: 'camera-outline',
     videocam: 'videocam-outline',
     document: 'document-outline',
+    documentText: 'document-text-outline',
     attach: 'attach-outline',
+
+    // Data & Analytics
+    analytics: 'analytics-outline',
+    folder: 'folder-outline',
+    thumbsUp: 'thumbs-up-outline',
+    alertCircle: 'alert-circle-outline',
 
     // Time
     time: 'time-outline',
