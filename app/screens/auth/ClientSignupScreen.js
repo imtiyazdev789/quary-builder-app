@@ -147,7 +147,7 @@ const ClientSignupScreen = ({ navigation }) => {
             <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
                 <View className="flex-1 px-6 py-6">
                     {/* Premium Header */}
-                    <View style={s.headerWrap}>
+                    <View style={[s.headerWrap, { paddingTop: 10 }]}>
                         <LinearGradient
                             colors={['#f0fdfa', '#ccfbf1']}
                             start={{ x: 0, y: 0 }}

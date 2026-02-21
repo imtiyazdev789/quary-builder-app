@@ -19,7 +19,11 @@ const Step6AboutBusiness = ({
 
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">About Your Business</Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    About Your Business
+                </Text>
+            </View>
 
             <InputField
                 label="Tagline"

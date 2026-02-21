@@ -88,45 +88,35 @@ const RootNavigator = () => {
                         name="ClientSignup"
                         component={ClientSignupScreen}
                         options={{
-                            headerShown: true,
-                            title: 'Client Registration',
-                            headerBackTitleVisible: false,
+                            headerShown: false,
                         }}
                     />
                     <Stack.Screen
                         name="ProfessionalSignup"
                         component={ProfessionalSignupScreen}
                         options={{
-                            headerShown: true,
-                            title: 'Professional Registration',
-                            headerBackTitleVisible: false,
+                            headerShown: false,
                         }}
                     />
                     <Stack.Screen
                         name="OTPVerification"
                         component={OTPVerificationScreen}
                         options={{
-                            headerShown: true,
-                            title: 'Verify Email',
-                            headerBackTitleVisible: false,
+                            headerShown: false,
                         }}
                     />
                     <Stack.Screen
                         name="ForgotPassword"
                         component={ForgotPasswordScreen}
                         options={{
-                            headerShown: true,
-                            title: 'Forgot Password',
-                            headerBackTitleVisible: false,
+                            headerShown: false,
                         }}
                     />
                     <Stack.Screen
                         name="ResetPasswordOTP"
                         component={ResetPasswordOTPScreen}
                         options={{
-                            headerShown: true,
-                            title: 'Verify Code',
-                            headerBackTitleVisible: false,
+                            headerShown: false,
                         }}
                     />
                     {/* Demo Screens - for previewing without auth */}

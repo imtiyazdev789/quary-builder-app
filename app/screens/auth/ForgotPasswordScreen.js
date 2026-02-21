@@ -90,7 +90,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
                 <View className="flex-1 justify-center px-6">
                     {/* Premium Header */}
-                    <View style={s.headerWrap}>
+                    <View style={[s.headerWrap, { paddingTop: 20 }]}>
                         <LinearGradient
                             colors={['#fef3c7', '#fde68a']}
                             start={{ x: 0, y: 0 }}

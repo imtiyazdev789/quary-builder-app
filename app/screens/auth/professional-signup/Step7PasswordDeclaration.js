@@ -23,7 +23,11 @@ const Step7PasswordDeclaration = ({
 
     return (
         <View>
-            <Text className="text-xl font-bold text-secondary-900 mb-4">Create Password</Text>
+            <View className="mb-6">
+                <Text className="text-2xl font-bold text-secondary-900 mb-1">
+                    Security & Declaration
+                </Text>
+            </View>
 
             <InputField
                 label="Password"

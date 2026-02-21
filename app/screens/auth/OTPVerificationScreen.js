@@ -148,7 +148,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'bottom']}>
             <View className="flex-1 justify-center px-6">
                 {/* Premium Header */}
-                <View style={s.headerWrap}>
+                <View style={[s.headerWrap, { paddingTop: 20 }]}>
                     <LinearGradient
                         colors={['#dbeafe', '#bfdbfe']}
                         start={{ x: 0, y: 0 }}

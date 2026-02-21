@@ -790,7 +790,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
 const ps = StyleSheet.create({
     progressWrap: {
         paddingHorizontal: 24,
-        paddingTop: 16,
+        paddingTop: 24, // Increased padding
         paddingBottom: 8,
     },
     progressHeader: {
