@@ -91,13 +91,13 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <SocketProvider>
-          <NavigationContainer ref={navigationRef}>
-            <NotificationProvider>
+        <NotificationProvider>
+          <SocketProvider>
+            <NavigationContainer ref={navigationRef}>
               <AppContent />
-            </NotificationProvider>
-          </NavigationContainer>
-        </SocketProvider>
+            </NavigationContainer>
+          </SocketProvider>
+        </NotificationProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

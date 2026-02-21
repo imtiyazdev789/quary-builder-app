@@ -412,6 +412,18 @@ const ProfessionalSignupScreen = ({ navigation }) => {
     const handleSubmit = async () => {
         if (!validateStep(7)) return;
 
+        // Re-validate step 5 documents (docs are not persisted — user must re-upload after resuming)
+        if (!validateStep(5)) {
+            setCurrentStep(5);
+            showCustomAlert({
+                title: 'Documents Required',
+                message: 'Please re-upload required documents before submitting. Documents must be re-uploaded each session.',
+                icon: 'document-text',
+                buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
+            });
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -554,7 +566,7 @@ const ProfessionalSignupScreen = ({ navigation }) => {
             } else {
                 showCustomAlert({
                     title: 'Registration Failed',
-                    message: response.data.message || 'Something went wrong. Please try again.',
+                    message: response.data.message || response.data.error || 'Something went wrong. Please try again.',
                     icon: 'close-circle',
                     buttons: [{ text: 'OK', onPress: hideAlert, style: 'primary' }],
                 });
