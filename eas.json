@@ -23,15 +23,27 @@
         "EXPO_PUBLIC_API_BASE_URL": "https://dev.buildquery.com/api"
       }
     },
-    "production": {
+    "production-apk": {
       "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      },
       "env": {
         "EXPO_PUBLIC_API_BASE_URL": "https://admin.buildquery.com/api"
+      }
+    },
+    "production-aab": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://dev.buildquery.com/api"
       }
     }
   },
   "submit": {
-    "production": {
+    "production-aab": {
       "android": {}
     }
   }
