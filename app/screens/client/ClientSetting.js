@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Switch, TouchableOpacity, ScrollView, StyleSheet, Platform, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import { CustomAlert } from '../../components';
 import Icon, { IconNames } from '../../components/Icon';
 import FadeInView from '../../components/FadeInView';
+import api from '../../config/axios';
+import Router from '../../config/Router';
 
 const ClientSetting = ({ navigation }) => {
     const { logout, user } = useAuth();
@@ -12,6 +14,33 @@ const ClientSetting = ({ navigation }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(true);
     const [logoutAlertVisible, setLogoutAlertVisible] = useState(false);
+
+    // Load notification settings from backend on mount
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const res = await api.get(Router.NOTIFICATION.GET_SETTINGS);
+                if (res.data.success && res.data.data) {
+                    setNotificationsEnabled(res.data.data.pushNotifications ?? true);
+                    setEmailUpdatesEnabled(res.data.data.emailUpdates ?? true);
+                }
+            } catch (e) {
+                console.warn('Could not load notification settings:', e.message);
+            }
+        };
+        loadSettings();
+    }, []);
+
+    const updateSetting = useCallback(async (key, value) => {
+        try {
+            await api.put(Router.NOTIFICATION.UPDATE_SETTINGS, { [key]: value });
+        } catch (e) {
+            console.warn('Failed to update notification setting:', e.message);
+            // Revert on failure
+            if (key === 'pushNotifications') setNotificationsEnabled(v => !v);
+            if (key === 'emailUpdates') setEmailUpdatesEnabled(v => !v);
+        }
+    }, []);
 
     const handleLogout = () => {
         setLogoutAlertVisible(true);
@@ -52,7 +81,7 @@ const ClientSetting = ({ navigation }) => {
                             </View>
                             <Switch
                                 value={notificationsEnabled}
-                                onValueChange={setNotificationsEnabled}
+                                onValueChange={(val) => { setNotificationsEnabled(val); updateSetting('pushNotifications', val); }}
                                 trackColor={{ false: '#e2e8f0', true: '#99f6e4' }}
                                 thumbColor={notificationsEnabled ? '#0d9488' : '#94a3b8'}
                             />
@@ -70,7 +99,7 @@ const ClientSetting = ({ navigation }) => {
                             </View>
                             <Switch
                                 value={emailUpdatesEnabled}
-                                onValueChange={setEmailUpdatesEnabled}
+                                onValueChange={(val) => { setEmailUpdatesEnabled(val); updateSetting('emailUpdates', val); }}
                                 trackColor={{ false: '#e2e8f0', true: '#99f6e4' }}
                                 thumbColor={emailUpdatesEnabled ? '#0d9488' : '#94a3b8'}
                             />

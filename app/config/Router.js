@@ -124,6 +124,8 @@ const Router = {
     NOTIFICATION: {
         REGISTER_TOKEN: '/notifications/device-token',
         UNREGISTER_TOKEN: '/notifications/device-token',
+        GET_SETTINGS: '/notifications/settings',
+        UPDATE_SETTINGS: '/notifications/settings',
     },
 
     // ============================================
